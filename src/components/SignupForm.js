@@ -5,6 +5,10 @@ import 'react-toastify/dist/ReactToastify.css';
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
+    location: '',
+    genre: '',
+    experience: '',
+    address: '',
     email: '',
     phone: '',
     password: '',
@@ -52,6 +56,42 @@ const SignUp = () => {
           name="name"
           placeholder="Full Name"
           value={formData.name}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          name="location"
+          placeholder="Location (Current)"
+          value={formData.location}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          name="genre"
+          placeholder="Genre"
+          value={formData.genre}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="number"
+          name="experience"
+          placeholder="Experience (Number)"
+          value={formData.experience}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={formData.address}
           onChange={handleChange}
           required
           style={styles.input}
