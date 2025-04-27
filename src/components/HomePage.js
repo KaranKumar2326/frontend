@@ -4,75 +4,56 @@ import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const navigate = useNavigate();
 
+  const handleViewCards = () => {
+    navigate('/cards');
+  };
+
   return (
-    <div style={styles.pageContainer}>
-      <header style={styles.heroSection}>
-        <h1 style={styles.heroTitle}>Welcome to Next.js Conf 2024</h1>
-        <p style={styles.heroSubtitle}>Join us for an unforgettable experience of learning and networking.</p>
-        <div style={styles.buttonContainer}>
-          <button style={styles.button} onClick={() => navigate('/signup')}>
-            Get Started
-          </button>
-          <button style={styles.buttonOutline} onClick={() => navigate('/about')}>
-            Learn More
-          </button>
-        </div>
-      </header>
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Welcome to the HomePage</h1>
+      <div style={styles.buttonContainer}>
+        <button style={styles.button} onClick={handleViewCards}>
+          View Cards
+        </button>
+        <button style={styles.button} onClick={() => navigate('/login')}>
+          Login
+        </button>
+        <button style={styles.button} onClick={() => navigate('/loginAsArtist')}>
+          Login as Artist
+        </button>
+      </div>
     </div>
   );
 };
 
 const styles = {
-  pageContainer: {
+  container: {
     minHeight: '100vh',
+    backgroundColor: '#f8f9fa',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f8f9fa',
-    fontFamily: 'Arial, sans-serif',
+    alignItems: 'center',
   },
-  heroSection: {
-    textAlign: 'center',
-    padding: '50px 20px',
-    background: 'linear-gradient(135deg, #2EC4B6, #FF6B6B)',
-    color: '#fff',
-    borderRadius: '8px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-  },
-  heroTitle: {
-    fontSize: '48px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  heroSubtitle: {
-    fontSize: '18px',
+  heading: {
+    fontSize: '32px',
+    fontWeight: '600',
     marginBottom: '30px',
+    color: '#333',
   },
   buttonContainer: {
     display: 'flex',
-    gap: '15px',
-    justifyContent: 'center',
+    gap: '10px',
+    marginTop: '20px',
   },
   button: {
-    backgroundColor: '#fff',
-    color: '#2EC4B6',
-    padding: '12px 24px',
-    fontSize: '16px',
+    backgroundColor: '#2EC4B6',
+    padding: '14px 28px',
+    fontSize: '18px',
     borderRadius: '8px',
     border: 'none',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-  },
-  buttonOutline: {
-    backgroundColor: 'transparent',
     color: '#fff',
-    padding: '12px 24px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '2px solid #fff',
     cursor: 'pointer',
-    fontWeight: 'bold',
   },
 };
 
