@@ -7,6 +7,7 @@ import CardList from './components/CardList';
 import HomePage from './components/HomePage';
 import Navbar from './components/Navbar';
 import AboutPage from './components/AboutPage'; // Import AboutPage
+import LoginAsArtist from './components/LoginAsArtist';
 
 const dummyCards = [
   {
@@ -52,6 +53,7 @@ function App() {
       <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/loginAsArtist" element={<LoginAsArtist />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>

@@ -12,7 +12,7 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>MERN App</div>
+      <div style={styles.logo}>Musical Meet</div>
       <div style={styles.links}>
         <Link to="/home" style={styles.link}>Home</Link>
         <Link to="/cards" style={styles.link}>Cards</Link>

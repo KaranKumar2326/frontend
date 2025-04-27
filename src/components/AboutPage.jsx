@@ -6,9 +6,8 @@ const AboutUsPage = () => {
       <div style={styles.container}>
         <h2>About Us</h2>
         <p>
-          Welcome to MERN App! We are passionate about connecting artists from all around the world.
-          Our platform is designed to help musicians, painters, and creative minds showcase their talent and collaborate.
-          Whether you're a beginner or a professional, MERN App has a place for you!
+          Welcome to Musical Meet! We are passionate about connecting artists from all around the world!
+          Whether you're a beginner or a professional, Musical Meet has a place for you!
         </p>
       </div>
     </div>
