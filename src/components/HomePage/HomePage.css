@@ -1,0 +1,89 @@
+.page-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 50px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: black;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.button-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.button {
+  background-color: #fff;
+  color: #2EC4B6;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button-outline {
+  background-color: transparent;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.content-section {
+  text-align: center;
+  padding: 20px;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.section-text {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.features-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.feature-item {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: black;
+}

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/LoginForm';
 import SignUp from './components/SignupForm';
 import CardList from './components/CardList';
-import HomePage from './components/HomePage';
+import HomePage from './components/HomePage/HomePage';
 import Navbar from './components/Navbar';
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import LoginAsArtist from './components/LoginAsArtist';
