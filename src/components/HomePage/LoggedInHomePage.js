@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoggedInNavbar } from '../Navbar';
+import Navbar from '../Navbar';
 import './HomePage.css';
 
 const LoggedInHomePage = () => {
@@ -13,7 +13,7 @@ const LoggedInHomePage = () => {
 
   return (
     <div className="page-container" style={{ textAlign: 'center', padding: '20px' }}>
-      <LoggedInNavbar handleLogout={handleLogout} />
+      <Navbar isLoggedIn={true} handleLogout={handleLogout} />
       <h1>Welcome Back!</h1>
       <p>You are successfully logged in.</p>
       <button onClick={() => navigate('/cards')} style={{ padding: '10px 20px', margin: '10px', cursor: 'pointer' }}>
