@@ -1,6 +1,6 @@
 // App.js
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useLocation ,BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/LoginForm';
 import SignUp from './components/SignupForm';
 import CardList from './components/CardList';
@@ -8,6 +8,7 @@ import HomePage from './components/HomePage/HomePage';
 import Navbar from './components/Navbar';
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import LoginAsArtist from './components/LoginAsArtist';
+import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
 
 const dummyCards = [
   {
@@ -24,6 +25,28 @@ const dummyCards = [
   },
   // more cards...
 ];
+
+function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
+  const location = useLocation();
+
+  return (
+    <>
+      {/* Conditionally render Navbar */}
+      {location.pathname !== '/' && location.pathname !== '/home' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/loggedInHome" element={<LoggedInHomePage />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/loginAsArtist" element={<LoginAsArtist />} />
+        <Route path="/cards" element={<CardList />} />
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+    </>
+  );
+}
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -47,16 +70,7 @@ function App() {
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-      <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/home" element={<HomePage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/loginAsArtist" element={<LoginAsArtist />} />
-        <Route path="/cards" element={<CardList />} />
-        <Route path="/about" element={<AboutPage />} />
-      </Routes>
+      <AppContent isLoggedIn={isLoggedIn} handleLogout={handleLogout} handleLogin={handleLogin} />
     </Router>
   );
 }

@@ -18,6 +18,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Temporary login logic for all users with username "username" and password "password"
+    if (formData.emailOrPhone === 'username' && formData.password === 'password') {
+      toast.success('Login successful');
+      navigate('/loggedInHome'); // Redirect to LoggedInHomePage after login
+      return;
+    }
+
+    // Original login logic
     try {
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
