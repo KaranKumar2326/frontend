@@ -32,7 +32,7 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   return (
     <>
       {/* Conditionally render Navbar */}
-      {location.pathname !== '/' && location.pathname !== '/home' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />}
+      {location.pathname !== '/' && location.pathname !== '/home' && location.pathname !== '/loggedInHome' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
