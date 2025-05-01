@@ -161,7 +161,7 @@ const styles = {
   },
   button: {
     padding: '12px 0',
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#6C2BD9',
     color: '#fff',
     border: 'none',
     borderRadius: '5px',

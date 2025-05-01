@@ -26,10 +26,10 @@ const HomePage = () => {
           Join us in celebrating the joy of music and connecting with artists from around the world.
         </p>
         <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <button className="button" style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#ff7f50', color: 'white', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }} onClick={() => navigate('/login')}>
+          <button className="button" style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6C2BD9', color: 'white', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }} onClick={() => navigate('/login')}>
             Login
           </button>
-          <button className="button-outline" style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', backgroundColor: 'transparent', color: '#ff7f50', border: '2px solid #ff7f50', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }} onClick={() => navigate('/loginAsArtist')}>
+          <button className="button-outline" style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', backgroundColor: 'transparent', color: '#6C2BD9', border: '2px solid #6C2BD9', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }} onClick={() => navigate('/loginAsArtist')}>
             Login as Artist
           </button>
         </div>

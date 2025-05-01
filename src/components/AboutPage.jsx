@@ -18,7 +18,7 @@ const styles = {
   page: {
     minHeight: '100vh',
     padding: '20px',
-    background: 'linear-gradient(-45deg, #2EC4B6, #FF6B6B, #FFD93D, #6A0572)',
+    background: 'linear-gradient(-45deg, #6C2BD9, #FF6B6B, #FFD93D, #6A0572)',
     backgroundSize: '400% 400%',
     animation: 'gradientMove 15s ease infinite',
     display: 'flex',

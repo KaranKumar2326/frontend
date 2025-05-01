@@ -40,7 +40,7 @@ const CardList = () => {
 
   return (
     <div>
-      <h2>Card List</h2>
+      <h2>Find Artist</h2>
       <div style={styles.cardContainer}>
         {dummyCards.map((card, index) => (
           <div key={index} style={styles.card}>
@@ -84,7 +84,7 @@ const styles = {
     display: 'inline-block',
     marginTop: '20px',
     padding: '10px 20px',
-    backgroundColor: '#2EC4B6', // Updated to match "View Cards" button
+    backgroundColor: '#6C2BD9', // Updated to match "View Cards" button
     color: '#fff',
     textDecoration: 'none',
     borderRadius: '5px',

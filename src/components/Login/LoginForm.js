@@ -111,13 +111,13 @@ const styles = {
   },
   link: {
   
-    color: '#2EC4B6',
+    color: '#6C2BD9',
     textDecoration: 'none',
     fontWeight: 'bold',
   },
   button: {
     marginTop: '15px',
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#6C2BD9',
     color: 'white',
     padding: '12px',
     border: 'none',

@@ -15,7 +15,7 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
       <div style={styles.logo}>Musical Meet</div>
       <div style={styles.links}>
         <Link to="/home" style={styles.link}>Home</Link>
-        <Link to="/cards" style={styles.link}>Cards</Link>
+        <Link to="/cards" style={styles.link}>Find Artist</Link>
         <Link to="/about" style={styles.link}>About</Link>
         {!isLoggedIn && (
           <>
@@ -37,7 +37,7 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
 const styles = {
   nav: {
     height: '60px',
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#6C2BD9',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
