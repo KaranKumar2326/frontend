@@ -1,13 +1,13 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { useLocation ,BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './components/LoginForm';
+import Login from './components/Login/LoginForm';
 import SignUp from './components/SignupForm';
 import CardList from './components/CardList';
 import HomePage from './components/HomePage/HomePage';
 import Navbar from './components/Navbar';
 import AboutPage from './components/AboutPage'; // Import AboutPage
-import LoginAsArtist from './components/LoginAsArtist';
+import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
 
 const dummyCards = [

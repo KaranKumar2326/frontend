@@ -48,8 +48,8 @@ const Login = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Login</h2>
-      <form style={styles.form} onSubmit={handleSubmit}>
+      <h2 style={{ ...styles.heading, textAlign: 'center' }}>Login</h2>
+      <form style={{ ...styles.form, textAlign: 'center' }} onSubmit={handleSubmit}>
         <input
           type="text"
           name="emailOrPhone"
@@ -73,7 +73,6 @@ const Login = () => {
         </button>
         <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
       </form>
-
     </div>
   );
 };
@@ -109,6 +108,12 @@ const styles = {
     borderRadius: '4px',
     border: '1px solid #ccc',
     fontSize: '16px',
+  },
+  link: {
+  
+    color: '#2EC4B6',
+    textDecoration: 'none',
+    fontWeight: 'bold',
   },
   button: {
     marginTop: '15px',

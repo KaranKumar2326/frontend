@@ -7,7 +7,7 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
 
   const logoutAndRedirect = () => {
     handleLogout();
-    navigate('/LoginForm');
+    navigate('/Login/LoginForm');
   };
 
   return (
