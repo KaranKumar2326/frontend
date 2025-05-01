@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -70,7 +71,9 @@ const Login = () => {
         <button type="submit" style={styles.button}>
           Login
         </button>
+        <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
       </form>
+
     </div>
   );
 };

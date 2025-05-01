@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const LoginAsArtist = () => {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -33,6 +34,7 @@ const LoginAsArtist = () => {
           />
           <button type="submit" style={styles.button}>Login as Artist</button>
         </form>
+        <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
       </div>
     </div>
   );
@@ -79,7 +81,12 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     fontWeight: 'bold',
-  }
+  },
+  link: {
+    color: '#2EC4B6',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
 };
 
 // Insert keyframes manually
