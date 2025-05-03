@@ -2,29 +2,30 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import  artistImage from '../public/artist.jpg'; // Import the image
 
 const dummyCards = [
   {
     name: "John Doe",
-    photo: "https://via.placeholder.com/150",
+    photo: artistImage,
     place: "New York",
     genre: "Rock",
   },
   {
     name: "Jane Smith",
-    photo: "https://via.placeholder.com/150",
+    photo: "/artist.jpg",
     place: "Los Angeles",
     genre: "Pop",
   },
   {
     name: "Mike Johnson",
-    photo: "https://via.placeholder.com/150",
+    photo: "/artist.jpg",
     place: "Chicago",
     genre: "Jazz",
   },
   {
     name: "Emily Davis",
-    photo: "https://via.placeholder.com/150",
+    photo: "/artist.jpg",
     place: "San Francisco",
     genre: "Classical",
   },
@@ -47,7 +48,7 @@ const CardList = () => {
             <h3>{card.name}</h3>
             <p>{card.genre}</p>
             <p>{card.place}</p>
-            <img src={card.photo} alt={card.name} style={styles.photo} />
+            <img src={artistImage} alt={card.name} style={styles.photo} />
           </div>
         ))}
       </div>
