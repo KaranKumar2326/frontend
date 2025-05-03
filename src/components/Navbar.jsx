@@ -1,6 +1,7 @@
 // Navbar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../public/logo.jpeg';
 
 const Navbar = ({ isLoggedIn, handleLogout }) => {
   const navigate = useNavigate();
@@ -12,7 +13,10 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>Musical Meet</div>
+      <div style={styles.logoContainer}>
+        <img src={logo} alt="Logo" style={styles.logoImage} />
+        <span style={styles.logoText}>Musical Meet</span>
+      </div>
       <div style={styles.links}>
         <Link to="/home" style={styles.link}>Home</Link>
         <Link to="/cards" style={styles.link}>Find Artist</Link>
@@ -25,9 +29,12 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
         )}
 
         {isLoggedIn && (
-          <button onClick={logoutAndRedirect} style={styles.logoutButton}>
-            Logout
-          </button>
+          <>
+            <Link to="/profile" style={styles.link}>Profile</Link>
+            <button onClick={logoutAndRedirect} style={styles.logoutButton}>
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>
@@ -45,7 +52,17 @@ const styles = {
     color: 'white',
     boxShadow: '0px 2px 5px rgba(0,0,0,0.1)',
   },
-  logo: {
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  logoImage: {
+    height: '40px',
+    width: '40px',
+    borderRadius: '50%',
+  },
+  logoText: {
     fontSize: '22px',
     fontWeight: '600',
     letterSpacing: '1px',
