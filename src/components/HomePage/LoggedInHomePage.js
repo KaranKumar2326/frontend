@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import CardList from '../CardList';
 import './LoggedInHomePage.css';
+import bgVideo1 from '../../public/background-video1.mp4';
+import bgVideo2 from '../../public/background-video2.mp4';
+import bgVideo3 from '../../public/background-video3.mp4';
 
 const LoggedInHomePage = () => {
   const navigate = useNavigate();
@@ -19,6 +22,18 @@ const LoggedInHomePage = () => {
 
   return (
     <div className="page-container">
+      <div className="background-videos" style={{ display: 'flex', flexDirection: 'row', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden' }}>
+        <video className="background-video" autoPlay loop muted style={{ width: '33.33%', height: '100%', objectFit: 'cover' }}>
+          <source src={bgVideo1} type="video/mp4" />
+        </video>
+        <video className="background-video" autoPlay loop muted style={{ width: '33.33%', height: '100%', objectFit: 'cover' }}>
+          <source src={bgVideo2} type="video/mp4" />
+        </video>
+        <video className="background-video" autoPlay loop muted style={{ width: '33.33%', height: '100%', objectFit: 'cover' }}>
+          <source src={bgVideo3} type="video/mp4" />
+        </video>
+      </div>
+
       <Navbar isLoggedIn={true} handleLogout={handleLogout} />
 
       <div className="search-bar-container">
