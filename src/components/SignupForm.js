@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,7 +13,25 @@ const SignUp = () => {
     phone: '',
     password: '',
     confirmPassword: '',
+    pincode: '', // Added pincode to formData state
+    geoLocation: null, // Added geoLocation to formData state
   });
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prev) => ({ ...prev, location: `${latitude}, ${longitude}` }));
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,15 +74,6 @@ const SignUp = () => {
           name="name"
           placeholder="Full Name"
           value={formData.name}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Location (Current)"
-          value={formData.location}
           onChange={handleChange}
           required
           style={styles.input}
@@ -128,6 +137,15 @@ const SignUp = () => {
           name="confirmPassword"
           placeholder="Confirm Password"
           value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          name="pincode"
+          placeholder="Pincode"
+          value={formData.pincode}
           onChange={handleChange}
           required
           style={styles.input}

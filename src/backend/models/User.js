@@ -14,6 +14,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  pincode: {
+    type: String,
+    required: true,
+  },
+  geoLocation: {
+    type: {
+      latitude: { type: Number, required: true },
+      longitude: { type: Number, required: true }
+    },
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
