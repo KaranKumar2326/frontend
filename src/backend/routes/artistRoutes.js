@@ -4,6 +4,7 @@ const Artist = require('../models/Artist');
 
 // Route to save artist to the database
 router.post('/signup', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
   const { name, location, genre, experience, address, email, phone, password } = req.body;
 
   try {

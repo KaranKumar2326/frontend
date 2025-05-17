@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
-    location: '',
     genre: '',
     experience: '',
     address: '',
@@ -22,7 +21,7 @@ const SignUp = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setFormData((prev) => ({ ...prev, location: `${latitude}, ${longitude}` }));
+          setFormData((prev) => ({ ...prev, geoLocation: { latitude, longitude } }));
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -47,7 +46,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/signup', {
+      const response = await fetch('http://localhost:3001/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

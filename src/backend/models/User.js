@@ -18,6 +18,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  genre: {
+    type: String,
+    required: true
+  },
+  experience: {
+    type: Number,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
   geoLocation: {
     type: {
       latitude: { type: Number, required: true },
