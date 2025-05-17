@@ -19,16 +19,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Temporary login logic for all users with username "username" and password "password"
-    if (formData.emailOrPhone === 'username' && formData.password === 'password') {
-      toast.success('Login successful');
-      navigate('/loggedInHome'); // Redirect to LoggedInHomePage after login
-      return;
-    }
-
-    // Original login logic
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch('http://localhost:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -37,7 +29,7 @@ const Login = () => {
       const result = await response.json();
       if (result.success) {
         toast.success('Login successful');
-        navigate('/cards'); // After login, redirect to cards page
+        navigate('/loggedInHome'); // Redirect to LoggedInHomePage after login
       } else {
         toast.error(result.message || 'Login failed');
       }

@@ -4,7 +4,7 @@ const User = require('../models/User');
 const router = express.Router();
 
 // Signup route
-router.post('/', async (req, res) => {
+router.post('/signup', async (req, res) => {
   const {
     name,
     email,
@@ -39,6 +39,29 @@ router.post('/', async (req, res) => {
     await newUser.save();
 
     res.status(201).json({ message: 'User created successfully', success: true });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// Login route
+router.post('/login', async (req, res) => {
+  const { emailOrPhone, password } = req.body;
+
+  try {
+    // Check if user exists
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrPhone },
+        { phone: emailOrPhone }
+      ]
+    });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials', success: false });
+    }
+
+    res.status(200).json({ message: 'Login successful', success: true });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
