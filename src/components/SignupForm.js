@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import backgroundImage from '../public/loginBackground.png'; // Importing background image
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -65,105 +66,124 @@ const SignUp = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h1>Create an Account</h1>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          name="genre"
-          placeholder="Genre"
-          value={formData.genre}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="number"
-          name="experience"
-          placeholder="Experience (Number)"
-          value={formData.experience}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          name="pincode"
-          placeholder="Pincode"
-          value={formData.pincode}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>Sign Up</button>
-      </form>
+    <div className='signup' style={styles.signup}> {/* Added className for styling */}
+      <div style={styles.container}>
+        <div style={styles.formWrapper}> {/* Added a wrapper div for the form */}
+          <h1>Create an Account</h1>
+          <div style={styles.form}> {/* Changed from <form> to <div> */}
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="genre"
+              placeholder="Genre"
+              value={formData.genre}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="number"
+              name="experience"
+              placeholder="Experience (Number)"
+              value={formData.experience}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />  
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="pincode"
+              placeholder="Pincode"
+              value={formData.pincode}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <button onClick={handleSubmit} style={styles.button}>Sign Up</button> {/* Changed from type="submit" to onClick */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
-
+  
 const styles = {
+  
+  signup: {
+    backgroundImage: `url(${backgroundImage})`, // Added background image
+    backgroundSize: 'cover', // Ensures the image covers the entire container
+    backgroundPosition: 'center', // Centers the image
+  },
   container: {
     width: '100%',
-    maxWidth: '400px',
-    margin: '50px auto',
+    height: '100vh', // Ensures the background covers the entire viewport height
+    margin: '0',
+    padding: '0',
+    backgroundImage: "url('/public/loginBackground.png')", // Background image applied to the entire page
+    backgroundSize: 'cover', // Ensures the image covers the entire container
+    backgroundPosition: 'center', // Centers the image
+    display: 'flex',
+    justifyContent: 'center', // Centers the form horizontally
+    alignItems: 'center', // Centers the form vertically
+  },
+  formWrapper: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background for the form
     padding: '20px',
-    backgroundColor: '#fff',
     borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   },
   form: {
     display: 'flex',

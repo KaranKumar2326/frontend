@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import backgroundImage from '../../public/loginBackground.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,8 +41,9 @@ const Login = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={{ ...styles.heading, textAlign: 'center' }}>Login</h2>
+     
       <form style={{ ...styles.form, textAlign: 'center' }} onSubmit={handleSubmit}>
+      <h2 style={{ ...styles.heading, textAlign: 'center' }}>Login</h2>
         <input
           type="text"
           name="emailOrPhone"
@@ -72,7 +74,9 @@ const Login = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#f8f9fa',
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: '1800px 1000px',
+    backgroundPosition: 'center',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -102,7 +106,6 @@ const styles = {
     fontSize: '16px',
   },
   link: {
-  
     color: '#6C2BD9',
     textDecoration: 'none',
     fontWeight: 'bold',
