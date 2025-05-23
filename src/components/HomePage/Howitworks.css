@@ -1,0 +1,147 @@
+/* Section Layout */
+.how-it-works-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: white;
+}
+
+.how-it-works-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header */
+.how-it-works-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.how-it-works-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  font-size: 2rem;
+  color: #2d3748;
+}
+
+@media (min-width: 768px) {
+  .how-it-works-title {
+    font-size: 2.5rem;
+  }
+}
+
+.how-it-works-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Steps */
+.how-it-works-steps {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .how-it-works-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.how-it-works-step {
+  text-align: center;
+}
+
+.how-it-works-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  margin-bottom: 1.25rem;
+  background-color: rgba(59, 130, 246, 0.1); /* primary/10 */
+  color: #3b82f6; /* primary */
+  border-radius: 9999px;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.how-it-works-step-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.how-it-works-step-desc {
+  color: #4a5568;
+}
+
+/* Call to Action */
+.how-it-works-cta {
+  margin-top: 4rem;
+  background-color: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+@media (min-width: 768px) {
+  .how-it-works-cta {
+    padding: 3rem;
+  }
+
+  .how-it-works-cta-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .how-it-works-cta-text {
+    padding-right: 2rem;
+    width: 66.666667%;
+  }
+
+  .how-it-works-cta-image-wrapper {
+    width: 33.333333%;
+  }
+}
+
+.how-it-works-cta-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .how-it-works-cta-title {
+    font-size: 1.875rem;
+  }
+}
+
+.how-it-works-cta-desc {
+  font-size: 1.125rem;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+.how-it-works-button {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #3b82f6; /* primary */
+}
+
+.how-it-works-button:hover {
+  background-color: #2563eb; /* primary/90 */
+}
+
+.how-it-works-cta-image {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}

@@ -53,7 +53,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0, 0.65);
+  background-color: rgba(69, 65, 106, 0.445);
   z-index: 1; 
   pointer-events: none; 
 }
@@ -65,17 +65,16 @@
   margin-bottom: 30px;
 }
 
-.button {
-  background-color: #fff;
-  color: #6c2bd9;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
+
+.Y{
+  font-family: 'Montserrat', sans-serif;
 }
+.P{
+  font-family: 'Montserrat', sans-serif;
+}
+
 .button:hover {
-  background-color: #6c2bd9;
+  background-color: #8f63da;
   color: #8f63da;
 } 
 
@@ -128,14 +127,14 @@
   transition: color 0.3s;
   margin: 20px;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   align-items: center;
   color: #333;
   text-decoration: none;
   transition: color 0.3s;
 }
 .navbar-a:hover {
-  color: #6c2bd9; /* Replace with your primary color */
+  color: #8f63da; /* Replace with your primary color */
   cursor: pointer;
 }
 

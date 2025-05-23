@@ -2,8 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube ,Search , Headphones , CalendarCheck} from "lucide-react";
-import "./Footer.css"; 
+import "./Footer.css";
 import {motion} from "framer-motion";
+import HowItWorks from './Howitworks';
+import CallToAction from './CalltoAction';
+import FeaturedArtist from './FeaturedArtist';
+
 export const Motion = motion;
 
 const HomePage = () => {
@@ -45,10 +49,10 @@ const HomePage = () => {
                   </p>
                 </div>
                 <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                  <button className="button" style={{ padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button className="P" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
                     Hire an Artist
                   </button>
-                  <button className="button" style={{ padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
                     Join as a Artist
                   </button>
                 </div>
@@ -56,20 +60,9 @@ const HomePage = () => {
             </header>
         {/* </div> */}
       </div>
-      <section className="content-section" style={{ zIndex: 1, maxWidth: '800px', padding: '20px', boxSizing: 'border-box', marginTop: '40px', alignContent: 'center', textAlign: 'left', backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-        <h2 className="section-title" style={{ color: 'black', fontWeight: 'bold', marginBottom: '20px', fontSize: '2rem' }}>Why Join Musical Meet?</h2>
-        <p className="section-text" style={{ color: 'black', fontWeight: 'bold', marginBottom: '20px', fontSize: '1.2rem' }}>
-          Musical Meet is a platform where artists and music enthusiasts come together to share their passion for music. Whether you're a beginner or a professional, you'll find a welcoming community and opportunities to grow.
-        </p>
-        <ul className="features-list" style={{ listStyle: 'none', padding: 0, textAlign: 'left' }}>
-          <li className="feature-item" style={{ color: 'black', fontWeight: 'bold', marginBottom: '10px', fontSize: '1.1rem' }}>🎵 Discover new genres and artists</li>
-          <li className="feature-item" style={{ color: 'black', fontWeight: 'bold', marginBottom: '10px', fontSize: '1.1rem' }}>🎤 Showcase your talent</li>
-          <li className="feature-item" style={{ color: 'black', fontWeight: 'bold', marginBottom: '10px', fontSize: '1.1rem' }}>🤝 Network with like-minded individuals</li>
-          <li className="feature-item" style={{ color: 'black', fontWeight: 'bold', marginBottom: '10px', fontSize: '1.1rem' }}>🌟 Participate in exclusive events</li>          
-        </ul>
-      </section>
-
-      {/* Footer */}
+      <FeaturedArtist /> 
+      <HowItWorks/>
+      <CallToAction/>
       <footer className="footer">
       <div className="footer-container">
         <div className="footer-grid">
@@ -122,7 +115,6 @@ const HomePage = () => {
               <li><Phone className="icon" /><span>(555) 123-4567</span></li>
               <li><Mail className="icon" /><span>info@musicalmeet.com</span></li>
             </ul>
-            <button className='footer-contact-button'>Contact Us</button>
           </div>
         </div>
 
@@ -136,6 +128,7 @@ const HomePage = () => {
         </div>
       </div>
     </footer>
+    
     </>
   );
 };
