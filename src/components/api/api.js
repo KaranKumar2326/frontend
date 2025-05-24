@@ -1,4 +1,14 @@
-// This file replaces the backend with client-side mock data
+import { 
+  getFeaturedArtists, 
+  getArtistWithDetails, 
+  searchArtists, 
+  genres, 
+  instruments, 
+  users, 
+  artists, 
+  bookings, 
+  testimonials
+} from '../data/mockData';
 
 /**
  * Sleep utility for simulating API delays
@@ -65,18 +75,6 @@ function processEndpoint(endpoint, params) {
 /**
  * Mock API handlers
  */
-import { 
-  getFeaturedArtists, 
-  getArtistWithDetails, 
-  searchArtists, 
-  genres, 
-  instruments, 
-  users, 
-  artists, 
-  bookings, 
-  testimonials
-} from '../data/mockData';
-
 const mockApiHandlers = {
   '/api/genres': {
     GET: async () => genres,
