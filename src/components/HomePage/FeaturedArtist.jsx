@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Container, CircularProgress, Alert } from '@mui/material';
+import { useQuery} from '@tanstack/react-query';
 import ArtistCard from './ArtistCard';
 import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css'; // Importing HomePage.css for the grid layout
 
 export default function FeaturedArtists() {
-  const { data: artists, isLoading } = useQuery({
+  const { data: artists, isLoading, error } = useQuery({
     queryKey: ["/api/artists/featured"],
   });
 
@@ -16,11 +17,11 @@ export default function FeaturedArtists() {
         Featured Artists
       </Typography>
 
-      {loading && <CircularProgress />}
-      {error && <Alert severity="error">{error}</Alert>}
+      {isLoading && <CircularProgress />}
+      {error && <Alert severity="error">{error.message || 'An error occurred'}</Alert>}
 
       <div className="featured-artists__grid">
-        {artists.map(artist => (
+        {artists && artists.map(artist => (
           <ArtistCard key={artist.id} artist={artist} />
         ))}
       </div>
@@ -28,4 +29,3 @@ export default function FeaturedArtists() {
   );
 };
 
-export default FeaturedArtists;
