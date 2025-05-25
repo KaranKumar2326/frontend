@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import './CallToAction.css';
 import myImage from '../../public/logo.jpeg';
+import NavigationBar from '../NavigationBar';
 
 const LoggedInHomePage = () => {
   const navigate = useNavigate();
@@ -23,37 +24,15 @@ const LoggedInHomePage = () => {
     setSearchQuery(event.target.value);
   };
 
+  const handleHireArtistClick = () => {
+    navigate('/login');
+  };
+
   const[openProfile, setOpenProfile] = useState(false);
 
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-container">
-          <div className="navbar-left">
-            <a className="navbar-brand">
-              <span className="navbar-title">Musical Meet</span>
-            </a>
-          </div>
-          <div className="navbar-as">
-            <a className="navbar-a">Home</a>
-            <a className="navbar-a">Browse Artists</a>
-            <a className="navbar-a">How It Works</a>
-            <a className="navbar-a">Testimonials</a>
-            <button className="navbar-button">Hire an Artist</button>
-            <img src={myImage} className="user-pfp" onClick={() => setOpenProfile
-              ((prev)=> !prev)}/>
-            {
-              openProfile && <div className='flex flex-col dropdown'>
-              <ul className='dropcont'>
-                <li>My Profile</li>
-                <li>Settings</li>
-                <li>Logout</li>
-              </ul>
-            </div>
-            }
-          </div>
-        </div>
-      </nav>
+      <NavigationBar />
       <div className="page-container">
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
         {/* <div className='hero-container' style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}> */}
@@ -70,7 +49,11 @@ const LoggedInHomePage = () => {
                   </p>
                 </div>
                 <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                  <button className="P" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button 
+                    className="P" 
+                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
                     Hire an Artist
                   </button>
                   <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>

@@ -8,32 +8,19 @@ import HowItWorks from './Howitworks';
 import CallToAction from './CalltoAction';
 import FeaturedArtist from './FeaturedArtist';
 import Testimonials from './Testimonials';
+import NavigationBar from '../NavigationBar'; // Importing the NavigationBar component
 export const Motion = motion;
 
 const HomePage = () => {
   const navigate = useNavigate();
 
+  const handleHireArtistClick = () => {
+    navigate('/login');
+  };
+
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-container">
-          <div className="navbar-left">
-            <a className="navbar-brand">
-              <span className="navbar-title">Musical Meet</span>
-            </a>
-          </div>
-
-          <div className="navbar-as">
-            <a className="navbar-a">Home</a>
-            <a className="navbar-a">Browse Artists</a>
-            <a className="navbar-a">How It Works</a>
-            <a className="navbar-a">Testimonials</a>
-            <a>
-              <button className="navbar-button">Join as Artist</button>
-            </a>
-          </div>
-        </div>
-      </nav>
+      <NavigationBar /> {/* Adding the NavigationBar component */}
       <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
         {/* <div className='hero-container' style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}> */}
           <div className="background-image">
@@ -49,7 +36,11 @@ const HomePage = () => {
                   </p>
                 </div>
                 <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                  <button className="P" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button 
+                    className="P" 
+                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
                     Hire an Artist
                   </button>
                   <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>

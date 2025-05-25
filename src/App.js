@@ -5,7 +5,7 @@ import Login from './components/Login/LoginForm';
 import SignUp from './components/SignupForm';
 import CardList from './components/CardList';
 import HomePage from './components/HomePage/HomePage';
-import Navbar from './components/Navbar';
+import Navbar from '../src/components/NavigationBar'
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
