@@ -32,13 +32,13 @@
 
 .featured-artists__grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 1.5rem; /* Space between cards */
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .featured-artists__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr; /* Single column for smaller screens */
   }
 }
 
@@ -63,4 +63,12 @@
 .featured-artists__error {
   text-align: center;
   padding: 2.5rem 0;
+}
+
+/* Adjusted the size of the artist photo */
+.artist-photo {
+  width: 80%; /* Reduced the width to make the photo smaller */
+  height: auto;
+  margin: 0 auto;
+  display: block;
 }

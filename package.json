@@ -19,7 +19,9 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.2",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4",
     "wouter": "^3.7.0"
   },

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Container, CircularProgress, Alert } from '@mui/material';
+import { Typography, Container, CircularProgress, Alert } from '@mui/material';
 import ArtistCard from './ArtistCard';
 import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
+import './HomePage.css'; // Importing HomePage.css for the grid layout
 
 const FeaturedArtists = () => {
   const [artists, setArtists] = useState([]);
@@ -31,13 +32,11 @@ const FeaturedArtists = () => {
       {loading && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Grid container spacing={2}>
+      <div className="featured-artists__grid">
         {artists.map(artist => (
-          <Grid item xs={12} sm={6} md={4} key={artist.id}>
-            <ArtistCard artist={artist} />
-          </Grid>
+          <ArtistCard key={artist.id} artist={artist} />
         ))}
-      </Grid>
+      </div>
     </Container>
   );
 };
