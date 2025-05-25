@@ -42,6 +42,7 @@ ul{
   grid-template-columns: 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
+  text-align: left;
 }
 
 @media (min-width: 768px) {

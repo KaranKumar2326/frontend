@@ -7,7 +7,7 @@ import {motion} from "framer-motion";
 import HowItWorks from './Howitworks';
 import CallToAction from './CalltoAction';
 import FeaturedArtist from './FeaturedArtist';
-
+import Testimonials from './Testimonials';
 export const Motion = motion;
 
 const HomePage = () => {
@@ -62,6 +62,7 @@ const HomePage = () => {
       </div>
       <FeaturedArtist /> 
       <HowItWorks/>
+      <Testimonials/>
       <CallToAction/>
       <footer className="footer">
       <div className="footer-container">

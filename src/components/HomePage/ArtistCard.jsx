@@ -1,114 +1,104 @@
-import React from 'react';
-import { Link } from 'wouter';
-import { Star, StarHalf } from 'lucide-react';
-import { Card, CardContent, CardActions, CardMedia, Typography, Chip, Box, Badge as MuiBadge } from '@mui/material';
-import { motion } from 'framer-motion';
-import './ArtistCard.css';  // your CSS import
+import React from "react";
+import { Star, StarHalf } from "lucide-react";
+import { Link } from "wouter";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Box,
+  Button,
+  Chip
+} from "@mui/material";
+import { motion } from "framer-motion";
+import "./ArtistCard.css"; // Custom CSS styles
 
-const MotionCard = motion(Card);
-
-export default function ArtistCard({ artist, priority = 0, animated = true }) {
+export default function ArtistCard({ artist, priority = 0 }) {
   const renderStars = (rating = 0) => {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.3;
 
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`star-${i}`} className="star-icon" />);
+      stars.push(<Star key={`star-${i}`} className="star-icon" size={18} />);
     }
+
     if (hasHalfStar) {
-      stars.push(<StarHalf key="half-star" className="star-icon" />);
+      stars.push(<StarHalf key="half-star" className="star-icon" size={18} />);
     }
+
     return stars;
   };
 
-  const formatCurrency = (value) => {
-    if (!value) return '$0';
-    return `$${value.toFixed(2)}`;
-  };
-
-  return animated ? (
-    <MotionCard
+  return (
+    <motion
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: priority * 0.1 }}
-      className="artist-card"
-      component={Link}
-      href={`/artists/${artist.id}`}
-      elevation={4}
     >
-      {(artist.coverImage || artist.imageUrl) && (
-        <Box className="artist-card__image-wrapper">
+      <Card className="artist-card">
+        <div className="artist-card__image-wrapper">
           <CardMedia
             component="img"
-            className="artist-card__image"
-            image={artist.coverImage || artist.imageUrl}
+            height="200"
+            image={
+              artist.coverImage ||
+              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+            }
             alt={artist.stageName}
-            loading={priority <= 3 ? 'eager' : 'lazy'}
+            className="artist-card__image"
           />
-          <Box className="artist-card__rating">
-            <MuiBadge
-              badgeContent={renderStars(artist.rating)}
-              color="secondary"
-              className="artist-card__rating-badge"
-              sx={{ '& .MuiBadge-badge': { backgroundColor: 'transparent' } }}
-            />
-            <Typography component="span" sx={{ ml: 0.5, fontSize: '0.875rem' }}>
-              {artist.rating ? artist.rating.toFixed(1) : '0.0'}
+          <div className="artist-card__rating">
+            <div className="artist-card__rating-badge">
+              {renderStars(Number(artist.rating))}
+              <span className="rating-number">{artist.rating}</span>
+            </div>
+          </div>
+        </div>
+
+        <CardContent className="artist-card__content">
+          <Box className="artist-card__header">
+            <Typography variant="h6" className="artist-card__name">
+              {artist.stageName}
+            </Typography>
+            <Typography className="artist-card__price">
+              ${artist.pricing}/{artist.pricingUnit}
             </Typography>
           </Box>
-        </Box>
-      )}
 
-      <CardContent className="artist-card__content">
-        <Box className="artist-card__header">
-          <Typography variant="h6" className="artist-card__name">
-            {artist.stageName}
+          <Typography variant="body2" className="artist-card__location">
+            {artist.instruments?.map((i) => i.name).join(", ")} |{" "}
+            {artist.user.location}
           </Typography>
-          <Typography variant="subtitle2" className="artist-card__price">
-            {formatCurrency(artist.pricePerHour || artist.pricing)}/
-            {artist.pricingUnit || 'hr'}
-          </Typography>
-        </Box>
 
-        <Typography className="artist-card__location">
-          {artist.user?.location || artist.location || 'Location not specified'}
-        </Typography>
+          <Box className="artist-card__badges">
+            {artist.genres?.map((genre) => (
+              <Chip
+                key={genre.id}
+                label={genre.name}
+                size="small"
+                variant="outlined"
+                className="artist-card__badge"
+              />
+            ))}
+          </Box>
 
-        <Box className="artist-card__badges">
-          {artist.genres?.map((genre) => (
-            <Chip
-              key={genre.id}
-              label={genre.name}
-              variant="outlined"
-              size="small"
-              className="artist-card__badge"
-            />
-          ))}
-        </Box>
-
-        <Box className="artist-card__badges">
-          {artist.instruments?.map((instrument) => (
-            <Chip
-              key={instrument.id || instrument.name}
-              label={instrument.name}
-              color="secondary"
-              size="small"
-              className="artist-card__badge"
-            />
-          ))}
-        </Box>
-      </CardContent>
-
-      <CardActions className="artist-card__footer">
-        <Typography variant="body2" className="artist-card__bio">
-          {artist.bio || artist.description || ''}
-        </Typography>
-      </CardActions>
-    </MotionCard>
-  ) : (
-    <Card className="artist-card" component={Link} href={`/artists/${artist.id}`} elevation={4}>
-      {/* Non-animated version can be added here if needed */}
-    </Card>
+          <Box className="artist-card__footer">
+            <Typography variant="body2" className="artist-card__bio">
+              {artist.description}
+            </Typography>
+            <Link href={`/artists/${artist.id}`}>
+              <Button
+                variant="contained"
+                size="small"
+                className="artist-card__button"
+              >
+                View Profile
+              </Button>
+            </Link>
+          </Box>
+        </CardContent>
+      </Card>
+    </motion>
   );
 }

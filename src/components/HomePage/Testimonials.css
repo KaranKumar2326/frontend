@@ -1,0 +1,157 @@
+.testimonial-section {
+  padding: 4rem 0;
+  background-color: #f9fafb;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #1f2937;
+}
+
+.header p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.carousel-container {
+  position: relative;
+}
+
+.carousel-wrapper {
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .carousel-slide {
+    min-width: 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .carousel-slide {
+    min-width: 33.3333%;
+  }
+}
+
+.testimonial-card {
+  height: 100%;
+}
+
+.stars {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.star-icon {
+  width: 20px;
+  height: 20px;
+  color: #d1d5db;
+}
+
+.star-icon.active {
+  color: #fbbf24;
+}
+
+.testimonial-content {
+  color: #374151;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-footer {
+  display: flex;
+  align-items: center;
+}
+
+.testimonial-avatar {
+  margin-right: 1rem;
+}
+
+.client-name {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+}
+
+.event-type {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white !important;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-btn.left {
+  left: 0;
+  margin-left: -20px;
+}
+
+.carousel-btn.right {
+  right: 0;
+  margin-right: -20px;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background-color: #d1d5db;
+  margin: 0 5px;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.indicator-dot.active {
+  background-color: #3f51b5;
+}
+
+.no-testimonials {
+  text-align: center;
+  color: #6b7280;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+}
