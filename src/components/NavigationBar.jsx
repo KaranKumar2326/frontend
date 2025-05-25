@@ -26,9 +26,15 @@ const NavigationBar = () => {
           <Link to="/cards" className="navbar-a">Browse Artists</Link>
           <a className="navbar-a">How It Works</a>
           <a className="navbar-a">Testimonials</a>
-          {location.pathname !== '/home' && (
+          {location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
             <>
               <button className="navbar-button" onClick={() => navigate('/login')}>Hire an Artist</button>
+              <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
+            </>
+          )}
+          {location.pathname === '/loggedInHomePageArtist' && (
+            <>
+              <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
               <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
             </>
           )}

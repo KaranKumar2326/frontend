@@ -9,6 +9,7 @@ import Navbar from '../src/components/NavigationBar'
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
+import LoggedInHomePageArtist from './components/HomePage/LoggedInHomePageArtist';
 
 const dummyCards = [
   {
@@ -37,6 +38,7 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/loggedInHome" element={<LoggedInHomePage />} />
+        <Route path="/loggedInHomePageArtist" element={<LoggedInHomePageArtist />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/loginAsArtist" element={<LoginAsArtist />} />
