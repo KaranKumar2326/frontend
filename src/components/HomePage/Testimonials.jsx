@@ -10,12 +10,14 @@ import {
   useMediaQuery,
   useTheme
 } from "@mui/material";
+import { createQueryFn } from "../api/api";
 import "./Testimonials.css";
 
 export default function Testimonials() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { data: testimonials, isLoading } = useQuery({
     queryKey: ['/api/testimonials/featured'],
+    queryFn: createQueryFn(),
   });
 
   const theme = useTheme();
