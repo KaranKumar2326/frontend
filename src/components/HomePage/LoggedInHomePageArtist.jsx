@@ -8,10 +8,14 @@ import { Link } from "wouter";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import './CallToAction.css';
+import { artistImageUrls } from '../data/mockData';
+import GlobalArtists from './GlobalArtists'; // Import the GlobalArtists component
+import ImageSlider from './ImageSlider';
 
 function LoggedInHomePageArtist() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
@@ -30,7 +34,6 @@ function LoggedInHomePageArtist() {
 
   return (
     <>
-  
       <div className="page-container">
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
           <div className="background-image">
@@ -51,43 +54,55 @@ function LoggedInHomePageArtist() {
                     style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
                     onClick={handleHireArtistClick}
                   >
-                    Hire an Artist
+                    Host a Jamming Session
                   </button>
                   <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-                    Jamming sessions near you 
+                    Collaborate with Artists 
                   </button>
                 </div>
               </div>
             </header>
         </div>
-        <section className="call-to-action-section">
-              <div className="call-to-action-bg">
-                <div className="hero-gradient"></div>
-              </div>
 
-              <div className="call-to-action-content">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="text-container"
-                >
-                  <h2 className="cta-heading">
-                    Let's Get Jamming !
-                  </h2>
-                  <p className="cta-subheading">
-                    Meet people who share your taste and passion for music, have fun jamming sessions , and create unforgettable experiences together !
-                  </p>
-                  <div className="cta-buttons">
-                    <Link href="#">
-                      <button className="cta-button primary-btn">
-                        Jamming Sessions Near you
-                      </button>
-                    </Link>
-                  </div>
-                </motion.div>
-              </div>
-            </section>
+        <div className="deck" style={{ position: 'relative' }}>
+          {/* Show hovered image as background */}
+          {hoveredCard !== null && (
+            <img
+              src={artistImageUrls[hoveredCard]}
+              alt="Deck Hover Visual"
+              className={`deck-bg-image${hoveredCard !== null ? ' deck-bg-image--visible' : ''}`}
+            />
+          )}
+          <div className="deck-container" style={{ position: 'relative', zIndex: 1 }}>
+            <div
+              className="deck-card deck-card-connect"
+              onMouseEnter={() => setHoveredCard(0)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <span className="deck-card-title">Connect</span>
+              <hr className="deck-card-separator" />
+              <h3>Connect with various artists across our platform , building your network , all across the Internet</h3>
+            </div>
+            <div
+              className="deck-card deck-card-create"
+              onMouseEnter={() => setHoveredCard(1)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <span className="deck-card-title">Create</span>
+              <hr className="deck-card-separator" />
+              <h3>Create what i need to know ? </h3>
+            </div>
+            <div
+              className="deck-card deck-card-collaborate"
+              onMouseEnter={() => setHoveredCard(3)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <span className="deck-card-title">Collaborate</span>
+              <hr className="deck-card-separator" />
+              <h3>Collaborate with artists in different events or Jamming sessions !</h3>
+            </div>
+          </div>
+        </div>
         <div className="search-bar-container">
           <h2 className="search-heading">Find Artists</h2>
           <div className="search-bar-details">
@@ -101,7 +116,8 @@ function LoggedInHomePageArtist() {
             />
           </div>
         </div>
-
+        <GlobalArtists />
+        
         <div className="features-section">
           <h2>Why Choose Us?</h2>
           <div className="features">
@@ -120,7 +136,12 @@ function LoggedInHomePageArtist() {
           </div>
         </div>
 
-        <CardList />   
+        {/* Image Slider Section */}
+        <div className="image-slider-section">
+          <h2 className="slider-heading">Gallery</h2>
+          <ImageSlider images={artistImageUrls} />
+        </div>
+
         <footer className="footer">
               <div className="footer-container">
                 <div className="footer-grid">
