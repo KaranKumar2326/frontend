@@ -91,8 +91,10 @@ button:hover {
 }
 
 .features {
-  display: grid;
-  gap: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rem;
 }
 
 @media (min-width: 768px) {
@@ -103,11 +105,16 @@ button:hover {
 
 .feature {
   text-align: center;
-  background: #f9fafb;
+  background:#6c2db91d;
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   padding: 2rem 1.5rem;
   transition: box-shadow 0.2s;
+}
+
+.feature:hover {
+  box-shadow: 0 8px 24px #6c2bd9, 0 2px 8px #6c2bd9;
+  cursor: pointer;
 }
 
 .feature h3 {

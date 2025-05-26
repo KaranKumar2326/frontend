@@ -120,4 +120,7 @@ const mockApiHandlers = {
   '/api/testimonials/featured': {
     GET: async () => testimonials.filter(t => t.featured),
   },
+  '/api/artists/global': {
+    GET: async () => artists.map(a => getArtistWithDetails(a.id)).filter(Boolean),
+  },
 };

@@ -9,3 +9,167 @@
 }
 
 /* Add other styles as needed */
+
+.deck {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: #6c2bd9; /* Purple shade matching your website's aesthetic */
+  transition: background 1.2s cubic-bezier(0.4,0,0.2,1);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.deck-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 1.2s cubic-bezier(0.4,0,0.2,1), filter 1.2s cubic-bezier(0.4,0,0.2,1), visibility 1.2s cubic-bezier(0.4,0,0.2,1);
+  filter: blur(4px) scale(1.04);
+  visibility: hidden;
+}
+
+.deck-bg-image--visible {
+  opacity: 0.25 !important;
+  filter: blur(0) scale(1);
+  visibility: visible;
+  transition: opacity 1.2s cubic-bezier(0.4,0,0.2,1), filter 1.2s cubic-bezier(0.4,0,0.2,1), visibility 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.deck-container {
+  display: flex;
+  justify-content: center;
+  gap: 96px;
+  margin: 32px auto;
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+}
+
+.deck-card {
+  flex: 1;
+  max-width: 320px;
+  min-width: 200px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 32px 20px;
+  text-align: center;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  word-break: break-word;
+  white-space: normal;
+  height: auto;
+  min-height: 90px;
+  box-sizing: border-box;
+  color: #444; /* Set text color to a visible, soft grey */
+  transition: box-shadow 0.3s ease;
+}
+
+.deck-card:hover {
+  box-shadow: 0 8px 24px rgba(108, 43, 217, 0.18), 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.deck-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.deck-card-connect .deck-card-title,
+.deck-card-collaborate .deck-card-title,
+.deck-card-create .deck-card-title {
+  color: #6c2bd9;
+}
+
+h3{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 100;
+  font-size: 1.5rem;
+}
+
+.deck-card-separator {
+  width: 70%;
+  margin: 12px auto 0 auto;
+  border: none;
+  border-top: 2px solid #e0e0e0;
+  border-radius: 2px;
+}
+
+/* Features section styling */
+.features-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: white;
+  max-width: 100;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.features-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rem;
+}
+
+@media (min-width: 768px) {
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.feature {
+  text-align: center;
+  background:#6c2db91d;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.feature:hover {
+  box-shadow: 0 8px 24px #6c2bd9, 0 2px 8px #6c2bd9;
+  cursor: pointer;
+}
+
+.feature h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #3b82f6;
+}
+
+.feature p {
+  color: #4a5568;
+  font-size: 1rem;
+}
