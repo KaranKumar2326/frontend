@@ -48,12 +48,6 @@ export default function ArtistCard({ artist, priority = 0 }) {
             alt={artist.stageName}
             className="artist-card__image"
           />
-          <div className="artist-card__rating">
-            <div className="artist-card__rating-badge">
-              {renderStars(Number(artist.rating))}
-              <span className="rating-number">{artist.rating}</span>
-            </div>
-          </div>
         </div>
 
         <CardContent className="artist-card__content">
@@ -61,14 +55,15 @@ export default function ArtistCard({ artist, priority = 0 }) {
             <Typography variant="h6" className="artist-card__name">
               {artist.stageName}
             </Typography>
-            <Typography className="artist-card__price">
-              ${artist.pricing}/{artist.pricingUnit}
-            </Typography>
+            <div className="artist-card__rating-badge artist-card__header-rating">
+              {renderStars(Number(artist.rating))}
+              <span className="rating-number">{artist.rating}</span>
+            </div>
           </Box>
 
           <Typography variant="body2" className="artist-card__location">
-            {artist.instruments?.map((i) => i.name).join(", ")} |{" "}
-            {artist.user.location}
+            {artist.instruments && artist.instruments.length > 0 ? artist.instruments.map((i) => i.name).join(", ") : "No instruments"}
+            {artist.location ? ` | ${artist.location}` : ""}
           </Typography>
 
           <Box className="artist-card__badges">
@@ -83,9 +78,17 @@ export default function ArtistCard({ artist, priority = 0 }) {
             ))}
           </Box>
 
-          <Box className="artist-card__footer">
-            <Typography variant="body2" className="artist-card__bio">
+           <Typography variant="body2" className="artist-card__bio">
               {artist.description}
+            </Typography>
+
+          <Box className="artist-card__footer">
+            <Typography className="artist-card__price">
+              {artist.pricing && artist.pricingUnit ? (
+                `$${artist.pricing}/${artist.pricingUnit}`
+              ) : (
+                <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
+              )}
             </Typography>
             <Link href={`/artists/${artist.id}`}>
               <Button

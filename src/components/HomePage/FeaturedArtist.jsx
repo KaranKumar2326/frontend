@@ -4,10 +4,11 @@ import ArtistCard from './ArtistCard';
 import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css'; // Importing HomePage.css for the grid layout
+import { useQuery } from '@tanstack/react-query';
 
 const FeaturedArtists = () => {
   const [artists, setArtists] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,15 +26,15 @@ const FeaturedArtists = () => {
 
   return (
     <Container sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom style={{fontFamily: 'Playfair Display, serif'}}>
         Featured Artists
       </Typography>
 
-      {loading && <CircularProgress />}
+      {isLoading && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
 
       <div className="featured-artists__grid">
-        {artists.map(artist => (
+        {artists?.map(artist => (
           <ArtistCard key={artist.id} artist={artist} />
         ))}
       </div>

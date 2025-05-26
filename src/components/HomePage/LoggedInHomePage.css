@@ -43,6 +43,7 @@ button:hover {
   font-weight: bold;
   margin-bottom: 10px;
   color: #333;
+  font-family: 'Playfair Display', serif;
 }
 
 .search-bar-details {
@@ -70,46 +71,56 @@ button:hover {
 
 /* Features section styling */
 .features-section {
-  margin: 40px 0;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: white;
+  max-width: 100;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .features-section h2 {
-  font-size: 28px;
-  color: #333;
-  margin-bottom: 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 2.5rem;
 }
 
 .features {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .feature {
-  flex: 1 1 300px;
-  max-width: 300px;
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: left;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 1.5rem;
+  transition: box-shadow 0.2s;
 }
 
 .feature h3 {
-  font-size: 20px;
-  color: #007bff;
-  margin-bottom: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #3b82f6;
 }
 
 .feature p {
-  font-size: 16px;
-  color: #555;
-  line-height: 1.5;
+  color: #4a5568;
+  font-size: 1rem;
 }
 
 /* Call-to-action section styling */
@@ -227,4 +238,13 @@ button:hover {
   background-color: #6c2bd9;
   cursor: pointer;
   color: #fff;
+}
+
+.slider-heading{
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 2.5rem;
 }

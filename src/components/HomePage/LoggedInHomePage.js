@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoggedInHomePage.css';
-import CardList from '../CardList';
+import { artistImageUrls } from '../data/mockData';
 import './Footer.css';
 import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube ,Search , Headphones , CalendarCheck} from "lucide-react";
 import { Link } from "wouter";
@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import './CallToAction.css';
 import myImage from '../../public/logo.jpeg';
+import FeaturedArtist from './FeaturedArtist';
+import ImageSlider from './ImageSlider';
 import NavigationBar from '../NavigationBar';
 
 const LoggedInHomePage = () => {
@@ -95,7 +97,7 @@ const LoggedInHomePage = () => {
         <div className="search-bar-container">
           <h2 className="search-heading">Find Artists</h2>
           <div className="search-bar-details">
-            <p>Search for artists near you by name, genre, or location to find the perfect match for your event or project.</p>
+            <p>Search for your favorite artists , or checkout our featured artists . Choose what suits best for your occassion !</p>
             <input
               type="text"
               placeholder="Find Artist near me..."
@@ -104,8 +106,10 @@ const LoggedInHomePage = () => {
               className="search-bar"
             />
           </div>
+          <FeaturedArtist />
         </div>
-
+        
+            
         <div className="features-section">
           <h2>Why Choose Us?</h2>
           <div className="features">
@@ -124,7 +128,12 @@ const LoggedInHomePage = () => {
           </div>
         </div>
 
-        <CardList />   
+        {/* Image Slider Section */}
+        <div className="image-slider-section">
+          <h2 className="slider-heading">Gallery</h2>
+          <ImageSlider images={artistImageUrls} />
+        </div>
+
         <footer className="footer">
               <div className="footer-container">
                 <div className="footer-grid">
