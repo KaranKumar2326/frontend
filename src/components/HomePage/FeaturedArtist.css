@@ -72,3 +72,37 @@
   margin: 0 auto;
   display: block;
 }
+
+.back-to-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #6c2bd9;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 4px 12px rgba(108,43,217,0.10);
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s, color 0.2s;
+  padding: 0;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  min-width: 56px;
+  min-height: 56px;
+  max-width: 56px;
+  max-height: 56px;
+}
+
+.back-to-top-arrow {
+  display: block;
+  line-height: 1;
+  font-weight: 700;
+  font-size: 2.2rem;
+}

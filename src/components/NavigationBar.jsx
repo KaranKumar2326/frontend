@@ -13,21 +13,30 @@ const NavigationBar = () => {
     navigate('/login');
   };
 
+  // Helper function for smooth scrolling
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-left">
-          <a className="navbar-brand">
+          <a className="navbar-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <span className="navbar-title">Musical Meet</span>
           </a>
         </div>
         <div className="navbar-as">
-          <Link to="/home" className="navbar-a">Home</Link>
-          <Link to="/cards" className="navbar-a">Browse Artists</Link>
-          <a className="navbar-a">How It Works</a>
-          <a className="navbar-a">Testimonials</a>
-          {location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
+          <a className="navbar-a">Home</a>
+          <a className="navbar-a" href="#how-it-works" onClick={e => { e.preventDefault(); scrollToSection('how-it-works'); }}>How It Works</a>
+          <a className="navbar-a" href="#testimonials" onClick={e => { e.preventDefault(); scrollToSection('testimonials'); }}>Testimonials</a>
+          {/* Hide Browse Artists, Hire an Artist, and profile icon on Signup page */}
+          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
             <>
+              <a className="navbar-a" href="#featured-artists" onClick={e => { e.preventDefault(); scrollToSection('featured-artists'); }}>Browse Artists</a>
               <button className="navbar-button" onClick={() => navigate('/login')}>Hire an Artist</button>
               <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
             </>

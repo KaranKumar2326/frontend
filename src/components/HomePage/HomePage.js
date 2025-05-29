@@ -80,10 +80,10 @@ const HomePage = () => {
             <h3 className="footer-heading">Quick as</h3>
             <ul className="footer-as">
               <li><a href="/artists" className="footer-a"><a>Browse Artists</a></a></li>
-              <li><a href="/#how-it-works" className="footer-a"><a>How It Works</a></a></li>
+              {/* <li><a href="/#how-it-works" className="footer-a"><a>How It Works</a></a></li> */}
               <li><a href="/#testimonials" className="footer-a"><a>Testimonials</a></a></li>
               <li><a href="/join" className="footer-a"><a>Join as Artist</a></a></li>
-              <li><a href="#" className="footer-a"><a>Blog & Resources</a></a></li>
+              {/* <li><a href="#" className="footer-a"><a>Blog & Resources</a></a></li> */}
             </ul>
           </div>
 
@@ -91,11 +91,12 @@ const HomePage = () => {
           <div>
             <h3 className="footer-heading">For Musicians</h3>
             <ul className="footer-as">
-              <li><a href="/join"className='footer-a'><a>Create Profile</a></a></li>
-              <li><a href="#" className="footer-a"><a>Success Stories</a></a></li>
-              <li><a href="#" className="footer-a"><a>Pricing & Commissions</a></a></li>
+              <li><a href="/join"className='footer-a'><a>Join as a Artist</a></a></li>
+              {/* <li><a href="#" className="footer-a"><a>Success Stories</a></a></li> */}
+              {/* <li><a href="#" className="footer-a"><a>Pricing & Commissions</a></a></li> */}
               <li><a href="#" className="footer-a"><a>FAQ for Artists</a></a></li>
-              <li><a href="#" className="footer-a"><a>Resources</a></a></li>
+              <li><a href="/#testimonials" className="footer-a"><a>Testimonials</a></a></li>
+              {/* <li><a href="#" className="footer-a"><a>Resources</a></a></li> */}
             </ul>
           </div>
 
