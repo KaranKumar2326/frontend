@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube, Linkedin } from "lucide-react";
 import "./Footer.css";
 
 const Footer = () => (
@@ -19,7 +19,7 @@ const Footer = () => (
             <a href="#" className="footer-a"><Facebook size={20} /></a>
             <a href="#" className="footer-a"><Instagram size={20} /></a>
             <a href="#" className="footer-a"><Twitter size={20} /></a>
-            <a href="#" className="footer-a"><Youtube size={20} /></a>
+            <a href="#" className="footer-a"><Linkedin size={20} /></a>
           </div>
         </div>
 

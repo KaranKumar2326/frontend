@@ -25,6 +25,9 @@ const NavigationBar = ({ hideProfile = false }) => {
     }
   };
 
+  // Hide nav items on artist profile page
+  const isArtistProfilePage = location.pathname.startsWith('/artist-profile/');
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -37,8 +40,8 @@ const NavigationBar = ({ hideProfile = false }) => {
           <a className="navbar-a">Home</a>
           <a className="navbar-a" href="#footer" onClick={e => { e.preventDefault(); scrollToSection('footer'); }}>Contact Us</a>
           <a className="navbar-a" href="#testimonials" onClick={e => { e.preventDefault(); scrollToSection('testimonials'); }}>Testimonials</a>
-          {/* Hide Browse Artists, Hire an Artist, and profile icon on Signup page */}
-          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
+          {/* Hide Browse Artists and Hire an Artist on Signup and artist profile page, but keep profile pic and dropdown on artist profile page */}
+          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && (
             <>
               <a className="navbar-a" href="#featured-artists" onClick={e => { e.preventDefault(); scrollToSection('featured-artists'); }}>Browse Artists</a>
               <button className="navbar-button" onClick={() => navigate('/login')}>Hire an Artist</button>
@@ -46,10 +49,13 @@ const NavigationBar = ({ hideProfile = false }) => {
               {hideProfile && (
                 <button className="navbar-button" onClick={() => navigate('/signup')}>Sign Up</button>
               )}
-              {!hideProfile && (
-                <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-              )}
             </>
+          )}
+          {/* Always show profile pic and dropdown except on signup/home/artist home */}
+          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
+            !hideProfile && (
+              <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
+            )
           )}
           {location.pathname === '/loggedInHomePageArtist' && (
             <>
