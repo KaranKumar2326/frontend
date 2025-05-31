@@ -1,6 +1,5 @@
 import React from "react";
 import { Star, StarHalf } from "lucide-react";
-import { Link } from "wouter";
 import {
   Card,
   CardContent,
@@ -90,15 +89,14 @@ export default function ArtistCard({ artist, priority = 0 }) {
                 <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
               )}
             </Typography>
-            <Link href={`/artists/${artist.id}`}>
-              <Button
-                variant="contained"
-                size="small"
-                className="artist-card__button"
-              >
-                View Profile
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              size="small"
+              className="artist-card__button"
+              onClick={() => window.open(`/artist-profile/${artist.id}`, '_blank')}
+            >
+              View Profile
+            </Button>
           </Box>
         </CardContent>
       </Card>

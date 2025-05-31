@@ -66,6 +66,7 @@ const Login = () => {
           Login
         </button>
         <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
+        <p><Link to="/forgot-password" style={styles.link}>Forgot Password?</Link></p>
       </form>
     </div>
   );

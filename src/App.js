@@ -10,6 +10,9 @@ import AboutPage from './components/AboutPage'; // Import AboutPage
 import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
 import LoggedInHomePageArtist from './components/HomePage/LoggedInHomePageArtist';
+import ArtistProfilePage from './components/HomePage/ArtistProfilePage';
+import Footer from './components/HomePage/Footer';
+import AllArtistsPage from './components/HomePage/AllArtistsPage'; // Import AllArtistsPage
 
 const dummyCards = [
   {
@@ -44,7 +47,10 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/loginAsArtist" element={<LoginAsArtist />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/artist-profile/:id" element={<ArtistProfilePage />} />
+        <Route path="/all-artists" element={<AllArtistsPage />} />
       </Routes>
+      <Footer />
     </>
   );
 }

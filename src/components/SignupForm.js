@@ -180,7 +180,7 @@ const styles = {
     alignItems: 'center', // Centers the form vertically
   },
   formWrapper: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background for the form
+    backgroundColor: '#fff', // Changed to solid white background
     padding: '20px',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',

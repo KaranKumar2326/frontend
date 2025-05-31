@@ -107,6 +107,7 @@ const mockApiHandlers = {
     },
   },
   '/api/artists': {
+    GET: async () => artists.map(a => getArtistWithDetails(a.id)).filter(Boolean),
     POST: async (data) => {
       // Mock creating a new artist
       return {

@@ -33,4 +33,14 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+// Route to get all artists
+router.get('/artists', async (req, res) => {
+  try {
+    const artists = await Artist.find();
+    res.json(artists);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
 module.exports = router;

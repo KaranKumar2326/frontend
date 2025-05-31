@@ -29,11 +29,6 @@ export default function CallToAction() {
                 Browse Musicians
               </button>
             </Link>
-            <Link href="#">
-              <button className="cta-button secondary-btn">
-                Contact Us
-              </button>
-            </Link>
           </div>
         </motion.div>
       </div>
