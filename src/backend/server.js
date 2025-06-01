@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const signupRoutes = require('./routes/signupRoutes');
+const artistRoutes = require('./routes/artistRoutes');
 
 const app = express();
 const PORT = 3001;
@@ -26,6 +27,7 @@ mongoose.connect('mongodb://localhost:27017/swigDB', {
 
 // Routes
 app.use('/api', signupRoutes);
+app.use('/api/artists', artistRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

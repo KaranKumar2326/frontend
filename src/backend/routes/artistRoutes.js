@@ -34,23 +34,14 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Route to get all artists
-router.get('/artists', async (req, res) => {
-  try {
-    const artists = await Artist.find();
-    res.json(artists);
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
-  }
-});
 
-// Route to get featured artists
-router.get('/artists/featured', async (req, res) => {
+router.get('/featured', async (req, res) => {
   try {
-    const featuredArtists = await FeaturedArtist.find();
-    res.json(featuredArtists);
+    console.log('Fetching featured artists');
+    const featuredArtists = await FeaturedArtist.find().limit(6);
+    res.status(200).json(featuredArtists);
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res.status(500).json({ error: 'Failed to fetch featured artists' });
   }
 });
 

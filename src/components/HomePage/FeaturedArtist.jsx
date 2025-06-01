@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Container, CircularProgress, Alert } from '@mui/material';
 import ArtistCard from './ArtistCard';
-import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css'; // Importing HomePage.css for the grid layout
 import { useQuery } from '@tanstack/react-query';
@@ -13,17 +12,28 @@ const FeaturedArtists = () => {
   const [showArrow, setShowArrow] = useState(false);
 
   useEffect(() => {
-    apiRequest('/api/artists/featured')  // Removed <ArtistWithDetails[]>
-      .then(data => {
-        console.log("data", data);
-        setArtists(data);
+    const fetchFeaturedArtists = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/artists/featured', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          setArtists(result);
+          setLoading(false);
+        } else {
+          setError(result.message || 'Failed to fetch featured artists');
+          setLoading(false);
+        }
+      } catch (err) {
+        setError('Error: ' + err.message);
         setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Failed to load artists.");
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchFeaturedArtists();
   }, []);
 
   useEffect(() => {

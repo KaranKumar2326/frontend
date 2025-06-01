@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const genreSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  //id: { type: Number, required: true, unique: true },
 });
 
 const instrumentSchema = new mongoose.Schema({
@@ -18,22 +19,23 @@ const userSchema = new mongoose.Schema({
 });
 
 const artistSchema = new mongoose.Schema({
-  id: { type: Number, required: true, unique: true },
-  stageName: { type: String, required: true },
-  bio: { type: String },
-  description: { type: String },
-  location: { type: String },
+  //available: { type: Boolean, default: true }, // This field is not in the original schema 
+  id: { type: Number, required: true, unique: true }, //
+  stageName: { type: String, required: true }, //
+  bio: { type: String }, //
+  description: { type: String }, //
+  location: { type: String }, 
   available: { type: Boolean, default: true },
-  pricePerHour: { type: Number },
-  pricing: { type: Number },
-  pricingUnit: { type: String, default: 'hour' },
-  rating: { type: Number },
-  coverImage: { type: String },
-  imageUrl: { type: String },
-  genres: [genreSchema],
-  instruments: [instrumentSchema],
+  pricePerHour: { type: Number }, //
+  pricing: { type: Number }, //
+  pricingUnit: { type: String, default: 'hour' }, //
+  rating: { type: Number }, // decimal
+  coverImage: { type: String }, // check in frontennd for link type
+  imageUrl: { type: String }, // check in frontennd for link type
+  genres: [genreSchema], //
+  instruments: [instrumentSchema], // 
   userId: { type: Number },
   user: userSchema,
 }, { timestamps: true });
 
-module.exports = mongoose.model('Artist', artistSchema);
+module.exports = mongoose.model('FeaturedArtist', artistSchema);
