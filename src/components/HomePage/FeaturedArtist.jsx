@@ -15,6 +15,7 @@ const FeaturedArtists = () => {
   useEffect(() => {
     apiRequest('/api/artists/featured')  // Removed <ArtistWithDetails[]>
       .then(data => {
+        console.log("data", data);
         setArtists(data);
         setLoading(false);
       })

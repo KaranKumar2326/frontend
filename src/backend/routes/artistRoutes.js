@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Artist = require('../models/Artist');
+const FeaturedArtist = require('../models/FeaturedArtist');
 
 // Route to save artist to the database
 router.post('/signup', async (req, res) => {
@@ -38,6 +39,16 @@ router.get('/artists', async (req, res) => {
   try {
     const artists = await Artist.find();
     res.json(artists);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+// Route to get featured artists
+router.get('/artists/featured', async (req, res) => {
+  try {
+    const featuredArtists = await FeaturedArtist.find();
+    res.json(featuredArtists);
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
