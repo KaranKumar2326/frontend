@@ -15,12 +15,6 @@ const Footer = () => (
           <p className="footer-description">
             Connecting musical talent with event planners and individuals seeking exceptional live performances.
           </p>
-          <div className="footer-socials">
-            <a href="#" className="footer-a"><Facebook size={20} /></a>
-            <a href="#" className="footer-a"><Instagram size={20} /></a>
-            <a href="#" className="footer-a"><Twitter size={20} /></a>
-            <a href="#" className="footer-a"><Linkedin size={20} /></a>
-          </div>
         </div>
 
         {/* Quick as */}
@@ -58,6 +52,13 @@ const Footer = () => (
           </ul>
         </div>
       </div>
+
+          <div className="footer-socials">
+            <a href="#" className="footer-a"><Facebook size={20} /></a>
+            <a href="https://www.instagram.com/musicalmeet07/" className="footer-a"><Instagram size={20} /></a>
+            <a href="https://x.com/musicalmeeet" className="footer-a"><Twitter size={20} /></a>
+            <a href="https://www.linkedin.com/company/musical-meet/" className="footer-a"><Linkedin size={20} /></a>
+          </div>
 
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Musical Meet. All rights reserved.</p>

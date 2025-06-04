@@ -10,9 +10,12 @@ import {
   Chip
 } from "@mui/material";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "./ArtistCard.css"; // Custom CSS styles
 
 export default function ArtistCard({ artist, priority = 0 }) {
+  const navigate = useNavigate();
+
   const renderStars = (rating = 0) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -93,7 +96,7 @@ export default function ArtistCard({ artist, priority = 0 }) {
               variant="contained"
               size="small"
               className="artist-card__button"
-              onClick={() => window.open(`/artist-profile/${artist.id}`, '_blank')}
+              onClick={() => window.open(`/public-artist/${artist.id}`, '_blank')}
             >
               View Profile
             </Button>

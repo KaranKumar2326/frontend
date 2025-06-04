@@ -11,6 +11,7 @@ import './CallToAction.css';
 import { artistImageUrls } from '../data/mockData';
 import GlobalArtists from './GlobalArtists'; // Import the GlobalArtists component
 import ImageSlider from './ImageSlider';
+import NavigationBar from '../NavigationBar';
 
 function LoggedInHomePageArtist() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ function LoggedInHomePageArtist() {
 
   return (
     <>
+      <NavigationBar/>
       <div className="page-container">
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
           <div className="background-image">

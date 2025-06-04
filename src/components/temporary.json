@@ -1,0 +1,259 @@
+{
+    "id": 1,
+    "userId": 1,
+    "stageName": "Sarah Johnson",
+    "bio": "Award-winning classical pianist with over 15 years of performing experience. Specializes in Mozart, Chopin, and Debussy compositions.",
+    "imageUrl": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "pricePerHour": 150,
+    "location": "New York, NY",
+    "rating": 4.9,
+    "available": true,
+    "user": {
+        "id": 1,
+        "username": "sarahjohnson",
+        "email": "sarah@example.com",
+        "password": "hashedpassword1",
+        "fullName": "Sarah Johnson",
+        "userType": "artist",
+        "createdAt": "2023-02-14T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 1,
+            "name": "Classical"
+        },
+        {
+            "id": 2,
+            "name": "Jazz"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 1,
+            "name": "Piano"
+        }
+    ],
+    "pricing": 150,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "description": "Award-winning classical pianist with over 15 years of performing experience. Specializes in Mozart, Chopin, and Debussy compositions."
+}
+
+
+
+{
+    "id": 2,
+    "userId": 2,
+    "stageName": "Michael Williams",
+    "bio": "Versatile jazz saxophonist performing with top orchestras across the country. Perfect for elegant dinner parties and upscale events.",
+    "imageUrl": "https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80",
+    "pricePerHour": 180,
+    "location": "Chicago, IL",
+    "rating": 4.8,
+    "available": true,
+    "user": {
+        "id": 2,
+        "username": "michaelwilliams",
+        "email": "michael@example.com",
+        "password": "hashedpassword2",
+        "fullName": "Michael Williams",
+        "userType": "artist",
+        "createdAt": "2023-03-09T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 2,
+            "name": "Jazz"
+        },
+        {
+            "id": 6,
+            "name": "R&B"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 4,
+            "name": "Saxophone"
+        }
+    ],
+    "pricing": 180,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80",
+    "description": "Versatile jazz saxophonist performing with top orchestras across the country. Perfect for elegant dinner parties and upscale events."
+}
+
+
+
+{
+    "id": 3,
+    "userId": 3,
+    "stageName": "Emma Davis",
+    "bio": "Classically trained violinist with a modern twist. Combines traditional pieces with contemporary arrangements for a unique experience.",
+    "imageUrl": "https://images.unsplash.com/photo-1525908106172-c1164e8ef28c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "pricePerHour": 130,
+    "location": "Boston, MA",
+    "rating": 4.7,
+    "available": true,
+    "user": {
+        "id": 3,
+        "username": "emmadavis",
+        "email": "emma@example.com",
+        "password": "hashedpassword3",
+        "fullName": "Emma Davis",
+        "userType": "artist",
+        "createdAt": "2023-04-04T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 1,
+            "name": "Classical"
+        },
+        {
+            "id": 3,
+            "name": "Pop"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 2,
+            "name": "Violin"
+        }
+    ],
+    "pricing": 130,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1525908106172-c1164e8ef28c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "description": "Classically trained violinist with a modern twist. Combines traditional pieces with contemporary arrangements for a unique experience."
+}
+
+
+
+{
+    "id": 4,
+    "userId": 4,
+    "stageName": "Daniel Smith",
+    "bio": "Professional guitarist skilled in multiple genres including Spanish flamenco, classical, and acoustic pop covers.",
+    "imageUrl": "https://images.unsplash.com/photo-1513829596324-4bb2800c5efb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "pricePerHour": 120,
+    "location": "Austin, TX",
+    "rating": 4.9,
+    "available": true,
+    "user": {
+        "id": 4,
+        "username": "danielsmith",
+        "email": "daniel@example.com",
+        "password": "hashedpassword4",
+        "fullName": "Daniel Smith",
+        "userType": "artist",
+        "createdAt": "2023-04-21T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 3,
+            "name": "Pop"
+        },
+        {
+            "id": 4,
+            "name": "Rock"
+        },
+        {
+            "id": 5,
+            "name": "Folk"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 3,
+            "name": "Guitar"
+        }
+    ],
+    "pricing": 120,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1513829596324-4bb2800c5efb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "description": "Professional guitarist skilled in multiple genres including Spanish flamenco, classical, and acoustic pop covers."
+}
+
+
+
+{
+    "id": 5,
+    "userId": 5,
+    "stageName": "Sophia Brown",
+    "bio": "Enchanting harpist creating magical atmospheres for weddings and special events. Extensive repertoire from Celtic to contemporary music.",
+    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "pricePerHour": 160,
+    "location": "San Francisco, CA",
+    "rating": 4.8,
+    "available": true,
+    "user": {
+        "id": 5,
+        "username": "sophiabrown",
+        "email": "sophia@example.com",
+        "password": "hashedpassword5",
+        "fullName": "Sophia Brown",
+        "userType": "artist",
+        "createdAt": "2023-05-11T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 1,
+            "name": "Classical"
+        },
+        {
+            "id": 5,
+            "name": "Folk"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 6,
+            "name": "Harp"
+        }
+    ],
+    "pricing": 160,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "description": "Enchanting harpist creating magical atmospheres for weddings and special events. Extensive repertoire from Celtic to contemporary music."
+}
+
+
+
+{
+    "id": 6,
+    "userId": 6,
+    "stageName": "James Wilson",
+    "bio": "Captivating opera tenor with international performance experience. Perfect for adding sophistication and drama to your upscale event.",
+    "imageUrl": "https://images.unsplash.com/photo-1529518969858-8baa65152fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "pricePerHour": 200,
+    "location": "Miami, FL",
+    "rating": 4.9,
+    "available": true,
+    "user": {
+        "id": 6,
+        "username": "jameswilson",
+        "email": "james@example.com",
+        "password": "hashedpassword6",
+        "fullName": "James Wilson",
+        "userType": "artist",
+        "createdAt": "2023-06-02T18:30:00.000Z"
+    },
+    "genres": [
+        {
+            "id": 1,
+            "name": "Classical"
+        },
+        {
+            "id": 10,
+            "name": "Opera"
+        }
+    ],
+    "instruments": [
+        {
+            "id": 10,
+            "name": "Voice"
+        }
+    ],
+    "pricing": 200,
+    "pricingUnit": "hour",
+    "coverImage": "https://images.unsplash.com/photo-1529518969858-8baa65152fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    "description": "Captivating opera tenor with international performance experience. Perfect for adding sophistication and drama to your upscale event."
+}

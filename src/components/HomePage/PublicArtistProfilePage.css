@@ -1,0 +1,57 @@
+/* PublicArtistProfilePage.css */
+
+.public-profile-pic-left-aligned {
+  position: absolute;
+  left: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.public-profile-pic-img-large {
+  border: 2px solid #6c2bd9;
+  border-radius: 50%;
+  width: 144px;
+  height: 144px;
+  object-fit: cover;
+  background: #fff;
+}
+
+.public-profile-pic-top-centered {
+  position: static;
+  left: unset;
+  top: unset;
+  transform: none;
+  z-index: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0;
+}
+
+.public-profile-pic-img-bordered {
+  border: 2px solid #6c2bd9;
+  border-radius: 50%;
+  width: 144px;
+  height: 144px;
+  object-fit: cover;
+  background: #fff;
+  position: static;
+  left: unset;
+}
+
+.public-profile-info-card {
+  width: 60vw;
+  min-width: 420px;
+  max-width: 1100px;
+  position: relative;
+  padding-top: 70px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+.public-profile-info-content {
+  margin-top: 60px;
+}

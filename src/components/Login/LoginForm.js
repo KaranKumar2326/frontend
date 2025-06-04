@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../../public/loginBackground.png';
+import NavigationBar from '../NavigationBar';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,35 +41,38 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-     
-      <form style={{ ...styles.form, textAlign: 'center' }} onSubmit={handleSubmit}>
-      <h2 style={{ ...styles.heading, textAlign: 'center' }}>Login</h2>
-        <input
-          type="text"
-          name="emailOrPhone"
-          placeholder="Email or Phone"
-          value={formData.emailOrPhone}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>
-          Login
-        </button>
-        <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
-        <p><Link to="/forgot-password" style={styles.link}>Forgot Password?</Link></p>
-      </form>
-    </div>
+    <>
+      <NavigationBar />
+      <div style={styles.container}>
+      
+        <form style={{ ...styles.form, textAlign: 'center' }} onSubmit={handleSubmit}>
+        <h2 style={{ ...styles.heading, textAlign: 'center' }}>Login</h2>
+          <input
+            type="text"
+            name="emailOrPhone"
+            placeholder="Email or Phone"
+            value={formData.emailOrPhone}
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+          <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
+          <p><Link to="/forgot-password" style={styles.link}>Forgot Password?</Link></p>
+        </form>
+      </div>
+    </>
   );
 };
 

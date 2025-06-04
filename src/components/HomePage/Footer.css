@@ -41,7 +41,7 @@ ul{
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-align: left;
 }
 
@@ -160,4 +160,10 @@ ul{
 
 .footer-bottom-links a:hover {
   color: white;
+}
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 30px;
 }
