@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';  // Import ToastContainer
 import './index.css';  // Import Tailwind CSS here
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -14,6 +15,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
+      <ToastContainer />  {/* Add the ToastContainer here */}
     </QueryClientProvider>
   </React.StrictMode>
 );

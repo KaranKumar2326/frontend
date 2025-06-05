@@ -1,33 +1,99 @@
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+// const signupRoutes = require('./routes/signupRoutes');
+// const artistRoutes = require('./routes/artistRoutes');
+
+// const app = express();
+// const PORT = 3001;
+
+
+// // Middleware
+
+
+// app.use(cors());
+// app.use(bodyParser.json());
+// app.get('/cors', (req, res) => {
+//   res.set('Access-Control-Allow-Origin', '*');
+
+// })
+
+// // Database connection
+// mongoose.connect('mongodb://localhost:27017/swigDB', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// }).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
+
+// // Routes
+// app.use('/api', signupRoutes);
+// app.use('/api/artists', artistRoutes);
+
+// // Start server
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
+
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const dotenv = require('dotenv');  // Import dotenv to handle environment variables
 const cors = require('cors');
 const signupRoutes = require('./routes/signupRoutes');
+const loginRoutes = require('./routes/loginRoutes');  // Import login routes
 const artistRoutes = require('./routes/artistRoutes');
+const authRoutes = require('./routes/authRoutes');  // Import auth routes for JWT authentication
+const authMiddleware = require('./middlewares/authMiddleware'); // JWT authentication middleware
+
+// Load environment variables from .env file
+dotenv.config();
 
 const app = express();
-const PORT = 3001;
-
+const PORT = process.env.PORT;
 
 // Middleware
+app.use(cors()); // CORS middleware to allow cross-origin requests
+app.use(express.json()); // Built-in middleware to parse JSON
 
-
-app.use(cors());
-app.use(bodyParser.json());
+// Example route to test CORS (optional)
 app.get('/cors', (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
+  res.send('CORS is enabled');
+});
 
-})
+// Middleware for logging requests (for debugging purposes)
+app.use((req, res, next) => {
+  console.log(`${req.method} request made to: ${req.url}`);
+  next();
+});
 
 // Database connection
-mongoose.connect('mongodb://localhost:27017/swigDB', {
+mongoose.connect( 'mongodb://localhost:27017/swigDB', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
 
 // Routes
-app.use('/api', signupRoutes);
-app.use('/api/artists', artistRoutes);
+// app.use('/api/auth', authRoutes);  // Register signup and login routes (from signupRoutes.js)
+// login route
+app.use('/api/auth', authRoutes);  // Uncomment if you have a separate login route file
+app.use('/api/artists', artistRoutes);  // Register artist routes (from artistRoutes.js)
+
+// Example of protected route using JWT authentication
+app.get('/api/protected', authMiddleware, (req, res) => {
+  res.json({
+    message: 'This is a protected route',
+    user: req.user // Information from the JWT payload will be accessible here
+  });
+});
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
