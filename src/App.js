@@ -5,14 +5,12 @@ import Login from './components/Login/Login';
 import SignUp from './components/Login/Signup';
 import CardList from './components/CardList';
 import HomePage from './components/HomePage/HomePage';
-import Navbar from '../src/components/NavigationBar'
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import EventPage from './components/EventPage'; // Import EventPage
 import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
 import LoggedInHomePageArtist from './components/HomePage/LoggedInHomePageArtist';
 import ArtistProfilePage from './components/HomePage/ArtistProfilePage';
-import Footer from './components/HomePage/Footer';
 import AllArtistsPage from './components/HomePage/AllArtistsPage'; // Import AllArtistsPage
 import JammingPage from './components/Jamming'; // Import JammingPage 
 
@@ -34,14 +32,20 @@ const dummyCards = [
   },
   // more cards...
 ];
+import HowItWorksPage from './components/HowItWorksPage';
+import ProfilePage from './components/HomePage/ProfilePage';
+import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
+import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
+import { useParams } from 'react-router-dom';
+
 
 function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   const location = useLocation();
 
+
   return (
     <>
-      {/* Conditionally render Navbar */}
-      {location.pathname !== '/' && location.pathname !== '/home' && location.pathname !== '/loggedInHome' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />}
+      {/* {location.pathname !== '/' && location.pathname !== '/home' && location.pathname !== '/loggedInHome' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
@@ -55,9 +59,13 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/event/:eventId" element={<EventPage />} />
         <Route path="/artist-profile/:id" element={<ArtistProfilePage />} />
+        <Route path="/ArtistProfilePage/:artistId" element={<ArtistProfilePage />} />
         <Route path="/all-artists" element={<AllArtistsPage />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/ProfilePage" element={<ProfilePage />} />
+        <Route path="/public-artist/:id" element={<PublicArtistPage />} />
+        <Route path="/publicartistprofilepage/:id" element={<PublicArtistProfilePage />} />
       </Routes>
-      <Footer />
     </>
   );
 }

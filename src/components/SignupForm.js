@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import backgroundImage from '../public/loginBackground.png'; // Importing background image
+import NavigationBar from './NavigationBar';
+import { Navigation } from 'lucide-react';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -66,97 +68,104 @@ const SignUp = () => {
   };
 
   return (
-    <div className='signup' style={styles.signup}> {/* Added className for styling */}
-      <div style={styles.container}>
-        <div style={styles.formWrapper}> {/* Added a wrapper div for the form */}
-          <h1>Create an Account</h1>
-          <div style={styles.form}> {/* Changed from <form> to <div> */}
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="text"
-              name="genre"
-              placeholder="Genre"
-              value={formData.genre}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="number"
-              name="experience"
-              placeholder="Experience (Number)"
-              value={formData.experience}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />  
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
-              type="text"
-              name="pincode"
-              placeholder="Pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <button onClick={handleSubmit} style={styles.button}>Sign Up</button> {/* Changed from type="submit" to onClick */}
+    <>
+      <NavigationBar/>
+     <div className='signup' style={styles.signup}> {/* Added className for styling */}
+        <div style={styles.container}>
+          <div style={styles.formWrapper}> {/* Added a wrapper div for the form */}
+            <h1>Create an Account</h1>
+            <div style={styles.form}> {/* Changed from <form> to <div> */}
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="genre"
+                placeholder="Genre"
+                value={formData.genre}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="number"
+                name="experience"
+                placeholder="Experience (Number)"
+                value={formData.experience}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />  
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="pincode"
+                placeholder="Pincode"
+                value={formData.pincode}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <button onClick={handleSubmit} style={styles.button}>Sign Up</button>
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                Already have an account?{' '}
+                <a href="/login" style={{ color: '#6C2BD9', textDecoration: 'underline', fontWeight: 500 }}>Log In</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      </>
   );
 };
   

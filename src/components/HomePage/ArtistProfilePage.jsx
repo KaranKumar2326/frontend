@@ -1,138 +1,346 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, CircularProgress, Alert, Typography } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+// Remove mockData import and use fetch for backend
+// import { getArtistWithDetails, genres, instruments } from '../data/mockData';
 import './ArtistProfilePage.css';
-import { apiRequest } from '../api/api';
-import Footer from './Footer'; // Assuming you have a Footer component
+import NavigationBar from '../NavigationBar';
+import Footer from './Footer';
 
 const ArtistProfilePage = () => {
-  const { id } = useParams();
+  const { artistId } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedTab, setSelectedTab] = useState(0); // State for managing selected tab
+  const [selectedMenu, setSelectedMenu] = useState('General Information');
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
+  const [showInstrumentDropdown, setShowInstrumentDropdown] = useState(false);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedInstruments, setSelectedInstruments] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [instruments, setInstruments] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editArtist, setEditArtist] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    apiRequest('/api/artists/:id', 'GET', { id })
-      .then(data => {
+    const fetchArtist = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:3001/api/artists/${artistId}`);
+        if (!res.ok) throw new Error('Artist not found.');
+        const data = await res.json();
         setArtist(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load artist profile.');
-        setLoading(false);
-      });
-  }, [id]);
+        setSelectedGenres(data.genres ? data.genres.map(g => g.name) : []);
+        setSelectedInstruments(data.instruments ? data.instruments.map(i => i.name) : []);
+        setError(null);
+      } catch (err) {
+        setArtist(null);
+        setError(err.message || 'Artist not found.');
+      }
+      setLoading(false);
+    };
+    fetchArtist();
+  }, [artistId]);
 
-  if (loading) return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
-  if (error) return <Alert severity="error">{error}</Alert>;
-  if (!artist) return null;
+  useEffect(() => {
+    // Fetch genres and instruments from backend
+    const fetchMeta = async () => {
+      try {
+        const [genresRes, instrumentsRes] = await Promise.all([
+          fetch('http://localhost:3001/api/genres'),
+          fetch('http://localhost:3001/api/instruments'),
+        ]);
+        const genresData = genresRes.ok ? await genresRes.json() : [];
+        const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
+        setGenres(genresData);
+        setInstruments(instrumentsData);
+      } catch (e) {
+        setGenres([]);
+        setInstruments([]);
+      }
+    };
+    fetchMeta();
+  }, []);
+
+  // When switching to edit mode, copy artist data
+  useEffect(() => {
+    if (isEditing && artist) {
+      setEditArtist({ ...artist });
+    }
+  }, [isEditing, artist]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditArtist(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    if (!editArtist) return;
+    setLoading(true);
+    try {
+      const updatedArtist = {
+        ...editArtist,
+        genres: genres.filter(g => selectedGenres.includes(g.name)),
+        instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
+      };
+      const res = await fetch(`http://localhost:3001/api/artists/${artistId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedArtist),
+      });
+      if (!res.ok) throw new Error('Failed to save changes.');
+      const data = await res.json();
+      setArtist(data);
+      setIsEditing(false);
+      setEditArtist(null);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to save changes.');
+    }
+    setLoading(false);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!artist) return <div>No artist found.</div>;
 
   return (
-    <Box bgcolor="#f9f9f9" minHeight="100vh">
-      {/* Banner with artist image */}
-      <Box className="artist-profile-banner">
-        <img
-          src={artist.coverImage || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
-          alt={artist.stageName}
-          className="artist-profile-banner-img"
-        />
-      </Box>
-      {/* Profile Info Card - overlaps banner, row layout */}
-      <Box display="flex" justifyContent="center" alignItems="flex-start" mt={0}>
-        <Box className="artist-profile-info-card">
-          {/* Profile Pic */}
-          <Box className="artist-profile-pic">
-            <img
-              src={artist.coverImage || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
-              alt={artist.stageName}
-              className="artist-profile-pic-img"
-            />
-          </Box>
-          {/* Name and Data */}
-          <Box className="artist-profile-name-data">
-            <Typography className="artist-profile-stage-name">{artist.stageName}</Typography>
-            <Box className="artist-profile-rating-row">
-              <span className="artist-profile-star">★</span>
-              <Typography className="artist-profile-rating">{artist.rating}</Typography>
-            </Box>
-            <Typography className="artist-profile-location">{artist.location}</Typography>
-            <Typography className="artist-profile-experience">Experience: {artist.experience || 'N/A'} years</Typography>
-            <Typography className="artist-profile-genre">Genre: {artist.genres && artist.genres.length > 0 ? artist.genres.map(g => g.name).join(', ') : 'N/A'}</Typography>
-            <Typography className="artist-profile-pricing">
-              {artist.pricing && artist.pricingUnit ? (
-                `$${artist.pricing}/${artist.pricingUnit}`
-              ) : (
-                <span className="artist-profile-not-listed">Not listed</span>
-              )}
-            </Typography>
-          </Box>
-          {/* Book Now Button */}
-          <Box className="artist-profile-book-btn-row">
-            <button className="artist-profile-book-btn">
-              Book Now
-            </button>
-          </Box>
-        </Box>
-      </Box>
-      {/* Tab Options Below Profile Card */}
-      <Box display="flex" justifyContent="center" mt={4}>
-        <Box className="artist-profile-tabs-row">
-          {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
-            <Box
-              key={tab}
-              className={`artist-profile-tab${selectedTab === idx ? ' selected' : ''}`}
-              onClick={() => setSelectedTab(idx)}
-            >
-              <Typography
-                className={`artist-profile-tab-label${selectedTab === idx ? '' : ' unselected'}`}
-                variant="h6"
-              >
-                {tab}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-      {/* Tab Content Card */}
-      <Box display="flex" justifyContent="center" mt={2} mb={8}>
-        <Box className="artist-profile-tab-content">
-          {selectedTab === 0 && (
-            // About Tab
-            <Typography className="artist-profile-tab-body">
-              {artist.description || 'No description available.'}
-            </Typography>
-          )}
-          {selectedTab === 1 && (
-            // Instruments Tab
-            <Typography className="artist-profile-tab-body">
-              {artist.instruments && artist.instruments.length > 0
-                ? artist.instruments.map(i => i.name).join(', ')
-                : 'No instruments listed.'}
-            </Typography>
-          )}
-          {selectedTab === 2 && (
-            // Booking Options Tab
-            <Typography className="artist-profile-tab-body">
-              {artist.pricing && artist.pricingUnit
-                ? `Booking Price: $${artist.pricing} per ${artist.pricingUnit}`
-                : 'No booking options listed.'}
-              <br />
-              {artist.email && (
-                <span>Email: {artist.email}</span>
-              )}
-              <br />
-              {artist.phone && (
-                <span>Phone: {artist.phone}</span>
-              )}
-            </Typography>
-          )}
-        </Box>
-      </Box>
-      <Footer/>
-    </Box>
-    
+    <>
+      <NavigationBar />
+      <div className="artist-profile-bg">
+        <div className="artist-profile-card">
+          {/* Left column with options */}
+          <div className="artist-profile-left-menu">
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('General Information')}>General Information</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Insturments')}>Insturments</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Genres')}>Genres</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Booking Information')}>Booking Information</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Gallery')}>Gallery</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Social Media Links')}>Social Media Links</div>
+          </div>
+          {/* Main profile content */}
+          <div className="artist-profile-main-content">
+            {selectedMenu === 'General Information' && (
+              <>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Name</label>
+                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.stageName : artist.stageName} readOnly={!isEditing} onChange={e => handleInputChange('stageName', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Bio</label>
+                  <AutoResizeTextarea className="artist-profile-input" value={isEditing ? editArtist?.description : artist.description} readOnly={!isEditing} onChange={e => handleInputChange('description', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Location</label>
+                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.location : artist.location} readOnly={!isEditing} onChange={e => handleInputChange('location', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Rating</label>
+                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.rating : artist.rating} readOnly={!isEditing} onChange={e => handleInputChange('rating', e.target.value)} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
+                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Insturments' && (
+              <>
+                <label className="artist-profile-label">Instruments</label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={selectedInstruments.join(', ')}
+                    readOnly={!isEditing}
+                    onFocus={isEditing ? () => setShowInstrumentDropdown(true) : undefined}
+                    onBlur={isEditing ? () => setTimeout(() => setShowInstrumentDropdown(false), 150) : undefined}
+                  />
+                  {showInstrumentDropdown && isEditing && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '110%',
+                      left: 0,
+                      zIndex: 10,
+                      background: '#fff',
+                      border: '1px solid #eee',
+                      borderRadius: '10px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                      minWidth: '200px',
+                      padding: '0.5rem 0',
+                    }}>
+                      {instruments.map(inst => (
+                        <div
+                          key={inst.id}
+                          style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedInstruments.includes(inst.name) ? '#6c2bd9' : '#333', background: selectedInstruments.includes(inst.name) ? '#ede7fa' : 'transparent' }}
+                          onMouseDown={e => {
+                            e.preventDefault();
+                            if (selectedInstruments.includes(inst.name)) {
+                              setSelectedInstruments(selectedInstruments.filter(i => i !== inst.name));
+                            } else {
+                              setSelectedInstruments([...selectedInstruments, inst.name]);
+                            }
+                          }}
+                        >
+                          {inst.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
+                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Genres' && (
+              <>
+                <label className="artist-profile-label">Genres</label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={selectedGenres.join(', ')}
+                    readOnly={!isEditing}
+                    onFocus={isEditing ? () => setShowGenreDropdown(true) : undefined}
+                    onBlur={isEditing ? () => setTimeout(() => setShowGenreDropdown(false), 150) : undefined}
+                  />
+                  {showGenreDropdown && isEditing && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '110%',
+                      left: 0,
+                      zIndex: 10,
+                      background: '#fff',
+                      border: '1px solid #eee',
+                      borderRadius: '10px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                      minWidth: '200px',
+                      padding: '0.5rem 0',
+                    }}>
+                      {genres.map(genre => (
+                        <div
+                          key={genre.id}
+                          style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedGenres.includes(genre.name) ? '#6c2bd9' : '#333', background: selectedGenres.includes(genre.name) ? '#ede7fa' : 'transparent' }}
+                          onMouseDown={e => {
+                            e.preventDefault();
+                            if (selectedGenres.includes(genre.name)) {
+                              setSelectedGenres(selectedGenres.filter(g => g !== genre.name));
+                            } else {
+                              setSelectedGenres([...selectedGenres, genre.name]);
+                            }
+                          }}
+                        >
+                          {genre.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
+                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Booking Information' && (
+              <>
+                <label className="artist-profile-label">Price per hour</label>
+                <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.pricing : artist.pricing} readOnly={!isEditing} onChange={e => handleInputChange('pricing', e.target.value)} />
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
+                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Gallery' && artist.artistImgUrls && Array.isArray(artist.artistImgUrls) && artist.artistImgUrls.length > 0 && (
+              <>
+                <h2>Gallery</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                  {artist.artistImgUrls.map((img, idx) => (
+                    <div key={idx} className="artist-profile-form-group">
+                      <label className="artist-profile-label">Image {idx + 1}</label>
+                      <input className="artist-profile-input" type="text" value={img} readOnly />
+                      <img
+                        src={img}
+                        alt={`${artist.stageName} gallery ${idx + 1}`}
+                        className="artist-profile-img"
+                        style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Gallery' && (!artist.artistImgUrls || artist.artistImgUrls.length === 0) && artist.coverImage && (
+              <>
+                <h2>Gallery</h2>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Profile Image</label>
+                  <input className="artist-profile-input" type="text" value={artist.coverImage} readOnly />
+                  <img
+                    src={artist.coverImage}
+                    alt={`${artist.stageName} profile`}
+                    className="artist-profile-img"
+                    style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
+                  />
+                </div>
+              </>
+            )}
+            {selectedMenu === 'Gallery' && (!artist.artistImgUrls || artist.artistImgUrls.length === 0) && !artist.coverImage && (
+              <p>No images uploaded yet.</p>
+            )}
+            {selectedMenu === 'Social Media Links' && (
+              <>
+                <h2>Social Media Links</h2>
+                {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 ? (
+                  <ul style={{ padding: 0, listStyle: 'none' }}>
+                    {artist.socialMediaLinks.map((link, idx) => (
+                      <li key={idx} className="artist-profile-form-group">
+                        <label className="artist-profile-label">{link.platform}</label>
+                        <input className="artist-profile-input" type="text" value={link.url} readOnly />
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No social media links available.</p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 };
+
+function AutoResizeTextarea({ value, className, ...props }) {
+  const textareaRef = React.useRef(null);
+  React.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
+  return (
+    <textarea
+      ref={textareaRef}
+      className={className}
+      value={value}
+      {...props}
+      rows={1}
+      style={{ overflow: 'hidden' }}
+    />
+  );
+}
 
 export default ArtistProfilePage;

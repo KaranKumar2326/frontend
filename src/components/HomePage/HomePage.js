@@ -4,7 +4,6 @@ import './HomePage.css';
 import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube ,Search , Headphones , CalendarCheck} from "lucide-react";
 import "./Footer.css";
 import {motion} from "framer-motion";
-import HowItWorks from './Howitworks';
 import CallToAction from './CalltoAction';
 import FeaturedArtist from './FeaturedArtist';
 import Testimonials from './Testimonials';
@@ -53,7 +52,6 @@ const HomePage = () => {
         {/* </div> */}
       </div>
       <FeaturedArtist /> 
-      <HowItWorks/>
       <Testimonials/>
       <CallToAction/>
       <Footer id="footer" />

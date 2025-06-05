@@ -35,6 +35,17 @@ const NavigationBar = ({ hideProfile = false }) => {
 
   // Hide nav items on artist profile page
   const isArtistProfilePage = location.pathname.startsWith('/artist-profile/');
+  const isLoginOrSignup = location.pathname === '/login' || location.pathname === '/signup';
+
+  // Function to handle My Profile navigation
+  const handleProfileNavigation = () => {
+    if (location.pathname === '/loggedInHomePageArtist') {
+      navigate('/publicartistprofilepage/1');
+    } else if (location.pathname === '/loggedInHome') {
+      navigate('/ProfilePage');
+    }
+    setOpenProfile(false);
+  };
 
   return (
     <nav className="navbar">
@@ -45,42 +56,47 @@ const NavigationBar = ({ hideProfile = false }) => {
           </a>
         </div>
         <div className="navbar-as">
-          <a className="navbar-a">Home</a>
+          <a className="navbar-a" href="#" onClick={e => { e.preventDefault(); navigate('/'); }}>Home</a>
           <a className="navbar-a" href="#footer" onClick={e => { e.preventDefault(); scrollToSection('footer'); }}>Contact Us</a>
-          <a className="navbar-a" href="#testimonials" onClick={e => { e.preventDefault(); scrollToSection('testimonials'); }}>Testimonials</a>
-          {/* Hide Browse Artists and Hire an Artist on Signup and artist profile page, but keep profile pic and dropdown on artist profile page */}
-          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && (
+          <a className='navbar-a' href="#" onClick={e => { e.preventDefault(); navigate('/how-it-works'); }}>How it Works</a>
+
+          {!isLoginOrSignup && (
             <>
-              <a className="navbar-a" href="#featured-artists" onClick={e => { e.preventDefault(); scrollToSection('featured-artists'); }}>Browse Artists</a>
-              <button className="navbar-button" onClick={() => navigate('/login')}>Hire an Artist</button>
-              {/* Only show Sign Up button if hideProfile is true (i.e., HomePage.js) */}
-              {hideProfile && (
-                <button className="navbar-button" onClick={() => navigate('/signup')}>Sign Up</button>
+              {/* Hide Browse Artists and Hire an Artist on Signup and artist profile page, but keep profile pic and dropdown on artist profile page */}
+              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && (
+                <>
+                  <a className="navbar-a" href="#featured-artists" onClick={e => { e.preventDefault(); scrollToSection('featured-artists'); }}>Browse Artists</a>
+                  <button className="navbar-button" onClick={() => navigate('/login')}>Hire an Artist</button>
+                  {/* Only show Sign Up button if hideProfile is true (i.e., HomePage.js) */}
+                  {hideProfile && (
+                    <button className="navbar-button" onClick={() => navigate('/signup')}>Sign Up</button>
+                  )}
+                </>
+              )}
+              {/* Always show profile pic and dropdown except on signup/home/artist home */}
+              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
+                !hideProfile && (
+                  <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
+                )
+              )}
+              {location.pathname === '/loggedInHomePageArtist' && (
+                <>
+                  <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
+                  {!hideProfile && (
+                    <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
+                  )}
+                </>
+              )}
+              {!hideProfile && openProfile && (
+                <div className="flex flex-col dropdown">
+                  <ul className="dropcont">
+                    <li onClick={handleProfileNavigation}>My Profile</li>
+                    <li>Settings</li>
+                    <li onClick={handleLogout}>Logout</li>
+                  </ul>
+                </div>
               )}
             </>
-          )}
-          {/* Always show profile pic and dropdown except on signup/home/artist home */}
-          {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
-            !hideProfile && (
-              <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-            )
-          )}
-          {location.pathname === '/loggedInHomePageArtist' && (
-            <>
-              <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
-              {!hideProfile && (
-                <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-              )}
-            </>
-          )}
-          {!hideProfile && openProfile && (
-            <div className="flex flex-col dropdown">
-              <ul className="dropcont">
-                <li>My Profile</li>
-                <li>Settings</li>
-                <li onClick={handleLogout}>Logout</li>
-              </ul>
-            </div>
           )}
         </div>
       </div>

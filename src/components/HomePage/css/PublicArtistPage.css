@@ -1,0 +1,191 @@
+/* Import Google Fonts for consistency */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+.public-artist-bg {
+  font-family: 'Montserrat', 'Inter', 'Playfair Display', Arial, sans-serif;
+  background: #f9f9f9;
+  min-height: 100vh;
+  color: #222;
+}
+
+.public-artist-banner {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.public-artist-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.public-artist-main-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+.public-artist-info-card {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  width: 60vw;
+  min-width: 420px;
+  max-width: 1100px;
+  position: relative;
+  padding: 2.5rem 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.public-artist-pic {
+  display: flex;
+  position: absolute;
+  left: 5%;
+  top: 0;
+  transform: translateY(-50%);
+  margin-left: 0;
+  flex-direction: column;
+  align-items: center;
+}
+.public-artist-pic-img {
+  border: 2px solid #6c2bd9;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(108,43,217,0.08);
+}
+.public-artist-pic .public-artist-rating-row {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  justify-content: center;
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  color: #6c2bd9;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.public-artist-info-content {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0;
+  margin-top: 0;
+}
+.public-artist-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #000000;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.public-artist-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  justify-content: center;
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  color: #6c2bd9;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.public-artist-rating {
+  color: #6c2bd9;
+  font-size: 1.1rem;
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  font-weight: 600;
+}
+.public-artist-book-btn {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  background: #6c2bd9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.public-artist-book-btn:hover {
+  background: #4b1a9a;
+}
+.public-artist-other-artists {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  min-width: 220px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.public-artist-tabs-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2.5rem 0 1.5rem 0;
+}
+.public-artist-tab {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  cursor: pointer;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px 8px 0 0;
+  background: #ede7fa;
+  color: #6c2bd9;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.18s;
+}
+.public-artist-tab.selected {
+  background: #6c2bd9;
+  color: #fff;
+}
+.public-artist-tab-label.unselected {
+  color: #6c2bd9;
+}
+.public-artist-tab-content {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 2rem 2.5rem;
+}
+.public-artist-tab-body {
+  font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* General headings and text color for consistency */
+.public-artist-info-card h1,
+.public-artist-info-card h2,
+.public-artist-info-card h3,
+.public-artist-info-card h4 {
+  font-family: 'Playfair Display', serif;
+  color: #6c2bd9;
+  font-weight: 700;
+}
+
+.public-artist-info-card p,
+.public-artist-info-card span,
+.public-artist-info-card li {
+  font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+  color: #222;
+}

@@ -1,212 +1,132 @@
-.artist-profile-banner {
-  position: relative;
-  width: 100%;
-  height: 290px;
-  background: #eee;
+.artist-profile-bg {
+  min-height: 80vh;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6fa;
 }
 
-.artist-profile-banner-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: brightness(0.7);
-}
-
-.artist-profile-info-card {
+.artist-profile-card {
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  min-width: 400px;
-  max-width: 850px;
-  width: 100%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  max-width: 1500px;
+  width: 99vw;
+  margin: 1rem ;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  gap: 24px;
-  position: relative;
-  margin-top: -48px;
-  z-index: 3;
-  padding: 32px;
+  align-items: flex-start;  
 }
 
-.artist-profile-pic {
-  min-width: 110px;
-  min-height: 110px;
-  margin-right: 32px;
-  margin-top: 16px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.artist-profile-pic-img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 2px solid #eee;
-  object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.artist-profile-tabs-row {
-  display: flex;
-  gap: 16px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 16px;
-  min-width: 400px;
-  max-width: 850px;
-  width: 100%;
-  justify-content: center;
-  margin-top: 32px;
-}
-
-.artist-profile-tab {
-  border-radius: 8px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  background: transparent;
-  transition: all 0.2s;
-}
-
-.artist-profile-tab.selected {
-  background: #e5e3ee;
-  box-shadow: 0 8px 32px 0 rgba(108,43,217,0.18);
-}
-
-.artist-profile-tab-label {
-  font-size: 1.1rem;
-  font-family: 'Montserrat', sans-serif;
+.artist-profile-title {
+  margin-bottom: 1rem;
+  font-size: 2rem;
   font-weight: 700;
+}
+
+.artist-profile-img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.artist-profile-info {
+  margin: 0.5rem 0;
+}
+
+.artist-profile-left-menu {
+  min-width: 220px;
+  margin-right: 2rem;
+  background: #f7f7fa;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.artist-profile-left-menu-option {
+  font-weight: 600;
+  font-size: 1.1rem;
   color: #6c2bd9;
-  border-bottom: none;
-  transition: all 0.2s;
+  background: #f7f7fa;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 1rem 1.5rem;
+  min-width: 180px;
+  text-align: center;
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
 }
 
-.artist-profile-tab-label.unselected {
-  color: #333;
-  font-weight: 500;
+.artist-profile-left-menu-option:hover {
+  background: #e4e4ef;
+  box-shadow: none;
+  border: none;
 }
 
-.artist-profile-tab-content {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 24px;
-  min-width: 400px;
-  max-width: 850px;
-  width: 100%;
-  margin-top: 16px;
-  margin-bottom: 64px;
-}
-
-.artist-profile-tab-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.05rem;
-  color: #222;
-  font-weight: 400;
-  line-height: 1.6;
-}
-
-.artist-profile-name-data {
+.artist-profile-main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 80px;
 }
 
-.artist-profile-stage-name {
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: 'Playfair Display', serif;
-  color: #2d2d2d;
-  margin-bottom: 8px;
-}
-
-.artist-profile-rating-row {
+.artist-profile-form-group {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
 }
 
-.artist-profile-star {
-  color: #f0e11a;
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.artist-profile-rating {
+.artist-profile-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
   font-weight: 600;
   color: #6c2bd9;
-  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
 }
 
-.artist-profile-location {
-  color: #6c2bd9;
+.artist-profile-input {
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
-  margin-bottom: 4px;
-}
-
-.artist-profile-experience {
-  color: #333;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  margin-bottom: 4px;
-}
-
-.artist-profile-genre {
-  color: #333;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  margin-bottom: 4px;
-}
-
-.artist-profile-pricing {
-  color: #6c2bd9;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.artist-profile-not-listed {
-  color: #888;
-  font-style: italic;
-}
-
-.artist-profile-book-btn-row {
-  display: flex;
-  align-items: flex-end;
-  margin-left: 16px;
-  margin-top: 32px;
-}
-
-.artist-profile-book-btn {
-  background: #6c2bd9;
-  color: #fff;
+  padding: 0.75rem 1rem;
   border: none;
-  border-radius: 8px;
-  padding: 14px 36px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(108,43,217,0.10);
-  transition: background 0.2s, color 0.2s;
-  margin-top: 0;
+  border-radius: 12px;
+  background: #f7f7fa;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(108, 43, 217, 0.06);
+  outline: none;
+  transition: box-shadow 0.2s, background 0.2s;
+  margin-bottom: 0.2rem;
+  max-width: 700px;
+  width: 700px;
+  min-height: 44px;
+  resize: none;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.artist-profile-book-btn:hover {
-  background: #5321b6;
+.artist-profile-input:focus {
+  background: #ede7fa;
+  box-shadow: 0 0 0 2px #6c2bd9;
+}
+
+textarea.artist-profile-input {
+  min-height: 44px;
+  max-width: 700px;
+  width: 700px;
+  resize: none;
+  overflow-y: auto;
+  box-sizing: border-box;
 }

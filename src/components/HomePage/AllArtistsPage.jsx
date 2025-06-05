@@ -4,6 +4,8 @@ import ArtistCard from './ArtistCard';
 import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css';
+import NavigationBar from '../NavigationBar';
+import Footer from './Footer';
 
 const AllArtistsPage = () => {
   const [artists, setArtists] = useState([]);
@@ -23,20 +25,24 @@ const AllArtistsPage = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Container sx={{ mt: 5, flex: 1 }}>
-        <Typography variant="h4" gutterBottom style={{ fontFamily: 'Playfair Display, serif', textAlign: 'center' }}>
-          All Artists
-        </Typography>
-        {isLoading && <CircularProgress />}
-        {error && <Alert severity="error">{error}</Alert>}
-        <div className="featured-artists__grid" style={{ marginBottom: '40px' }}>
-          {artists?.map(artist => (
-            <ArtistCard key={artist.id} artist={artist} />
-          ))}
-        </div>
-      </Container>
-    </div>
+    <>
+      <NavigationBar />
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Container sx={{ mt: 5, flex: 1 }}>
+          <Typography variant="h4" gutterBottom style={{ fontFamily: 'Playfair Display, serif', textAlign: 'center' }}>
+            All Artists
+          </Typography>
+          {isLoading && <CircularProgress />}
+          {error && <Alert severity="error">{error}</Alert>}
+          <div className="featured-artists__grid" style={{ marginBottom: '40px' }}>
+            {artists?.map(artist => (
+              <ArtistCard key={artist.id} artist={artist} />
+            ))}
+          </div>
+        </Container>
+      </div>
+      <Footer/>
+    </>
   );
 };
 

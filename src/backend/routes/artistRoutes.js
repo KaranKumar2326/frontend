@@ -34,7 +34,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
 router.get('/featured', async (req, res) => {
   try {
     console.log('Fetching featured artists');
@@ -42,6 +41,38 @@ router.get('/featured', async (req, res) => {
     res.status(200).json(featuredArtists);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch featured artists' });
+  }
+});
+
+// Get a single artist by ID (from FeaturedArtist collection)
+router.get('/:id', async (req, res) => {
+  try {
+    const artist = await FeaturedArtist.findOne({ id: parseInt(req.params.id) });
+    if (!artist) {
+      return res.status(404).json({ message: 'Artist not found' });
+    }
+    res.json(artist);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Update artist by ID (FeaturedArtist)
+router.put('/:id', async (req, res) => {
+  try {
+    const artistId = parseInt(req.params.id);
+    const update = req.body;
+    const updatedArtist = await FeaturedArtist.findOneAndUpdate(
+      { id: artistId },
+      update,
+      { new: true }
+    );
+    if (!updatedArtist) {
+      return res.status(404).json({ message: 'Artist not found' });
+    }
+    res.json(updatedArtist);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
