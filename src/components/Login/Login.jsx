@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
+import backgroundImage from '../../public/loginBackground.png';
+
+const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    emailOrPhone: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Make sure you are sending the right data
+  const loginData = {
+    email: formData.emailOrPhone,  // Mapping to 'email' on backend
+    password: formData.password,
+  };
+  toast.info('Logging in...');
+
+  try {
+    const response = await fetch('http://localhost:3001/api/auth/login', {  // Ensure correct port (5000 is used here)
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginData),
+    });
+
+    const result = await response.json();
+    if (response.ok) {  // Check if the response is OK (status 200)
+      toast.success('Login successful');
+      // localStorage.setItem('token', result.token); // Save JWT token to localStorage
+      localStorage.setItem('token', result.token); // Save JWT token
+      console.log('Login successful:', result);
+      localStorage.setItem('userId', result.userId); // Save userId
+      localStorage.setItem('email', result.email); 
+      localStorage.setItem('name', result.name); // Save user name
+      navigate('/loggedInHome'); // Redirect to LoggedInHomePage after login
+    } else {
+      toast.error(result.message || 'Login failed');
+    }
+  } catch (err) {
+    toast.error('Error: ' + err.message);
+  }
+};
+
+
+  return (
+    <div style={styles.container}>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <h2 style={styles.heading}>Login</h2>
+        <input
+          type="text"
+          name="emailOrPhone"
+          placeholder="Email or Phone"
+          value={formData.emailOrPhone}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <button type="submit" style={styles.button}>
+          Login
+        </button>
+        <p>Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link></p>
+        <p><Link to="/forgot-password" style={styles.link}>Forgot Password?</Link></p>
+      </form>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    minHeight: '100vh',
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+  },
+  heading: {
+    fontSize: '28px',
+    marginBottom: '20px',
+    color: '#333',
+  },
+  form: {
+    width: '100%',
+    maxWidth: '400px',
+    backgroundColor: '#fff',
+    padding: '30px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  input: {
+    padding: '12px',
+    margin: '10px 0',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  },
+  link: {
+    color: '#6C2BD9',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
+  button: {
+    marginTop: '15px',
+    backgroundColor: '#6C2BD9',
+    color: 'white',
+    padding: '12px',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '16px',
+    cursor: 'pointer',
+  },
+};
+
+export default Login;
