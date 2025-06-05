@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import myImage from '../public/logo.jpeg';
 import './NavigationBar.css'; // Updated to use NavigationBar.css instead of LoggedInHomePage.css
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
 
 const NavigationBar = ({ hideProfile = false }) => {
   const navigate = useNavigate();
@@ -10,6 +12,12 @@ const NavigationBar = ({ hideProfile = false }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('token'); // If you are storing the token too
+    localStorage.removeItem('userId'); // Remove userId if stored
+    toast.success('Logged out successfully');
+    console.log('User logged out');
     navigate('/login');
   };
 
