@@ -123,5 +123,6 @@ const mockApiHandlers = {
   },
   '/api/artists/global': {
     GET: async () => artists.map(a => getArtistWithDetails(a.id)).filter(Boolean),
+    
   },
 };

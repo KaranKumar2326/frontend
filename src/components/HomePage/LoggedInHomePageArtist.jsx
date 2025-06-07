@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import './CallToAction.css';
 import { artistImageUrls } from '../data/mockData';
-import GlobalArtists from './GlobalArtists'; // Import the GlobalArtists component
+import FeaturedArtists from './FeaturedArtist';
 import ImageSlider from './ImageSlider';
 import NavigationBar from '../NavigationBar';
 
@@ -118,12 +118,7 @@ function LoggedInHomePageArtist() {
             />
           </div>
         </div>
-        <GlobalArtists />
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-          <button className="P" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '0.9rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px', borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1'}}>
-            Show More
-          </button>
-        </div>
+        <FeaturedArtists />
 
         <div className="features-section">
           <h2>Why Choose Us?</h2>

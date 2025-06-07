@@ -13,6 +13,21 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import "./ArtistCard.css"; // Custom CSS styles
 
+// Helper to convert Google Drive links to direct image links and proxy through backend
+const getImageSrc = (url) => {
+  if (!url) return null;
+  let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+  if (!match) {
+    match = url.match(/[?&]id=([\w-]+)/);
+  }
+  let directUrl = url;
+  if (match && match[1]) {
+    directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+  // Always proxy through backend for CORS
+  return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+};
+
 export default function ArtistCard({ artist, priority = 0 }) {
   const navigate = useNavigate();
 
@@ -44,10 +59,11 @@ export default function ArtistCard({ artist, priority = 0 }) {
             component="img"
             height="200"
             image={
-              artist.coverImage ||
+              getImageSrc(artist.imageUrl) ||
               "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
             }
             alt={artist.stageName}
+            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
             className="artist-card__image"
           />
         </div>

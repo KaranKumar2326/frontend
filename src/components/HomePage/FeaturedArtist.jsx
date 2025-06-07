@@ -44,6 +44,21 @@ const FeaturedArtists = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
   return (
     <Container id="featured-artists" sx={{ mt: 5 }}>
       <Typography variant="h4" gutterBottom style={{fontFamily: 'Playfair Display, serif', textAlign: 'center'}}>
@@ -55,7 +70,7 @@ const FeaturedArtists = () => {
 
       <div className="featured-artists__grid">  
         {artists?.map(artist => (
-          <ArtistCard key={artist.id} artist={artist} />
+          <ArtistCard key={artist.id} artist={{...artist, coverImage: getImageSrc(artist.coverImage)}} />
         ))}
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
