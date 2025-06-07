@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Container, CircularProgress, Alert } from '@mui/material';
 import GlobalArtistCard from './GlobalArtistCard';
-import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css';
 
@@ -11,9 +10,10 @@ const GlobalArtists = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    apiRequest('/api/artists/global')
+    fetch('http://localhost:3001/api/artists/global')
+      .then(res => res.json())
       .then(data => {
-        setArtists(data);
+        setArtists(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
@@ -33,7 +33,7 @@ const GlobalArtists = () => {
       {error && <Alert severity="error">{error}</Alert>}
 
       <div className="featured-artists__grid">
-        {artists?.map(artist => (
+        {(Array.isArray(artists) ? artists : []).map(artist => (
           <GlobalArtistCard key={artist.id} artist={artist} />
         ))}
       </div>
