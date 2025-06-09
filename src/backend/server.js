@@ -44,6 +44,7 @@ const loginRoutes = require('./routes/loginRoutes');  // Import login routes
 const artistRoutes = require('./routes/artistRoutes');
 const authRoutes = require('./routes/authRoutes');  // Import auth routes for JWT authentication
 const authMiddleware = require('./middlewares/authMiddleware'); // JWT authentication middleware
+const request = require('request'); // Add this at the top with other requires
 
 // Load environment variables from .env file
 dotenv.config();
@@ -80,6 +81,19 @@ mongoose.connect( 'mongodb://localhost:27017/swigDB', {
 // login route
 app.use('/api/auth', authRoutes);  // Uncomment if you have a separate login route file
 app.use('/api/artists', artistRoutes);  // Register artist routes (from artistRoutes.js)
+
+// Proxy endpoint for images (CORS fix for Google Drive)
+app.get('/api/proxy-image', (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send('No url provided');
+  request
+    .get(url)
+    .on('response', function(response) {
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Content-Type', response.headers['content-type']);
+    })
+    .pipe(res);
+});
 
 // Example of protected route using JWT authentication
 app.get('/api/protected', authMiddleware, (req, res) => {

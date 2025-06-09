@@ -20,6 +20,9 @@ const ArtistProfilePage = () => {
   const [instruments, setInstruments] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editArtist, setEditArtist] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -261,42 +264,106 @@ const ArtistProfilePage = () => {
                 </div>
               </>
             )}
-            {selectedMenu === 'Gallery' && artist.artistImgUrls && Array.isArray(artist.artistImgUrls) && artist.artistImgUrls.length > 0 && (
+            {selectedMenu === 'Gallery' && (
               <>
-                <h2>Gallery</h2>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                  {artist.artistImgUrls.map((img, idx) => (
-                    <div key={idx} className="artist-profile-form-group">
-                      <label className="artist-profile-label">Image {idx + 1}</label>
-                      <input className="artist-profile-input" type="text" value={img} readOnly />
-                      <img
-                        src={img}
-                        alt={`${artist.stageName} gallery ${idx + 1}`}
-                        className="artist-profile-img"
-                        style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
-                      />
-                    </div>
-                  ))}
+                {/* Upload UI */}
+                <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
+                  {/* Profile Pic Upload */}
+                  <div>
+                    <label style={{ fontWeight: 600 }}>Upload Profile Pic</label><br />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploading(true);
+                        setUploadError(null);
+                        const formData = new FormData();
+                        formData.append('images', file);
+                        try {
+                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=profile`, {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          if (!res.ok) throw new Error('Upload failed');
+                          const data = await res.json();
+                          setArtist(data);
+                          setUploadSuccess('Profile pic uploaded!');
+                          setTimeout(() => setUploadSuccess(null), 2000);
+                        } catch (err) {
+                          setUploadError(err.message || 'Upload failed');
+                        }
+                        setUploading(false);
+                        e.target.value = '';
+                      }}
+                      disabled={uploading}
+                      style={{ marginRight: '0.5rem' }}
+                    />
+                      {artist.imageUrl ? (
+                      <div className="artist-profile-form-group">
+                        <label className="artist-profile-label">Profile Image</label>
+                        <img
+                          src={artist.imageUrl ? `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(artist.imageUrl)}` : ''}
+                          alt={`${artist.stageName} gallery`}
+                          className="artist-profile-img"
+                          style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
+                        />
+                      </div>
+                    ) :(
+                      <p>No images uploaded yet.</p>
+                    )}  
+                  </div>
+                  {/* Banner Upload */}
+                  <div>
+                    <label style={{ fontWeight: 600 }}>Upload Banner Image</label><br />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploading(true);
+                        setUploadError(null);
+                        const formData = new FormData();
+                        formData.append('images', file);
+                        try {
+                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=banner`, {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          if (!res.ok) throw new Error('Upload failed');
+                          const data = await res.json();
+                          setArtist(data);
+                          setUploadSuccess('Banner image uploaded!');
+                          setTimeout(() => setUploadSuccess(null), 2000);
+                        } catch (err) {
+                          setUploadError(err.message || 'Upload failed');
+                        }
+                        setUploading(false);
+                        e.target.value = '';
+                      }}
+                      disabled={uploading}
+                    />
+                    {artist.coverImage ? (
+                  <div className="artist-profile-form-group">
+                    <label className="artist-profile-label">Banner Image</label>
+                    <img
+                      src={artist.coverImage ? `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(artist.coverImage)}` : ''}
+                      alt={`${artist.stageName} profile`}
+                      className="artist-profile-img"
+                      style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
+                    />
+                  </div>
+                ):(
+                  <p>No images uploaded yet.</p>
+                )}
+                  </div>
+                  {uploading && <span style={{ color: '#6c2bd9' }}>Uploading...</span>}
+                  {uploadError && <span style={{ color: 'red' }}>{uploadError}</span>}
+                  {uploadSuccess && <span style={{ color: 'green' }}>{uploadSuccess}</span>}
                 </div>
               </>
-            )}
-            {selectedMenu === 'Gallery' && (!artist.artistImgUrls || artist.artistImgUrls.length === 0) && artist.coverImage && (
-              <>
-                <h2>Gallery</h2>
-                <div className="artist-profile-form-group">
-                  <label className="artist-profile-label">Profile Image</label>
-                  <input className="artist-profile-input" type="text" value={artist.coverImage} readOnly />
-                  <img
-                    src={artist.coverImage}
-                    alt={`${artist.stageName} profile`}
-                    className="artist-profile-img"
-                    style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
-                  />
-                </div>
-              </>
-            )}
-            {selectedMenu === 'Gallery' && (!artist.artistImgUrls || artist.artistImgUrls.length === 0) && !artist.coverImage && (
-              <p>No images uploaded yet.</p>
             )}
             {selectedMenu === 'Social Media Links' && (
               <>

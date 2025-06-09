@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const artistSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    required: true,
+    unique: true
+  },
   name: {
     type: String,
     required: true
@@ -37,6 +42,12 @@ const artistSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  coverImage: {
+    type: String
+  },
+  imageUrl: {
+    type: String
   }
 });
 

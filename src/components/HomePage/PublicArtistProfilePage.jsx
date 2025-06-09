@@ -52,23 +52,40 @@ export default function PublicArtistProfilePage() {
     return stars;
   };
 
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
   if (loading) return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
   if (error) return <Alert severity="error">{error}</Alert>;
   if (!artist) return <Alert severity="error">Artist not found</Alert>;
+  console.log("Artist coverImage:", artist.coverImage);
+  console.log("Final image src:", getImageSrc(artist.coverImage));
 
   return (
     <>
       <NavigationBar />
       <Box bgcolor="#f9f9f9" minHeight="100vh" className="artist-profile-bg">
         {/* Banner Image */}
-        <Box className="artist-profile-banner">
+        <Box className="artist-profile-banner" >
           <img
-            src={artist.coverImage || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+            src={getImageSrc(artist.coverImage) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
             alt={artist.stageName}
             className="artist-profile-banner-img"
+            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
           />
         </Box>
-
         {/* Profile Info Card */}
         <Box display="flex" justifyContent="center" alignItems="flex-start" mt={0}>
           <Box className="artist-profile-info-card public-profile-info-card" style={{ position: 'relative', width: '50vw', minWidth: 320 }}>
@@ -76,9 +93,10 @@ export default function PublicArtistProfilePage() {
               {/* Profile Pic - left */}
               <Box className="artist-profile-pic public-profile-pic-top-centered" style={{ marginRight: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <img
-                  src={artist.coverImage || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
-                  alt={artist.stageName}
+                  src={getImageSrc(artist.imageUrl) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+                  alt={artist.imageUrl}
                   className="artist-profile-pic-img public-profile-pic-img-bordered"
+                  onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
                 />
               </Box>
               {/* Name and Info - center */}
@@ -113,11 +131,11 @@ export default function PublicArtistProfilePage() {
           </Box>
         </Box>
 
-        {/* Other Artists Section */}
+        {/* Other Artists Section
         {/* Other Artists - right side */}
-        <Box style={{ marginLeft: 32, minWidth: 200 }}>
+        {/* <Box style={{ marginLeft: 32, minWidth: 200 }}>
           <OtherArtists currentArtistId={artist._id || artist.id} />
-        </Box>
+        </Box>  */}
 
         {/* Tabs */}
         <Box display="flex" justifyContent="center" mt={4}>

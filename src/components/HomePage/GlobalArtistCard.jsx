@@ -25,11 +25,12 @@ export default function GlobalArtistCard({ artist, priority = 0 }) {
             component="img"
             height="200"
             image={
-              artist.coverImage ||
+              artist.coverImage || artist.imgUrl ||
               "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
             }
             alt={artist.stageName}
             className="artist-card__image"
+            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
           />
         </div>
 
