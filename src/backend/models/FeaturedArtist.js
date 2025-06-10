@@ -32,6 +32,7 @@ const artistSchema = new mongoose.Schema({
   rating: { type: Number }, // decimal
   coverImage: { type: String }, // check in frontennd for link type
   imageUrl: { type: String }, // check in frontennd for link type
+  gallery: [{ type: String }], // array of image URLs
   genres: [genreSchema], //
   instruments: [instrumentSchema], // 
   userId: { type: Number },

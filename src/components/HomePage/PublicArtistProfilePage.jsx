@@ -12,7 +12,7 @@ import Footer from "./Footer";
 import OtherArtists from "./OtherArtists";
 
 export default function PublicArtistProfilePage() {
-  const { id } = useParams();
+  const { _id } = useParams();
   const navigate = useNavigate();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function PublicArtistProfilePage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3001/api/artists/${id}`);
+        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -37,7 +37,7 @@ export default function PublicArtistProfilePage() {
       setLoading(false);
     };
     fetchArtist();
-  }, [id]);
+  }, [_id]);
 
   const renderStars = (rating = 0) => {
     const stars = [];
@@ -75,7 +75,10 @@ export default function PublicArtistProfilePage() {
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar
+        hideProfile={false}
+        userProfilePic={artist ? getImageSrc(artist.imageUrl) : undefined}
+      />
       <Box bgcolor="#f9f9f9" minHeight="100vh" className="artist-profile-bg">
         {/* Banner Image */}
         <Box className="artist-profile-banner" >
@@ -123,7 +126,7 @@ export default function PublicArtistProfilePage() {
               </Box>
               {/* Edit Profile Button - right */}
               <Box style={{ marginLeft: 32, display: 'flex', alignItems: 'center' }}>
-                <button className="artist-profile-book-btn" onClick={() => navigate(`/ArtistProfilePage/${id}`)}>
+                <button className="artist-profile-book-btn" onClick={() => navigate(`/ArtistProfilePage/${_id}`)}>
                   Edit Profile
                 </button>
               </Box>

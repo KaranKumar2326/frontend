@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, CircularProgress, Alert } from '@mui/material';
 import ArtistCard from './ArtistCard';
-import { apiRequest } from '../api/api';
 import './FeaturedArtist.css';
 import './HomePage.css';
 import NavigationBar from '../NavigationBar';
@@ -13,7 +12,8 @@ const AllArtistsPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    apiRequest('/api/artists')
+    fetch('http://localhost:3001/api/artists')
+      .then(res => res.json())
       .then(data => {
         setArtists(data);
         setLoading(false);
@@ -36,7 +36,7 @@ const AllArtistsPage = () => {
           {error && <Alert severity="error">{error}</Alert>}
           <div className="featured-artists__grid" style={{ marginBottom: '40px' }}>
             {artists?.map(artist => (
-              <ArtistCard key={artist.id} artist={artist} />
+              <ArtistCard key={artist._id} artist={artist} />
             ))}
           </div>
         </Container>

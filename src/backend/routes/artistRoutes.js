@@ -7,6 +7,38 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 
+// Helper to upload file to Google Drive and get shareable link
+async function uploadToDrive(filePath, filename) {
+  const fileMetadata = {
+    name: filename,
+    parents: [DRIVE_FOLDER_ID],
+  };
+  const media = {
+    mimeType: 'image/jpeg',
+    body: fs.createReadStream(filePath),
+  };
+  const file = await drive.files.create({
+    resource: fileMetadata,
+    media,
+    fields: 'id',
+  });
+  // Make file public
+  await drive.permissions.create({
+    fileId: file.data.id,
+    requestBody: { role: 'reader', type: 'anyone' },
+  });
+  // Get shareable link
+  const result = await drive.files.get({
+    fileId: file.data.id,
+    fields: 'webContentLink',
+  });
+  return result.data.webContentLink;
+}
+const multer = require('multer');
+const { google } = require('googleapis');
+const fs = require('fs');
+const path = require('path');
+
 // Multer setup for file uploads
 const upload = multer({ dest: 'uploads/' });
 
@@ -91,7 +123,16 @@ router.get('/featured', async (req, res) => {
 // Get a single artist by ID (from FeaturedArtist collection)
 router.get('/:id', async (req, res) => {
   try {
-    const artist = await FeaturedArtist.findOne({ id: parseInt(req.params.id) });
+    const { id } = req.params;
+    let artist = null;
+    // Try to find by MongoDB ObjectId first
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      artist = await FeaturedArtist.findById(id);
+    }
+    // Fallback to legacy numerical id if not found
+    if (!artist) {
+      artist = await FeaturedArtist.findOne({ id: parseInt(id) });
+    }
     if (!artist) {
       return res.status(404).json({ message: 'Artist not found' });
     }
@@ -104,13 +145,17 @@ router.get('/:id', async (req, res) => {
 // Update artist by ID (FeaturedArtist)
 router.put('/:id', async (req, res) => {
   try {
-    const artistId = parseInt(req.params.id);
+    const { id } = req.params;
     const update = req.body;
-    const updatedArtist = await FeaturedArtist.findOneAndUpdate(
-      { id: artistId },
-      update,
-      { new: true }
-    );
+    let updatedArtist = null;
+    // Try to update by ObjectId
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      updatedArtist = await FeaturedArtist.findByIdAndUpdate(id, update, { new: true });
+    }
+    // Fallback to legacy numerical id
+    if (!updatedArtist) {
+      updatedArtist = await FeaturedArtist.findOneAndUpdate({ id: parseInt(id) }, update, { new: true });
+    }
     if (!updatedArtist) {
       return res.status(404).json({ message: 'Artist not found' });
     }
@@ -143,7 +188,7 @@ router.get('/global', async (req, res) => {
 // POST /api/artists/:id/upload-images
 router.post('/:id/upload-images', upload.array('images'), async (req, res) => {
   try {
-    const artistId = parseInt(req.params.id); // Always use custom numerical id
+    const { id } = req.params;
     const files = req.files;
     const type = req.query.type || 'profile'; // 'profile' or 'banner'
     if (!files || files.length === 0) {
@@ -154,18 +199,21 @@ router.post('/:id/upload-images', upload.array('images'), async (req, res) => {
     const link = await uploadToDrive(file.path, file.originalname);
     fs.unlinkSync(file.path); // Remove local file after upload
     // Prepare update object
-    let updateObj = {};
+    let updateObj = { $push: { gallery: link } };
     if (type === 'banner') {
       updateObj.coverImage = link;
     } else {
       updateObj.imageUrl = link;
     }
-    // Only update by custom numerical id in FeaturedArtist
-    let artist = await FeaturedArtist.findOneAndUpdate(
-      { id: artistId },
-      updateObj,
-      { new: true }
-    );
+    let artist = null;
+    // Try to update by ObjectId
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      artist = await FeaturedArtist.findByIdAndUpdate(id, updateObj, { new: true });
+    }
+    // Fallback to legacy numerical id
+    if (!artist) {
+      artist = await FeaturedArtist.findOneAndUpdate({ id: parseInt(id) }, updateObj, { new: true });
+    }
     if (!artist) return res.status(404).json({ error: 'Artist not found in FeaturedArtist collection' });
     res.json(artist);
   } catch (err) {

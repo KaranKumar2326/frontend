@@ -13,7 +13,7 @@ import Footer from "./Footer";
 import OtherArtists from "./OtherArtists";
 
 export default function PublicArtistPage() {
-  const { id } = useParams();
+  const { _id } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +24,7 @@ export default function PublicArtistPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3001/api/artists/${id}`);
+        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -37,7 +37,22 @@ export default function PublicArtistPage() {
       setLoading(false);
     };
     fetchArtist();
-  }, [id]);
+  }, [_id]);
+
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
 
   // Helper to convert Google Drive links to direct image links and proxy through backend
   const getImageSrc = (url) => {

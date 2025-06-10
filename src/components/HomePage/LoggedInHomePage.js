@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoggedInHomePage.css';
-import { artistImageUrls } from '../data/mockData';
 import './Footer.css';
 import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube, Search, Headphones, CalendarCheck } from "lucide-react";
 import { Link } from "wouter";
@@ -23,6 +22,22 @@ const LoggedInHomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState({ name: '', email: '' });
   const [loading, setLoading] = useState(true);
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
 
   // Retrieve user info from localStorage when the component mounts
   useEffect(() => {
@@ -39,6 +54,25 @@ const LoggedInHomePage = () => {
 
     setLoading(false);
   }, [navigate]);
+
+  useEffect(() => {
+    // Fetch all artists and collect all images
+    fetch('http://localhost:3001/api/artists')
+      .then(res => res.json())
+      .then(data => {
+        let allImages = [];
+        data.forEach(artist => {
+          if (Array.isArray(artist.gallery)) {
+            allImages = allImages.concat(artist.gallery.map(getImageSrc));
+          }
+          if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
+          if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
+        });
+        allImages = Array.from(new Set(allImages.filter(Boolean)));
+        setGalleryImages(allImages);
+      })
+      .catch(() => setGalleryImages([]));
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;  // Show loading state while the user info is being fetched
@@ -163,7 +197,7 @@ const LoggedInHomePage = () => {
         {/* Image Slider Section */}
         <div className="image-slider-section">
           <h2 className="slider-heading">Gallery</h2>
-          <ImageSlider images={artistImageUrls} />
+          <ImageSlider images={galleryImages} />
         </div>
 
         <Footer />

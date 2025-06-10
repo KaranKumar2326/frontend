@@ -7,7 +7,7 @@ const JammingPage = () => {
   // Example event data (replace with real data from your backend)
   const events = [
     {
-      id: 1,
+      _id: 1,
       title: "Rock Jam Session",
       date: "June 15, 2025",
       time: "7:00 PM - 10:00 PM",
@@ -18,7 +18,7 @@ const JammingPage = () => {
       image: "🎸"
     },
     {
-      id: 2,
+      _id: 2,
       title: "Jazz Night Jam",
       date: "June 17, 2025",
       time: "6:00 PM - 9:00 PM",
@@ -30,7 +30,7 @@ const JammingPage = () => {
       image: "🎷"
     },
     {
-      id: 3,
+      _id: 3,
       title: "Hip-Hop Jam Session",
       date: "June 20, 2025",
       time: "8:00 PM - 11:00 PM",
@@ -41,7 +41,7 @@ const JammingPage = () => {
       image: "🎤"
     },
     {
-      id: 4,
+      _id: 4,
       title: "Pop Music Jam",
       date: "June 22, 2025",
       time: "5:00 PM - 8:00 PM",
@@ -53,7 +53,7 @@ const JammingPage = () => {
       image: "🎹"
     },
     {
-      id: 5,
+      _id: 5,
       title: "Acoustic Evening Jam",
       date: "June 25, 2025",
       time: "4:00 PM - 7:00 PM",
@@ -64,7 +64,7 @@ const JammingPage = () => {
       image: "🎸"
     },
     {
-      id: 6,
+      _id: 6,
       title: "Indie Music Jam",
       date: "June 28, 2025",
       time: "3:00 PM - 6:00 PM",
@@ -95,8 +95,8 @@ const JammingPage = () => {
 
   const navigate = useNavigate();
 
-const handleEventClick = (eventId) => {
-  navigate(`/event/${eventId}`);
+const handleEventClick = (_id) => {
+  navigate(`/event/${_id}`);
 };
 
   const getGenreColor = (genre) => {
@@ -192,9 +192,9 @@ const handleEventClick = (eventId) => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {filteredEvents.map((event) => (
             <div
-              key={event.id}
+              key={event._id}
               className="group relative bg-white/95 backdrop-blur-lg rounded-3xl p-8 border border-orange-200 hover:border-orange-400 cursor-pointer transition-all duration-500 ease-out hover:transform hover:scale-105 hover:-rotate-1 shadow-xl hover:shadow-2xl"
-              onClick={() => handleEventClick(event.id)}
+              onClick={() => handleEventClick(event._id)}
             >
               {/* Genre badge */}
               <div className={`absolute -top-3 -right-3 w-16 h-16 bg-gradient-to-r ${getGenreColor(event.genre)} rounded-2xl flex items-center justify-center text-2xl transform rotate-12 group-hover:rotate-0 transition-transform duration-300 shadow-lg`}>

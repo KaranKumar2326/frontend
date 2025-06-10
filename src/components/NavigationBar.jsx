@@ -5,7 +5,7 @@ import './NavigationBar.css'; // Updated to use NavigationBar.css instead of Log
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
 
-const NavigationBar = ({ hideProfile = false }) => {
+const NavigationBar = ({ hideProfile = false, userProfilePic }) => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current location
   const [openProfile, setOpenProfile] = useState(false);
@@ -40,7 +40,13 @@ const NavigationBar = ({ hideProfile = false }) => {
   // Function to handle My Profile navigation
   const handleProfileNavigation = () => {
     if (location.pathname === '/loggedInHomePageArtist') {
-      navigate('/publicartistprofilepage/1');
+      // Get the artist's _id from localStorage (set this at login/signup)
+      const artistId = localStorage.getItem('artist_id');
+      if (artistId) {
+        navigate(`/publicartistprofilepage/${artistId}`);
+      } else {
+        toast.error('Artist ID not found. Please log in again.');
+      }
     } else if (location.pathname === '/loggedInHome') {
       navigate('/ProfilePage');
     }
@@ -74,18 +80,22 @@ const NavigationBar = ({ hideProfile = false }) => {
                 </>
               )}
               {/* Always show profile pic and dropdown except on signup/home/artist home */}
-              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && (
+              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && !userProfilePic && (
                 !hideProfile && (
                   <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
                 )
               )}
-              {location.pathname === '/loggedInHomePageArtist' && (
+              {location.pathname === '/loggedInHomePageArtist' && !userProfilePic && (
                 <>
                   <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
                   {!hideProfile && (
                     <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
                   )}
                 </>
+              )}
+              {/* Show artist profile pic if userProfilePic prop is provided (for public artist profile page) */}
+              {userProfilePic && (
+                <img src={userProfilePic} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
               )}
               {!hideProfile && openProfile && (
                 <div className="flex flex-col dropdown">

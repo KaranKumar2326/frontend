@@ -55,7 +55,7 @@ export function createQueryFn() {
 
 /**
  * Process endpoints with parameters
- * e.g., '/api/artists/:id' with params = { id: 1 } becomes '/api/artists/1'
+ * e.g., '/api/artists/:_id' with params = { _id: 1 } becomes '/api/artists/1'
  */
 function processEndpoint(endpoint, params) {
   if (!params) return endpoint;
@@ -88,31 +88,29 @@ const mockApiHandlers = {
   '/api/artists/search': {
     GET: async (filters) => searchArtists(filters),
   },
-  '/api/artists/:id': {
-    GET: async ({ id }) => {
-      const artistId = parseInt(id, 10);
+  '/api/artists/:_id': {
+    GET: async ({ _id }) => {
+      const artistId = _id;
       return getArtistWithDetails(artistId);
     },
   },
   '/api/bookings': {
     POST: async (data) => {
       // In a real app, this would add to the database
-      // For mock purposes, we'll just return the data with an ID
+      // For mock purposes, we'll just return the data with an _id
       return {
         ...data,
-        id: bookings.length + 1,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
+        _id: bookings.length + 1,
       };
     },
   },
   '/api/artists': {
-    GET: async () => artists.map(a => getArtistWithDetails(a.id)).filter(Boolean),
+    GET: async () => artists.map(a => getArtistWithDetails(a._id)).filter(Boolean),
     POST: async (data) => {
       // Mock creating a new artist
       return {
         ...data,
-        id: artists.length + 1,
+        _id: artists.length + 1,
         rating: 0,
         available: true,
       };
@@ -122,7 +120,7 @@ const mockApiHandlers = {
     GET: async () => testimonials.filter(t => t.featured),
   },
   '/api/artists/global': {
-    GET: async () => artists.map(a => getArtistWithDetails(a.id)).filter(Boolean),
+    GET: async () => artists.map(a => getArtistWithDetails(a._id)).filter(Boolean),
     
   },
 };

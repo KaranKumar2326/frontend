@@ -70,7 +70,7 @@ const FeaturedArtists = () => {
 
       <div className="featured-artists__grid">  
         {artists?.map(artist => (
-          <ArtistCard key={artist.id} artist={{...artist, coverImage: getImageSrc(artist.coverImage)}} />
+          <ArtistCard key={artist._id} artist={{...artist, coverImage: getImageSrc(artist.coverImage)}} />
         ))}
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>

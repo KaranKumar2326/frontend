@@ -36,7 +36,7 @@ const Footer = () => (
             <li><a href="/join"className='footer-a'><a>Join as a Artist</a></a></li>
             {/* <li><a href="#" className="footer-a"><a>Success Stories</a></a></li> */}
             {/* <li><a href="#" className="footer-a"><a>Pricing & Commissions</a></a></li> */}
-            <li><a href="#" className="footer-a"><a>FAQ for Artists</a></a></li>
+            <li><a href="/faq" className="footer-a"><a>FAQ for Artists</a></a></li>
             <li><a href="/#testimonials" className="footer-a"><a>Testimonials</a></a></li>
             {/* <li><a href="#" className="footer-a"><a>Resources</a></a></li> */}
           </ul>

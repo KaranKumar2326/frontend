@@ -17,11 +17,17 @@ import HowItWorksPage from './components/HowItWorksPage';
 import ProfilePage from './components/HomePage/ProfilePage';
 import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
+<<<<<<< HEAD
+import GlobalArtistsPage from './components/HomePage/GlobalArtistsPage'; // Import GlobalArtistsPage
+import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
 import { useParams } from 'react-router-dom';
 
 
 // import './App.css'; // Import your main CSS file
+=======
+>>>>>>> 8718fd8e2524048facbe408a9e0bbe8c9d49c262
 import './index.css'; // Import Tailwind CSS
+import { useParams } from 'react-router-dom';
 
 const dummyCards = [
   {
@@ -38,6 +44,10 @@ const dummyCards = [
   },
   // more cards...
 ];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8718fd8e2524048facbe408a9e0bbe8c9d49c262
 
 function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   const location = useLocation();
@@ -57,14 +67,16 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/loginAsArtist" element={<LoginAsArtist />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/event/:eventId" element={<EventPage />} />
-        <Route path="/artist-profile/:id" element={<ArtistProfilePage />} />
-        <Route path="/ArtistProfilePage/:artistId" element={<ArtistProfilePage />} />
+        <Route path="/event/:_id" element={<EventPage />} />
+        <Route path="/artist-profile/:_id" element={<ArtistProfilePage />} />
+        <Route path="/ArtistProfilePage/:_id" element={<ArtistProfilePage />} />
         <Route path="/all-artists" element={<AllArtistsPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
-        <Route path="/public-artist/:id" element={<PublicArtistPage />} />
-        <Route path="/publicartistprofilepage/:id" element={<PublicArtistProfilePage />} />
+        <Route path="/public-artist/:_id" element={<PublicArtistPage />} />
+        <Route path="/publicartistprofilepage/:_id" element={<PublicArtistProfilePage />} />
+        <Route path="/global-artists" element={<GlobalArtistsPage />} />
+        <Route path="/faq" element={<FAQPage />} />
       </Routes>
     </>
   );
