@@ -16,7 +16,10 @@ const SignUp = () => {
     confirmPassword: '',
     pincode: '', 
     geoLocation: null,
+    role: 'User', // Default role
   });
+
+  const [isArtist, setIsArtist] = useState(false); // Toggle state for User/Artist
 
   // Get user's current location using geolocation API
   useEffect(() => {
@@ -42,6 +45,11 @@ const SignUp = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleRoleToggle = () => {
+    setIsArtist((prev) => !prev);
+    setFormData((prev) => ({ ...prev, role: isArtist ? 'User' : 'Artist' }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -52,15 +60,7 @@ const SignUp = () => {
     }
 
     const signupData = {
-      name: formData.name,
-      genre: formData.genre,
-      experience: formData.experience,
-      address: formData.address,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-      pincode: formData.pincode,
+      ...formData,
       geoLocation: formData.geoLocation ? formData.geoLocation : null,
     };
 
@@ -92,6 +92,9 @@ const SignUp = () => {
       <div style={styles.container}>
         <div style={styles.formWrapper}>
           <h1>Create an Account</h1>
+          <button onClick={handleRoleToggle} style={styles.toggleButton}>
+            Switch to {isArtist ? 'User' : 'Artist'}
+          </button>
           <div style={styles.form}>
             <input
               type="text"
@@ -102,16 +105,20 @@ const SignUp = () => {
               required
               style={styles.input}
             />
-            <input
-              type="text"
-              name="genre"
-              placeholder="Genre"
-              value={formData.genre}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-            <input
+            {isArtist && (
+              <>
+                <input
+                  type="text"
+                  name="genre"
+                  placeholder="Genre"
+                  value={formData.genre}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </>
+            )}
+            {isArtist && <input
               type="number"
               name="experience"
               placeholder="Experience (Years)"
@@ -119,7 +126,7 @@ const SignUp = () => {
               onChange={handleChange}
               required
               style={styles.input}
-            />
+            />}
             <input
               type="text"
               name="address"
@@ -227,6 +234,16 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     fontSize: '16px',
+    cursor: 'pointer',
+  },
+  toggleButton: {
+    marginBottom: '20px',
+    padding: '10px 20px',
+    backgroundColor: '#6C2BD9', // Updated to match other button colors
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    fontSize: '14px',
     cursor: 'pointer',
   },
 };

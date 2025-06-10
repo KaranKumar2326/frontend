@@ -7,7 +7,6 @@ import CardList from './components/CardList';
 import HomePage from './components/HomePage/HomePage';
 import AboutPage from './components/AboutPage'; // Import AboutPage
 import EventPage from './components/EventPage'; // Import EventPage
-import LoginAsArtist from './components/Login/LoginAsArtist';
 import LoggedInHomePage from './components/HomePage/LoggedInHomePage';
 import LoggedInHomePageArtist from './components/HomePage/LoggedInHomePageArtist';
 import ArtistProfilePage from './components/HomePage/ArtistProfilePage';
@@ -52,7 +51,6 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/loggedInHomePageArtist" element={<LoggedInHomePageArtist />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/loginAsArtist" element={<LoginAsArtist />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/event/:eventId" element={<EventPage />} />

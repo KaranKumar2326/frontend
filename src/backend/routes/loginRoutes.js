@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
     );
 
     // Send response with token
-    res.json({ message: 'Login successful  arjun', token });
+    res.json({ message: 'Login successful', token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

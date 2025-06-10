@@ -16,15 +16,15 @@ const artistSchema = new mongoose.Schema({
   },
   genre: {
     type: String,
-    required: true
+    required: false
   },
   experience: {
     type: Number,
-    required: true
+    required: false // Made optional
   },
   address: {
     type: String,
-    required: true
+    required: false // Made optional
   },
   email: {
     type: String,

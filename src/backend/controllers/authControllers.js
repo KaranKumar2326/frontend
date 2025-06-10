@@ -59,13 +59,13 @@ exports.signup = async (req, res) => {
 
 // Login Controller
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body; // Include role in the request body
 
   try {
-    // Find the user by email
-    const user = await User.findOne({ email });
+    // Find the user by email and role
+    const user = await User.findOne({ email, role });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials or role' });
     }
 
     // Compare the provided password with the stored hash
@@ -76,24 +76,19 @@ exports.login = async (req, res) => {
 
     // Generate a JWT token if the password matches
     const token = jwt.sign(
-      { userId: user._id, email: user.email, name: user.name }, // Include user's name in the payload
-      process.env.JWT_SECRET, 
-      // expire the token in 5 seconds for testing purposes
-      // { expiresIn: '' }  // Set the token to expire in 1 hour
-      { expiresIn: '5s' }
+      { userId: user._id, email: user.email, name: user.name, role: user.role }, // Include role in the payload
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Set the token to expire in 1 hour
     );
-    console.log("Login request received with data:", req.body);
-    console.log("Generated token:", token);
-    console.log("User ID:", user._id);
-    console.log("User email:", user.email);
-    console.log("User name:", user.name);
+
     // Send the response with the token
     res.json({
-      message: 'Login successful karan',
+      message: 'Login successful',
       token,
       userId: user._id,
       email: user.email,
       name: user.name, // Include the user's name in the response
+      role: user.role, // Include the user's role in the response
     });
   } catch (error) {
     // Handle server errors
