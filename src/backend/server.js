@@ -39,6 +39,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');  // Import dotenv to handle environment variables
 const cors = require('cors');
+const jammingSessions = require('./routes/jammingSessions');
 const signupRoutes = require('./routes/signupRoutes');
 const loginRoutes = require('./routes/loginRoutes');  // Import login routes
 const artistRoutes = require('./routes/artistRoutes');
@@ -81,6 +82,8 @@ mongoose.connect( 'mongodb://localhost:27017/swigDB', {
 // login route
 app.use('/api/auth', authRoutes);  // Uncomment if you have a separate login route file
 app.use('/api/artists', artistRoutes);  // Register artist routes (from artistRoutes.js)
+// Add this with your other route imports
+
 
 // Proxy endpoint for images (CORS fix for Google Drive)
 app.get('/api/proxy-image', (req, res) => {
@@ -95,6 +98,8 @@ app.get('/api/proxy-image', (req, res) => {
     .pipe(res);
 });
 
+// Add this with your other route middleware
+app.use('/api/jamming-sessions', jammingSessions);
 // Example of protected route using JWT authentication
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({
