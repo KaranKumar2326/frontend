@@ -7,7 +7,7 @@ import NavigationBar from '../NavigationBar';
 import Footer from './Footer';
 
 const ArtistProfilePage = () => {
-  const { artistId } = useParams();
+  const { _id } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +29,7 @@ const ArtistProfilePage = () => {
     const fetchArtist = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3001/api/artists/${artistId}`);
+        const res = await fetch(`http://localhost:3001/api/artists/${_id}`);
         if (!res.ok) throw new Error('Artist not found.');
         const data = await res.json();
         setArtist(data);
@@ -43,7 +43,7 @@ const ArtistProfilePage = () => {
       setLoading(false);
     };
     fetchArtist();
-  }, [artistId]);
+  }, [_id]);
 
   useEffect(() => {
     // Fetch genres and instruments from backend
@@ -89,7 +89,7 @@ const ArtistProfilePage = () => {
         genres: genres.filter(g => selectedGenres.includes(g.name)),
         instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
       };
-      const res = await fetch(`http://localhost:3001/api/artists/${artistId}`, {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedArtist),
@@ -178,7 +178,7 @@ const ArtistProfilePage = () => {
                     }}>
                       {instruments.map(inst => (
                         <div
-                          key={inst.id}
+                          key={inst._id}
                           style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedInstruments.includes(inst.name) ? '#6c2bd9' : '#333', background: selectedInstruments.includes(inst.name) ? '#ede7fa' : 'transparent' }}
                           onMouseDown={e => {
                             e.preventDefault();
@@ -229,7 +229,7 @@ const ArtistProfilePage = () => {
                     }}>
                       {genres.map(genre => (
                         <div
-                          key={genre.id}
+                          key={genre._id}
                           style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedGenres.includes(genre.name) ? '#6c2bd9' : '#333', background: selectedGenres.includes(genre.name) ? '#ede7fa' : 'transparent' }}
                           onMouseDown={e => {
                             e.preventDefault();
@@ -282,7 +282,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=profile`, {
+                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=profile`, {
                             method: 'POST',
                             body: formData,
                           });
@@ -328,7 +328,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=banner`, {
+                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=banner`, {
                             method: 'POST',
                             body: formData,
                           });

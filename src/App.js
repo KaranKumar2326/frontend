@@ -16,6 +16,7 @@ import HowItWorksPage from './components/HowItWorksPage';
 import ProfilePage from './components/HomePage/ProfilePage';
 import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
+import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
 import './index.css'; // Import Tailwind CSS
 import { useParams } from 'react-router-dom';
 
@@ -35,7 +36,6 @@ const dummyCards = [
   // more cards...
 ];
 
-
 function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   const location = useLocation();
 
@@ -53,14 +53,15 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/event/:eventId" element={<EventPage />} />
-        <Route path="/artist-profile/:id" element={<ArtistProfilePage />} />
-        <Route path="/ArtistProfilePage/:artistId" element={<ArtistProfilePage />} />
+        <Route path="/event/:_id" element={<EventPage />} />
+        <Route path="/artist-profile/:_id" element={<ArtistProfilePage />} />
+        <Route path="/ArtistProfilePage/:_id" element={<ArtistProfilePage />} />
         <Route path="/all-artists" element={<AllArtistsPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
-        <Route path="/public-artist/:id" element={<PublicArtistPage />} />
-        <Route path="/publicartistprofilepage/:id" element={<PublicArtistProfilePage />} />
+        <Route path="/public-artist/:_id" element={<PublicArtistPage />} />
+        <Route path="/publicartistprofilepage/:_id" element={<PublicArtistProfilePage />} />
+        <Route path="/faq" element={<FAQPage />} />
       </Routes>
     </>
   );

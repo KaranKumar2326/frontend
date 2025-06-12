@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 const EventPage = () => {
-  const { eventId } = useParams();
+  const { _id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const EventPage = () => {
   // Example event data (in a real app, you'd fetch this from an API)
   const eventsData = [
     {
-      id: 1,
+      _id: 1,
       title: "Rock Jam Session",
       date: "June 15, 2025",
       time: "7:00 PM - 10:00 PM",
@@ -42,7 +42,7 @@ const EventPage = () => {
       performers: ["The Amp Tones", "Fret Burners", "Open Mic Slots Available"]
     },
     {
-      id: 2,
+      _id: 2,
       title: "Jazz Night Jam",
       date: "June 17, 2025",
       time: "6:00 PM - 9:00 PM",
@@ -65,14 +65,14 @@ const EventPage = () => {
     // Simulate API fetch
     const fetchEvent = () => {
       setTimeout(() => {
-        const foundEvent = eventsData.find(e => e.id === parseInt(eventId));
+        const foundEvent = eventsData.find(e => e._id === parseInt(_id));
         setEvent(foundEvent);
         setLoading(false);
       }, 500);
     };
 
     fetchEvent();
-  }, [eventId]);
+  }, [_id]);
 
   const getGenreColor = (genre) => {
     const colors = {

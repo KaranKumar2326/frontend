@@ -28,7 +28,7 @@ const getImageSrc = (url) => {
   return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
-export default function ArtistCard({ artist, priority = 0 }) {
+export default function ArtistCard({ artist, priority = 0, hidePrice = false }) {
   const navigate = useNavigate();
 
   const renderStars = (rating = 0) => {
@@ -100,19 +100,22 @@ export default function ArtistCard({ artist, priority = 0 }) {
               {artist.description}
             </Typography>
 
-          <Box className="artist-card__footer">
-            <Typography className="artist-card__price">
-              {artist.pricing && artist.pricingUnit ? (
-                `$${artist.pricing}/${artist.pricingUnit}`
-              ) : (
-                <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
-              )}
-            </Typography>
+          <Box className="artist-card__footer" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            {/* Hide price if a prop hidePrice is passed */}
+            {!hidePrice && (
+              <Typography className="artist-card__price">
+                {artist.pricing && artist.pricingUnit ? (
+                  `$${artist.pricing}/${artist.pricingUnit}`
+                ) : (
+                  <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
+                )}
+              </Typography>
+            )}
             <Button
               variant="contained"
               size="small"
               className="artist-card__button"
-              onClick={() => window.open(`/public-artist/${artist.id}`, '_blank')}
+              onClick={() => window.open(`/public-artist/${artist._id || artist.id}`, '_blank')}
             >
               View Profile
             </Button>

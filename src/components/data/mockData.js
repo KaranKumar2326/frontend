@@ -1,5 +1,5 @@
 // Sample images for artists (public domain or licensed images would be used in production)
-export const artistImageUrls = [
+const artistImageUrls = [
   'https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
   'https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80',
   'https://images.unsplash.com/photo-1525908106172-c1164e8ef28c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
@@ -315,11 +315,6 @@ export function getArtistWithDetails(artistId) {
     user,
     genres: artistGenresList,
     instruments: artistInstrumentsList,
-    pricing: artist.pricePerHour,
-    pricingUnit: 'hour',
-    coverImage: artist.imageUrl,
-    location: artist.location,
-    description: artist.bio,
   };
 }
 

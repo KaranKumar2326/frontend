@@ -91,7 +91,16 @@ router.get('/featured', async (req, res) => {
 // Get a single artist by ID (from FeaturedArtist collection)
 router.get('/:id', async (req, res) => {
   try {
-    const artist = await FeaturedArtist.findOne({ id: parseInt(req.params.id) });
+    const { id } = req.params;
+    let artist = null;
+    // Try to find by MongoDB ObjectId first
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      artist = await FeaturedArtist.findById(id);
+    }
+    // Fallback to legacy numerical id if not found
+    if (!artist) {
+      artist = await FeaturedArtist.findOne({ id: parseInt(id) });
+    }
     if (!artist) {
       return res.status(404).json({ message: 'Artist not found' });
     }
@@ -104,13 +113,17 @@ router.get('/:id', async (req, res) => {
 // Update artist by ID (FeaturedArtist)
 router.put('/:id', async (req, res) => {
   try {
-    const artistId = parseInt(req.params.id);
+    const { id } = req.params;
     const update = req.body;
-    const updatedArtist = await FeaturedArtist.findOneAndUpdate(
-      { id: artistId },
-      update,
-      { new: true }
-    );
+    let updatedArtist = null;
+    // Try to update by ObjectId
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      updatedArtist = await FeaturedArtist.findByIdAndUpdate(id, update, { new: true });
+    }
+    // Fallback to legacy numerical id
+    if (!updatedArtist) {
+      updatedArtist = await FeaturedArtist.findOneAndUpdate({ id: parseInt(id) }, update, { new: true });
+    }
     if (!updatedArtist) {
       return res.status(404).json({ message: 'Artist not found' });
     }

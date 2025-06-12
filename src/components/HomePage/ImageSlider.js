@@ -3,13 +3,59 @@ import './ImageSlider.css';
 
 export default function ImageSlider({ images }) {
   const [current, setCurrent] = useState(0);
-  const length = images.length;
+  const [imageUrls, setImageUrls] = useState([]);
+  const length = imageUrls.length;
   const [isSliding, setIsSliding] = useState(false);
   const [next, setNext] = useState(0);
   const timeoutRef = useRef(null);
 
+  // Fetch image URLs from backend if images are IDs or objects
+  useEffect(() => {
+    async function fetchImages() {
+      if (!Array.isArray(images) || images.length === 0) {
+        setImageUrls([]);
+        return;
+      }
+      // If already URLs, just use them
+      if (typeof images[0] === 'string' && images[0].startsWith('http')) {
+        setImageUrls(images);
+        return;
+      }
+      // If images are objects with imageUrl or _id
+      if (typeof images[0] === 'object') {
+        // If they have imageUrl, use it
+        if (images[0].imageUrl) {
+          setImageUrls(images.map(img => img.imageUrl));
+          return;
+        }
+        // If they have _id, fetch from backend
+        if (images[0]._id) {
+          try {
+            const urls = await Promise.all(images.map(async (img) => {
+              const res = await fetch(`http://localhost:3001/api/images/${img._id}`);
+              if (res.ok) {
+                const data = await res.json();
+                return data.url;
+              }
+              return null;
+            }));
+            setImageUrls(urls.filter(Boolean));
+            return;
+          } catch (e) {
+            setImageUrls([]);
+            return;
+          }
+        }
+      }
+      // Fallback: treat as URLs
+      setImageUrls(images);
+    }
+    fetchImages();
+  }, [images]);
+
   // Auto-scroll every 3 seconds
   useEffect(() => {
+    if (length === 0) return;
     const interval = setInterval(() => {
       setNext((current + 2) % length);
       setIsSliding(true);
@@ -26,18 +72,18 @@ export default function ImageSlider({ images }) {
 
   // Calculate which images to show
   const getVisibleImages = () => {
-    if (length <= 2) return images.map((img, i) => ({ img, key: `img-${i}`, type: 'single' }));
+    if (length <= 2) return imageUrls.map((img, i) => ({ img, key: `img-${i}`, type: 'single' }));
     if (!isSliding) {
       // Show two current images
       if (current === length - 1) {
         return [
-          { img: images[current], key: 'cur-1', type: 'current' },
-          { img: images[0], key: 'cur-2', type: 'current' },
+          { img: imageUrls[current], key: 'cur-1', type: 'current' },
+          { img: imageUrls[0], key: 'cur-2', type: 'current' },
         ];
       }
       return [
-        { img: images[current], key: 'cur-1', type: 'current' },
-        { img: images[(current + 1) % length], key: 'cur-2', type: 'current' },
+        { img: imageUrls[current], key: 'cur-1', type: 'current' },
+        { img: imageUrls[(current + 1) % length], key: 'cur-2', type: 'current' },
       ];
     } else {
       // During sliding, show both old and new images for cross-fade (2 old, 2 new)
@@ -46,15 +92,15 @@ export default function ImageSlider({ images }) {
       const newIdx1 = next;
       const newIdx2 = (next + 1) % length;
       return [
-        { img: images[oldIdx1], key: 'old-1', type: 'old' },
-        { img: images[oldIdx2], key: 'old-2', type: 'old' },
-        { img: images[newIdx1], key: 'new-1', type: 'new' },
-        { img: images[newIdx2], key: 'new-2', type: 'new' },
+        { img: imageUrls[oldIdx1], key: 'old-1', type: 'old' },
+        { img: imageUrls[oldIdx2], key: 'old-2', type: 'old' },
+        { img: imageUrls[newIdx1], key: 'new-1', type: 'new' },
+        { img: imageUrls[newIdx2], key: 'new-2', type: 'new' },
       ];
     }
   };
 
-  if (!Array.isArray(images) || images.length === 0) return null;
+  if (!Array.isArray(imageUrls) || imageUrls.length === 0) return null;
 
   return(
     <div className="image-slider">
@@ -94,7 +140,7 @@ export default function ImageSlider({ images }) {
         )}
       </div>
       <div className="slider-dots">
-        {images.map((_, idx) => (
+        {imageUrls.map((_, idx) => (
           <span
             key={idx}
             className={`slider-dot${idx === current ? ' active' : ''}`}

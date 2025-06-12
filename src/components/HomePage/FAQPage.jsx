@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import './HowItWorksPage.css';
-import NavigationBar from './NavigationBar';
-import Footer from './HomePage/Footer';
+import NavigationBar from '../NavigationBar';
+import Footer from './Footer';
+import '../HowItWorksPage.css';
+import { Search, Headphones, CalendarCheck } from "lucide-react";
+import { motion } from 'framer-motion';
 
-const HowItWorksPage = () => {
+export default function FAQPage() {
   const [selected, setSelected] = useState('artist');
 
   return (
     <>
       <NavigationBar />
       <div className="howitworks-main">
-        <h1 className="howitworks-title">How It Works</h1>
+        <h1 className="howitworks-title">FAQs</h1>
         <div className="howitworks-options-container">
           {/* Artist Option */}
           <div
@@ -27,7 +29,7 @@ const HowItWorksPage = () => {
             onClick={() => setSelected('host')}
           >
             <div className="howitworks-option-inner">
-              <h2 className="howitworks-option-title">For Hosts</h2>
+              <h2 className="howitworks-option-title">For Users</h2>
             </div>
           </div>
           {/* Move the text content inside the container below the options */}
@@ -86,6 +88,4 @@ const HowItWorksPage = () => {
       <Footer />
     </>
   );
-};
-
-export default HowItWorksPage;
+}
