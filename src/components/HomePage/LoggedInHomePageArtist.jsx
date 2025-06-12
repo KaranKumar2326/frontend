@@ -16,6 +16,15 @@ import AllArtistsList from './AllArtistsList';
 
 function LoggedInHomePageArtist() {
   const navigate = useNavigate();
+  // Check for artist login on mount
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = localStorage.getItem('role');
+    if (!isLoggedIn || role !== 'Artist') {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -90,7 +99,11 @@ const getImageSrc = (url) => {
   };
 
   const handleHireArtistClick = () => {
-    navigate('/login');
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/jammingpage');
+    }
   };
 
   const[openProfile, setOpenProfile] = useState(false);
@@ -120,7 +133,9 @@ const getImageSrc = (url) => {
                   >
                     Host a Jamming Session
                   </button>
-                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
                     Collaborate with Artists 
                   </button>
                 </div>

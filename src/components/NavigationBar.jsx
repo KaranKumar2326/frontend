@@ -62,7 +62,18 @@ const NavigationBar = ({ hideProfile = false, userProfilePic }) => {
           </a>
         </div>
         <div className="navbar-as">
-          <a className="navbar-a" href="#" onClick={e => { e.preventDefault(); navigate('/'); }}>Home</a>
+          <a className="navbar-a" href="#" onClick={e => {
+            e.preventDefault();
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const role = localStorage.getItem('role');
+            if (isLoggedIn && role === 'User') {
+              navigate('/loggedInHome');
+            } else if (isLoggedIn && role === 'Artist') {
+              navigate('/loggedInHomePageArtist');
+            } else {
+              navigate('/');
+            }
+          }}>Home</a>
           <a className="navbar-a" href="#footer" onClick={e => { e.preventDefault(); scrollToSection('footer'); }}>Contact Us</a>
           <a className='navbar-a' href="#" onClick={e => { e.preventDefault(); navigate('/how-it-works'); }}>How it Works</a>
 

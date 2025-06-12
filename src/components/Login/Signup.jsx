@@ -184,6 +184,10 @@ const SignUp = () => {
             <button onClick={handleSubmit} style={styles.button}>
               Sign Up
             </button>
+            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+              <span>Already have an account? </span>
+              <a href="/login" style={{ color: '#6C2BD9', textDecoration: 'underline', cursor: 'pointer' }}>Login here</a>
+            </div>
           </div>
         </div>
       </div>
