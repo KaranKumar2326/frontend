@@ -16,15 +16,8 @@ import HowItWorksPage from './components/HowItWorksPage';
 import ProfilePage from './components/HomePage/ProfilePage';
 import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
-<<<<<<< HEAD
 import GlobalArtistsPage from './components/HomePage/GlobalArtistsPage'; // Import GlobalArtistsPage
 import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
-import { useParams } from 'react-router-dom';
-
-
-// import './App.css'; // Import your main CSS file
-=======
->>>>>>> 8718fd8e2524048facbe408a9e0bbe8c9d49c262
 import './index.css'; // Import Tailwind CSS
 import { useParams } from 'react-router-dom';
 
@@ -43,10 +36,6 @@ const dummyCards = [
   },
   // more cards...
 ];
-<<<<<<< HEAD
-=======
-
->>>>>>> 8718fd8e2524048facbe408a9e0bbe8c9d49c262
 
 function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   const location = useLocation();
