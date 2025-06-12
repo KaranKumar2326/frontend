@@ -118,9 +118,6 @@ export default function PublicArtistPage() {
               Book Now
             </button>
           </Box>
-          <Box className="public-artist-other-artists">
-            <OtherArtists currentArtistId={artist._id || artist.id} />
-          </Box>
         </Box>
 
         {/* Tabs */}

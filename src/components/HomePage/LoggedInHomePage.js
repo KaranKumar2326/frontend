@@ -16,7 +16,6 @@ import { toast } from 'react-toastify';  // Import toast function
 import 'react-toastify/dist/ReactToastify.css';  // Import styles for toast notifications
 
 
-
 const LoggedInHomePage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,6 +51,14 @@ const LoggedInHomePage = () => {
     }
 
     setLoading(false);
+  }, [navigate]);
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = localStorage.getItem('role');
+    if (!isLoggedIn || role !== 'User') {
+      navigate('/login');
+    }
   }, [navigate]);
 
   useEffect(() => {
@@ -92,7 +99,19 @@ const LoggedInHomePage = () => {
   };
 
   const handleHireArtistClick = () => {
-    navigate('/login');
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/hireartist');
+    }
+  };
+
+  const handleJammingSessionClick = () => {
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/jammingpage');
+    }
   };
 
   return (
@@ -127,7 +146,9 @@ const LoggedInHomePage = () => {
                 >
                   Hire an Artist
                 </button>
-                <button className="Y" style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <button className="Y" style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                  onClick={handleJammingSessionClick}
+                >
                   Jamming sessions near you 
                 </button>
               </div>
@@ -153,7 +174,7 @@ const LoggedInHomePage = () => {
               </p>
               <div className="cta-buttons">
                 <Link href="#">
-                  <button className="cta-button primary-btn">Jamming Sessions Near You</button>
+                  <button className="cta-button primary-btn" onClick={handleJammingSessionClick}>Jamming Sessions Near You</button>
                 </Link>
               </div>
             </motion.div>

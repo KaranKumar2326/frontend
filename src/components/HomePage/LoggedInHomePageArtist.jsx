@@ -16,6 +16,15 @@ import AllArtistsList from './AllArtistsList';
 
 function LoggedInHomePageArtist() {
   const navigate = useNavigate();
+  // Check for artist login on mount
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = localStorage.getItem('role');
+    if (!isLoggedIn || role !== 'Artist') {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -110,19 +119,52 @@ function LoggedInHomePageArtist() {
   };
 
   const handleHireArtistClick = () => {
-    navigate('/login');
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/jammingpage');
+    }
   };
 
   return (
     <>
       <NavigationBar />
       <div className="page-container">
+        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
+          <div className="background-image">
+          </div>
+            <header className="hero-section" style={{ zIndex: 1, height:'100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+              <div className='content'>
+                <div>
+                  <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
+                </div>
+                <div>
+                  <p className="hero-subtitle" style={{ color: 'white', fontWeight: 'bold', marginBottom: '30px', fontSize: '1.5rem' }}>
+                  Join us in celebrating the joy of music and connecting with artists from around the world.
+                  </p>
+                </div>
+                <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
+                  <button 
+                    className="P" 
+                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
+                    Host a Jamming Session
+                  </button>
+                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
+                    Collaborate with Artists 
+                  </button>
+                </div>
+
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px' }}>
           <div className="background-image"></div>
           <header className="hero-section" style={{ zIndex: 1, height: '100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
             <div className='content'>
               <div>
                 <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
+
               </div>
               <div style={{ color: 'white', marginBottom: '20px', fontSize: '1.2rem' }}>
                 <p>Welcome, {user.name}!</p>
