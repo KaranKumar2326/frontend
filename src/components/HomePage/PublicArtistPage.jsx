@@ -69,6 +69,21 @@ export default function PublicArtistPage() {
     return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
   const renderStars = (rating = 0) => {
     const stars = [];
     const fullStars = Math.floor(rating);

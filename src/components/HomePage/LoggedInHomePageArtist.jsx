@@ -8,6 +8,8 @@ import { Link } from "wouter";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import './CallToAction.css';
+import { artistImageUrls } from '../data/mockData';
+import FeaturedArtists from './FeaturedArtist';
 import ImageSlider from './ImageSlider';
 import NavigationBar from '../NavigationBar';
 import AllArtistsList from './AllArtistsList';
@@ -178,25 +180,8 @@ const getImageSrc = (url) => {
             />
           </div>
         </div>
-        
-        {/* All Artists Section */}
-        <div className="all-artists-section" style={{ margin: '40px 0' }}>
-          <h2 className="search-heading">Global Artists</h2>
-          <div className="featured-artists__grid" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            {/* Fetch and display all artists as cards */}
-            <AllArtistsList searchQuery={searchQuery} />
-          </div>
-        </div>
-        {/* Show More Artists Button */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <button
-            className="P"
-            style={{ fontWeight: 'bold', padding: '16px 36px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
-            onClick={() => navigate('/global-artists')}
-          >
-            Show More Artists
-          </button>
-        </div>
+        <FeaturedArtists />
+
         <div className="features-section">
           <h2>Why Choose Us?</h2>
           <div className="features">

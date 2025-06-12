@@ -20,15 +20,15 @@ const userSchema = new mongoose.Schema({
   },
   genre: {
     type: String,
-    required: true
+    required: false // Made optional
   },
   experience: {
     type: Number,
-    required: true
+    required: false // Made optional
   },
   address: {
     type: String,
-    required: true
+    required: false // Made optional
   },
   phone: {
     type: String,
@@ -36,10 +36,10 @@ const userSchema = new mongoose.Schema({
   },
   geoLocation: {
     type: {
-      latitude: { type: Number, required: true },
-      longitude: { type: Number, required: true }
+      latitude: { type: Number, required: false },
+      longitude: { type: Number, required: false }
     },
-    required: true
+    required: false // Made optional
   },
   createdAt: {
     type: Date,

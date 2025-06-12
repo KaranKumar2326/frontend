@@ -28,7 +28,7 @@ const getImageSrc = (url) => {
   return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
-export default function ArtistCard({ artist, priority = 0, hidePrice }) {
+export default function ArtistCard({ artist, priority = 0 }) {
   const navigate = useNavigate();
 
   const renderStars = (rating = 0) => {
@@ -59,7 +59,6 @@ export default function ArtistCard({ artist, priority = 0, hidePrice }) {
             component="img"
             height="200"
             image={
-              getImageSrc(artist.imageUrl) ||
               getImageSrc(artist.imageUrl) ||
               "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
             }

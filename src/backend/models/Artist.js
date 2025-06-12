@@ -6,6 +6,11 @@ const artistSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  id: {
+    type: Number,
+    required: true,
+    unique: true
+  },
   name: {
     type: String,
     required: true
@@ -16,15 +21,15 @@ const artistSchema = new mongoose.Schema({
   },
   genre: {
     type: String,
-    required: true
+    required: false
   },
   experience: {
     type: Number,
-    required: true
+    required: false // Made optional
   },
   address: {
     type: String,
-    required: true
+    required: false // Made optional
   },
   email: {
     type: String,

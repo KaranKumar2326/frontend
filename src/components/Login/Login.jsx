@@ -11,52 +11,65 @@ const Login = () => {
     emailOrPhone: '',
     password: '',
   });
+  const [isArtist, setIsArtist] = useState(false); // Toggle state for Artist/User login
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Make sure you are sending the right data
-  const loginData = {
-    email: formData.emailOrPhone,  // Mapping to 'email' on backend
-    password: formData.password,
+  const handleToggle = () => {
+    setIsArtist((prev) => !prev);
   };
-  toast.info('Logging in...');
 
-  try {
-    const response = await fetch('http://localhost:3001/api/auth/login', {  // Ensure correct port (5000 is used here)
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(loginData),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const result = await response.json();
-    if (response.ok) {  // Check if the response is OK (status 200)
-      toast.success('Login successful');
-      // localStorage.setItem('token', result.token); // Save JWT token to localStorage
-      localStorage.setItem('token', result.token); // Save JWT token
-      console.log('Login successful:', result);
-      localStorage.setItem('userId', result.userId); // Save userId
-      localStorage.setItem('email', result.email); 
-      localStorage.setItem('name', result.name); // Save user name
-      navigate('/loggedInHome'); // Redirect to LoggedInHomePage after login
-    } else {
-      toast.error(result.message || 'Login failed');
+    const loginData = {
+      email: formData.emailOrPhone,
+      password: formData.password,
+      role: isArtist ? 'artist' : 'user', // Include role in login data
+    };
+    toast.info('Logging in...');
+
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        toast.success('Login successful');
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.userId);
+        localStorage.setItem('email', result.email);
+        localStorage.setItem('name', result.name);
+        navigate('/loggedInHome');
+      } else {
+        toast.error(result.message || 'Login failed');
+      }
+    } catch (err) {
+      toast.error('Error: ' + err.message);
     }
-  } catch (err) {
-    toast.error('Error: ' + err.message);
-  }
-};
-
+  };
 
   return (
     <div style={styles.container}>
       <form style={styles.form} onSubmit={handleSubmit}>
         <h2 style={styles.heading}>Login</h2>
+        <div style={styles.toggleContainer}>
+          <label style={styles.toggleLabel}>
+            <input
+              type="checkbox"
+              checked={isArtist}
+              onChange={handleToggle}
+              style={styles.toggleInput}
+            />
+            {isArtist ? 'Login as Artist' : 'Login as User'}
+          </label>
+        </div>
         <input
           type="text"
           name="emailOrPhone"
@@ -133,6 +146,18 @@ const styles = {
     borderRadius: '6px',
     fontSize: '16px',
     cursor: 'pointer',
+  },
+  toggleContainer: {
+    marginBottom: '20px',
+    textAlign: 'center',
+  },
+  toggleLabel: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  toggleInput: {
+    marginRight: '10px',
   },
 };
 

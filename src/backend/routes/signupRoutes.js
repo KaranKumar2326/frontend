@@ -84,7 +84,7 @@ const router = express.Router();
 
 // Signup route
 router.post('/signup', async (req, res) => {
-  const { name, email, password, pincode, genre, experience, address, phone, geoLocation } = req.body;
+  const { name, email, password, pincode, genre, experience, address, phone, geoLocation, role } = req.body; // Added role
 
   try {
     // Check if the email already exists
@@ -107,6 +107,7 @@ router.post('/signup', async (req, res) => {
       address,
       phone,
       geoLocation,
+      role, // Save the role dynamically
     });
 
     // Save the user to the database
@@ -114,7 +115,7 @@ router.post('/signup', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: newUser._id, role: 'user' },  // Adjust 'role' as necessary for your system
+      { userId: newUser._id, role }, // Use the dynamic role
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

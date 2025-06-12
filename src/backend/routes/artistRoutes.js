@@ -7,38 +7,6 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 
-// Helper to upload file to Google Drive and get shareable link
-async function uploadToDrive(filePath, filename) {
-  const fileMetadata = {
-    name: filename,
-    parents: [DRIVE_FOLDER_ID],
-  };
-  const media = {
-    mimeType: 'image/jpeg',
-    body: fs.createReadStream(filePath),
-  };
-  const file = await drive.files.create({
-    resource: fileMetadata,
-    media,
-    fields: 'id',
-  });
-  // Make file public
-  await drive.permissions.create({
-    fileId: file.data.id,
-    requestBody: { role: 'reader', type: 'anyone' },
-  });
-  // Get shareable link
-  const result = await drive.files.get({
-    fileId: file.data.id,
-    fields: 'webContentLink',
-  });
-  return result.data.webContentLink;
-}
-const multer = require('multer');
-const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
-
 // Multer setup for file uploads
 const upload = multer({ dest: 'uploads/' });
 
@@ -188,7 +156,7 @@ router.get('/global', async (req, res) => {
 // POST /api/artists/:id/upload-images
 router.post('/:id/upload-images', upload.array('images'), async (req, res) => {
   try {
-    const { id } = req.params;
+    const artistId = parseInt(req.params.id); // Always use custom numerical id
     const files = req.files;
     const type = req.query.type || 'profile'; // 'profile' or 'banner'
     if (!files || files.length === 0) {
@@ -199,21 +167,18 @@ router.post('/:id/upload-images', upload.array('images'), async (req, res) => {
     const link = await uploadToDrive(file.path, file.originalname);
     fs.unlinkSync(file.path); // Remove local file after upload
     // Prepare update object
-    let updateObj = { $push: { gallery: link } };
+    let updateObj = {};
     if (type === 'banner') {
       updateObj.coverImage = link;
     } else {
       updateObj.imageUrl = link;
     }
-    let artist = null;
-    // Try to update by ObjectId
-    if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      artist = await FeaturedArtist.findByIdAndUpdate(id, updateObj, { new: true });
-    }
-    // Fallback to legacy numerical id
-    if (!artist) {
-      artist = await FeaturedArtist.findOneAndUpdate({ id: parseInt(id) }, updateObj, { new: true });
-    }
+    // Only update by custom numerical id in FeaturedArtist
+    let artist = await FeaturedArtist.findOneAndUpdate(
+      { id: artistId },
+      updateObj,
+      { new: true }
+    );
     if (!artist) return res.status(404).json({ error: 'Artist not found in FeaturedArtist collection' });
     res.json(artist);
   } catch (err) {
