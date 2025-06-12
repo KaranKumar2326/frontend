@@ -28,7 +28,7 @@ const getImageSrc = (url) => {
   return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
-export default function ArtistCard({ artist, priority = 0 }) {
+export default function ArtistCard({ artist, priority = 0, hidePrice = false }) {
   const navigate = useNavigate();
 
   const renderStars = (rating = 0) => {

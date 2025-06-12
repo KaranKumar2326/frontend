@@ -16,7 +16,6 @@ import HowItWorksPage from './components/HowItWorksPage';
 import ProfilePage from './components/HomePage/ProfilePage';
 import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
-import GlobalArtistsPage from './components/HomePage/GlobalArtistsPage'; // Import GlobalArtistsPage
 import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
 import './index.css'; // Import Tailwind CSS
 import { useParams } from 'react-router-dom';
@@ -62,7 +61,6 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/public-artist/:_id" element={<PublicArtistPage />} />
         <Route path="/publicartistprofilepage/:_id" element={<PublicArtistProfilePage />} />
-        <Route path="/global-artists" element={<GlobalArtistsPage />} />
         <Route path="/faq" element={<FAQPage />} />
       </Routes>
     </>

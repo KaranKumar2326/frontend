@@ -282,7 +282,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=profile`, {
+                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=profile`, {
                             method: 'POST',
                             body: formData,
                           });
@@ -328,7 +328,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${artistId}/upload-images?type=banner`, {
+                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=banner`, {
                             method: 'POST',
                             body: formData,
                           });
