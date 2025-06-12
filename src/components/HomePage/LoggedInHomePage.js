@@ -45,7 +45,6 @@ const LoggedInHomePage = () => {
     const userEmail = localStorage.getItem('email');
     console.log('User Name:', userName);
     console.log('User Email:', userEmail);
-    console.log("abhi thik hai");
     if (userName && userEmail) {
       setUser({ name: userName, email: userEmail });
     } else {

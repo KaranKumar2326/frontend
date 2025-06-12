@@ -46,7 +46,29 @@ const Login = () => {
         localStorage.setItem('userId', result.userId);
         localStorage.setItem('email', result.email);
         localStorage.setItem('name', result.name);
-        navigate('/loggedInHome');
+        if (isArtist) {
+          navigate('/loggedInHomePageArtist', {
+            state: {
+              userDetails: {
+                userId: result.userId,
+                email: result.email,
+                name: result.name,
+                role: 'artist',
+              },
+            },
+          });
+        } else {
+          navigate('/loggedInHome', {
+            state: {
+              userDetails: {
+                userId: result.userId,
+                email: result.email,
+                name: result.name,
+                role: 'user',
+              },
+            },
+          });
+        }
       } else {
         toast.error(result.message || 'Login failed');
       }
