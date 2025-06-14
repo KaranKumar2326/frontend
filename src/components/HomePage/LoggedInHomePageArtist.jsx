@@ -16,88 +16,119 @@ import AllArtistsList from './AllArtistsList';
 
 function LoggedInHomePageArtist() {
   const navigate = useNavigate();
+  // Check for artist login on mount
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = (localStorage.getItem('role') || '').toLowerCase();
+    if (!isLoggedIn || role !== 'artist') {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [galleryImages, setGalleryImages] = useState([]);
-  const [artistId, setArtistId] = useState(null);
-
-  // Helper to convert Google Drive links to direct image links and proxy through backend
-const getImageSrc = (url) => {
-  if (!url) return null;
-  let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
-  if (!match) {
-    match = url.match(/[?&]id=([\w-]+)/);
-  }
-  let directUrl = url;
-  if (match && match[1]) {
-    directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
-  }
-  // Always proxy through backend for CORS
-  return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
-};
-
-  useEffect(() => {
-    // Get artist id from localStorage or auth context
-    const id = localStorage.getItem('artist_id');
-    setArtistId(id);
-    if (id) {
-      // Fetch artist details from backend
-      fetch(`http://localhost:3001/api/artists/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          // If you store gallery as an array, use it. Otherwise, fallback to imageUrl/coverImage
-          if (Array.isArray(data.gallery) && data.gallery.length > 0) {
-            setGalleryImages(data.gallery.map(getImageSrc));
-          } else {
-            // fallback: use profile and cover images if available
-            const imgs = [];
-            if (data.imageUrl) imgs.push(getImageSrc(data.imageUrl));
-            if (data.coverImage) imgs.push(getImageSrc(data.coverImage));
-            setGalleryImages(imgs);
-          }
-        })
-        .catch(() => setGalleryImages([]));
-    }
-
-    // Fetch all artists and collect all images
-    fetch('http://localhost:3001/api/artists')
-      .then(res => res.json())
-      .then(data => {
-        let allImages = [];
-        data.forEach(artist => {
-          // If artist.gallery is an array, add all
-          if (Array.isArray(artist.gallery)) {
-            allImages = allImages.concat(artist.gallery.map(getImageSrc));
-          }
-          // Add profile and cover images if present
-          if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
-          if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
-        });
-        // Remove duplicates and falsy values
-        allImages = Array.from(new Set(allImages.filter(Boolean)));
-        setGalleryImages(allImages);
-      })
-      .catch(() => setGalleryImages([]));
-  }, []);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [artistId, setArtistId] = useState(null);
+    const [user, setUser] = useState({ name: '', email: '' });
+    const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
-    navigate('/login'); 
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
+
+    const getImageSrc = (url) => {
+        if (!url) return null;
+        let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+        if (!match) {
+            match = url.match(/[?&]id=([\w-]+)/);
+        }
+        let directUrl = url;
+        if (match && match[1]) {
+            directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        }
+        // Always proxy through backend for CORS
+        return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    };
+
+    useEffect(() => {
+
+        const id = localStorage.getItem('artist_id');
+        setArtistId(id);
+        if (id) {
+            // Fetch artist details from backend
+            fetch(`http://localhost:3001/api/artists/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    // If you store gallery as an array, use it. Otherwise, fallback to imageUrl/coverImage
+                    if (Array.isArray(data.gallery) && data.gallery.length > 0) {
+                        setGalleryImages(data.gallery.map(getImageSrc));
+                    } else {
+                        // fallback: use profile and cover images if available
+                        const imgs = [];
+                        if (data.imageUrl) imgs.push(getImageSrc(data.imageUrl));
+                        if (data.coverImage) imgs.push(getImageSrc(data.coverImage));
+                        setGalleryImages(imgs);
+                    }
+                })
+                .catch(() => setGalleryImages([]));
+        }
+
+        // Fetch all artists and collect all images
+        fetch('http://localhost:3001/api/artists')
+            .then(res => res.json())
+            .then(data => {
+                let allImages = [];
+                data.forEach(artist => {
+                    // If artist.gallery is an array, add all
+                    if (Array.isArray(artist.gallery)) {
+                        allImages = allImages.concat(artist.gallery.map(getImageSrc));
+                    }
+                    // Add profile and cover images if present
+                    if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
+                    if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
+                });
+                // Remove duplicates and falsy values
+                allImages = Array.from(new Set(allImages.filter(Boolean)));
+                setGalleryImages(allImages);
+            })
+            .catch(() => setGalleryImages([]));
+
+
+
+        const userName = localStorage.getItem('name');
+        const userEmail = localStorage.getItem('email');
+
+        if (userName && userEmail) {
+            setUser({ name: userName, email: userEmail });
+            setLoading(false);
+        } else {
+            navigate('/login'); // Redirect to login if user info is not found
+        }
+    }, [navigate]);
+
+    if (loading) {
+        return <div>Loading...</div>; // Show loading state while the user info is being fetched
+    }
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   const handleHireArtistClick = () => {
-    navigate('/login');
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/jamming');
+    }
   };
-
-  const[openProfile, setOpenProfile] = useState(false);
 
   return (
     <>
-      <NavigationBar/>
+      <NavigationBar />
       <div className="page-container">
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
           <div className="background-image">
@@ -120,7 +151,9 @@ const getImageSrc = (url) => {
                   >
                     Host a Jamming Session
                   </button>
-                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    onClick={handleHireArtistClick}
+                  >
                     Collaborate with Artists 
                   </button>
                 </div>
@@ -211,5 +244,4 @@ const getImageSrc = (url) => {
     </>
   );
 }
-
 export default LoggedInHomePageArtist;

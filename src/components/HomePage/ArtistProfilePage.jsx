@@ -79,7 +79,7 @@ const ArtistProfilePage = () => {
   const handleInputChange = (field, value) => {
     setEditArtist(prev => ({ ...prev, [field]: value }));
   };
-
+  // THIS TOOO
   const handleSave = async () => {
     if (!editArtist) return;
     setLoading(true);
@@ -271,6 +271,7 @@ const ArtistProfilePage = () => {
                   {/* Profile Pic Upload */}
                   <div>
                     <label style={{ fontWeight: 600 }}>Upload Profile Pic</label><br />
+                    {/* UTHANA HAI YE */}
                     <input
                       type="file"
                       accept="image/*"
@@ -314,6 +315,7 @@ const ArtistProfilePage = () => {
                       <p>No images uploaded yet.</p>
                     )}  
                   </div>
+                  {/* UTHANA HAI YE */}
                   {/* Banner Upload */}
                   <div>
                     <label style={{ fontWeight: 600 }}>Upload Banner Image</label><br />

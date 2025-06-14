@@ -46,7 +46,51 @@ const Login = () => {
         localStorage.setItem('userId', result.userId);
         localStorage.setItem('email', result.email);
         localStorage.setItem('name', result.name);
-        navigate('/loggedInHome');
+        localStorage.setItem('isLoggedIn', 'true');
+        if (result.role && result.role.toLowerCase() === 'artist') {
+          localStorage.setItem('role', 'artist');
+          // Always set artist_id to the backend _id for artist
+          const artistId = result.userId || result._id || '';
+          localStorage.setItem('artist_id', artistId);
+          
+          // Check if profile is complete, if not redirect to public artist profile page
+          if (result.profileComplete === false) {
+            navigate(`/publicartistprofilepage/${artistId}`, {
+              state: {
+                incompleteProfile: true,
+                userDetails: {
+                  userId: result.userId,
+                  email: result.email,
+                  name: result.name,
+                  role: result.role,
+                },
+              },
+            });
+          } else {
+            navigate('/loggedInHomePageArtist', {
+              state: {
+                userDetails: {
+                  userId: result.userId,
+                  email: result.email,
+                  name: result.name,
+                  role: result.role,
+                },
+              },
+            });
+          }
+        } else if (result.role && result.role.toLowerCase() === 'user'){
+          localStorage.setItem('role', 'user');
+          navigate('/loggedInHome', {
+            state: {
+              userDetails: {
+                userId: result.userId,
+                email: result.email,
+                name: result.name,
+                role: result.role,
+              },
+            },
+          });
+        }
       } else {
         toast.error(result.message || 'Login failed');
       }

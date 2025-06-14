@@ -20,6 +20,13 @@ export default function PublicArtistProfilePage() {
   const [selectedTab, setSelectedTab] = useState(0);
 
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchArtist = async () => {
       setLoading(true);
       setError(null);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -14,10 +14,21 @@ import OtherArtists from "./OtherArtists";
 
 export default function PublicArtistPage() {
   const { _id } = useParams();
+  const navigate = useNavigate();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
+  
+  const handleBookNow = () => {
+    const isLoggedIn = localStorage.getItem('token');
+    if (!isLoggedIn) {
+      navigate('/signup');
+    } else {
+      // Handle booking for logged-in users
+      // You can add the booking logic here
+    }
+  };
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -114,12 +125,13 @@ export default function PublicArtistPage() {
               </div>
             </Box>
             {/* Book Now button (right, absolute) */}
-            <button className="public-artist-book-btn" style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 2 }}>
+            <button 
+              className="public-artist-book-btn" 
+              style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 2 }}
+              onClick={handleBookNow}
+            >
               Book Now
             </button>
-          </Box>
-          <Box className="public-artist-other-artists">
-            <OtherArtists currentArtistId={artist._id || artist.id} />
           </Box>
         </Box>
 
