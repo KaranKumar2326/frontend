@@ -40,6 +40,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');  // Import dotenv to handle environment variables
 const cors = require('cors');
 const jammingSessions = require('./routes/jammingSessions');
+const jammingSessions = require('./routes/jammingSessions');
 const signupRoutes = require('./routes/signupRoutes');
 const loginRoutes = require('./routes/loginRoutes');  // Import login routes
 const artistRoutes = require('./routes/artistRoutes');
@@ -140,6 +141,8 @@ app.get('/api/proxy-image', (req, res) => {
     .pipe(res);
 });
 
+// Add this with your other route middleware
+app.use('/api/jamming-sessions', jammingSessions);
 // Add this with your other route middleware
 app.use('/api/jamming-sessions', jammingSessions);
 // Example of protected route using JWT authentication
