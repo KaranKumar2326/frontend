@@ -19,8 +19,8 @@ function LoggedInHomePageArtist() {
   // Check for artist login on mount
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const role = localStorage.getItem('role');
-    if (!isLoggedIn || role !== 'Artist') {
+    const role = (localStorage.getItem('role') || '').toLowerCase();
+    if (!isLoggedIn || role !== 'artist') {
       navigate('/login');
     }
   }, [navigate]);
@@ -54,7 +54,56 @@ function LoggedInHomePageArtist() {
         // Always proxy through backend for CORS
         return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
     };
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [artistId, setArtistId] = useState(null);
+    const [user, setUser] = useState({ name: '', email: '' });
+    const [loading, setLoading] = useState(true);
 
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+
+    const getImageSrc = (url) => {
+        if (!url) return null;
+        let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+        if (!match) {
+            match = url.match(/[?&]id=([\w-]+)/);
+        }
+        let directUrl = url;
+        if (match && match[1]) {
+            directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        }
+        // Always proxy through backend for CORS
+        return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    };
+
+    useEffect(() => {
+
+        const id = localStorage.getItem('artist_id');
+        setArtistId(id);
+        if (id) {
+            // Fetch artist details from backend
+            fetch(`http://localhost:3001/api/artists/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    // If you store gallery as an array, use it. Otherwise, fallback to imageUrl/coverImage
+                    if (Array.isArray(data.gallery) && data.gallery.length > 0) {
+                        setGalleryImages(data.gallery.map(getImageSrc));
+                    } else {
+                        // fallback: use profile and cover images if available
+                        const imgs = [];
+                        if (data.imageUrl) imgs.push(getImageSrc(data.imageUrl));
+                        if (data.coverImage) imgs.push(getImageSrc(data.coverImage));
+                        setGalleryImages(imgs);
+                    }
+                })
+                .catch(() => setGalleryImages([]));
+        }
     useEffect(() => {
 
         const id = localStorage.getItem('artist_id');
@@ -114,6 +163,42 @@ function LoggedInHomePageArtist() {
     if (loading) {
         return <div>Loading...</div>; // Show loading state while the user info is being fetched
     }
+        // Fetch all artists and collect all images
+        fetch('http://localhost:3001/api/artists')
+            .then(res => res.json())
+            .then(data => {
+                let allImages = [];
+                data.forEach(artist => {
+                    // If artist.gallery is an array, add all
+                    if (Array.isArray(artist.gallery)) {
+                        allImages = allImages.concat(artist.gallery.map(getImageSrc));
+                    }
+                    // Add profile and cover images if present
+                    if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
+                    if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
+                });
+                // Remove duplicates and falsy values
+                allImages = Array.from(new Set(allImages.filter(Boolean)));
+                setGalleryImages(allImages);
+            })
+            .catch(() => setGalleryImages([]));
+
+
+
+        const userName = localStorage.getItem('name');
+        const userEmail = localStorage.getItem('email');
+
+        if (userName && userEmail) {
+            setUser({ name: userName, email: userEmail });
+            setLoading(false);
+        } else {
+            navigate('/login'); // Redirect to login if user info is not found
+        }
+    }, [navigate]);
+
+    if (loading) {
+        return <div>Loading...</div>; // Show loading state while the user info is being fetched
+    }
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -122,12 +207,13 @@ function LoggedInHomePageArtist() {
     if (!localStorage.getItem('isLoggedIn')) {
       navigate('/login');
     } else {
-      navigate('/jammingpage');
+      navigate('/jamming');
     }
   };
 
   return (
     <>
+      <NavigationBar />
       <NavigationBar />
       <div className="page-container">
         <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
@@ -157,38 +243,8 @@ function LoggedInHomePageArtist() {
                     Collaborate with Artists 
                   </button>
                 </div>
-
-        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px' }}>
-          <div className="background-image"></div>
-          <header className="hero-section" style={{ zIndex: 1, height: '100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-            <div className='content'>
-              <div>
-                <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
-
               </div>
-              <div style={{ color: 'white', marginBottom: '20px', fontSize: '1.2rem' }}>
-                <p>Welcome, {user.name}!</p>
-                <p>Your email: {user.email}</p>
-              </div>
-              <div>
-                <p className="hero-subtitle" style={{ color: 'white', fontWeight: 'bold', marginBottom: '30px', fontSize: '1.5rem' }}>
-                  Join us in celebrating the joy of music and connecting with artists from around the world.
-                </p>
-              </div>
-              <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                <button
-                  className="P"
-                  style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px', borderColor: '#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                  onClick={handleHireArtistClick}
-                >
-                  Host a Jamming Session
-                </button>
-                <button className="Y" style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-                  Collaborate with Artists
-                </button>
-              </div>
-            </div>
-          </header>
+            </header>
         </div>
 
         <div className="deck" style={{ position: 'relative' }}>
@@ -274,5 +330,4 @@ function LoggedInHomePageArtist() {
     </>
   );
 }
-
 export default LoggedInHomePageArtist;

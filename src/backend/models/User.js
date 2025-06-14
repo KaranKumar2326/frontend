@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  imageUrl: {
+    type: String,
+    default: 'https://randomuser.me/api/portraits/men/1.jpg' // Default profile picture URL
+  },
   role: {
     type: String,
     required: true,

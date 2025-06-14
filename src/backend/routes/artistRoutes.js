@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Artist = require('../models/Artist');
-const FeaturedArtist = require('../models/FeaturedArtist');
+const Artist = require('../models/Artists')
 const multer = require('multer');
 const { google } = require('googleapis');
 const fs = require('fs');
@@ -78,28 +77,55 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+// Get featured artists (top 6 artists with highest rating)
 router.get('/featured', async (req, res) => {
   try {
     console.log('Fetching featured artists');
-    const featuredArtists = await FeaturedArtist.find().limit(6);
-    res.status(200).json(featuredArtists);
+    const Artists = await Artist.find({ rating: { $exists: true } })
+      .sort({ rating: -1 })
+      .limit(6);
+    res.status(200).json(Artists);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch featured artists' });
+    console.error('Error fetching artists:', error);
+    res.status(500).json({ error: 'Failed to fetch artists' });
   }
 });
 
-// Get a single artist by ID (from FeaturedArtist collection)
+// Get all artists with optional search query
+router.get('/', async (req, res) => {
+  try {
+    const { q } = req.query;
+    let query = {};
+    
+    if (q) {
+      query.$or = [
+        { stageName: { $regex: q, $options: 'i' } },
+        { name: { $regex: q, $options: 'i' } },
+        { 'genres.name': { $regex: q, $options: 'i' } },
+        { 'instruments.name': { $regex: q, $options: 'i' } }
+      ];
+    }
+    
+    const artists = await Artist.find(query);
+    res.status(200).json(artists);
+  } catch (error) {
+    console.error('Error fetching artists:', error);
+    res.status(500).json({ error: 'Failed to fetch artists' });
+  }
+});
+
+// Get a single artist by ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     let artist = null;
-    // Try to find by MongoDB ObjectId first
+    
+    // Try to find by MongoDB ObjectId
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      artist = await FeaturedArtist.findById(id);
-    }
-    // Fallback to legacy numerical id if not found
-    if (!artist) {
-      artist = await FeaturedArtist.findOne({ id: parseInt(id) });
+      artist = await Artist.findById(id);
+    } else {
+      // Try to find by legacy numerical id if not found by ObjectId
+      artist = await Artist.findOne({ userId: id });
     }
     if (!artist) {
       return res.status(404).json({ message: 'Artist not found' });
@@ -110,79 +136,89 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update artist by ID (FeaturedArtist)
+// Update artist by ID
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const update = req.body;
     let updatedArtist = null;
+    
     // Try to update by ObjectId
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      updatedArtist = await FeaturedArtist.findByIdAndUpdate(id, update, { new: true });
+      updatedArtist = await Artist.findByIdAndUpdate(id, update, { new: true });
+    } else {
+      // Try to update by userId if not found by ObjectId
+      updatedArtist = await Artist.findOneAndUpdate(
+        { userId: parseInt(id) },
+        update,
+        { new: true }
+      );
     }
-    // Fallback to legacy numerical id
-    if (!updatedArtist) {
-      updatedArtist = await FeaturedArtist.findOneAndUpdate({ id: parseInt(id) }, update, { new: true });
-    }
+    
     if (!updatedArtist) {
       return res.status(404).json({ message: 'Artist not found' });
     }
+    
     res.json(updatedArtist);
   } catch (error) {
+    console.error('Error updating artist:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
-// Get all artists (from FeaturedArtist collection)
-router.get('/', async (req, res) => {
-  try {
-    const artists = await FeaturedArtist.find();
-    res.status(200).json(artists);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch artists' });
-  }
-});
-
-// Get all global/featured artists (for /api/artists/global)
+// Get all global/featured artists (same as featured but with different endpoint for backward compatibility)
 router.get('/global', async (req, res) => {
   try {
-    const globalArtists = await FeaturedArtist.find();
+    const globalArtists = await Artist.find({ rating: { $exists: true } })
+      .sort({ rating: -1 })
+      .limit(6);
     res.status(200).json(globalArtists);
   } catch (error) {
+    console.error('Error fetching global artists:', error);
     res.status(500).json({ error: 'Failed to fetch global artists' });
   }
 });
 
-// POST /api/artists/:id/upload-images
+// Upload images for artist
 router.post('/:id/upload-images', upload.array('images'), async (req, res) => {
   try {
-    const artistId = parseInt(req.params.id); // Always use custom numerical id
+    const { id } = req.params;
     const files = req.files;
     const type = req.query.type || 'profile'; // 'profile' or 'banner'
+    
     if (!files || files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' });
     }
+    
     // Upload the first file to Google Drive
     const file = files[0];
     const link = await uploadToDrive(file.path, file.originalname);
     fs.unlinkSync(file.path); // Remove local file after upload
+    
     // Prepare update object
-    let updateObj = {};
-    if (type === 'banner') {
-      updateObj.coverImage = link;
+    const updateObj = type === 'banner' 
+      ? { coverImage: link }
+      : { imageUrl: link };
+    
+    // Find and update artist
+    let artist = null;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      artist = await Artist.findByIdAndUpdate(id, updateObj, { new: true });
     } else {
-      updateObj.imageUrl = link;
+      artist = await Artist.findOneAndUpdate(
+        { userId: parseInt(id) },
+        updateObj,
+        { new: true }
+      );
     }
-    // Only update by custom numerical id in FeaturedArtist
-    let artist = await FeaturedArtist.findOneAndUpdate(
-      { id: artistId },
-      updateObj,
-      { new: true }
-    );
-    if (!artist) return res.status(404).json({ error: 'Artist not found in FeaturedArtist collection' });
+    
+    if (!artist) {
+      return res.status(404).json({ error: 'Artist not found' });
+    }
+    
     res.json(artist);
   } catch (err) {
-    console.error(err);
+    console.error('Error uploading artist image:', err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -21,8 +21,7 @@ export default function PublicArtistProfilePage() {
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const role = localStorage.getItem('role');
-    if (!isLoggedIn || role !== 'User') {
+    if (!isLoggedIn) {
       navigate('/login');
     }
   }, [navigate]);

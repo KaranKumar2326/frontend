@@ -58,7 +58,7 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/ArtistProfilePage/:_id" element={<ArtistProfilePage />} />
         <Route path="/all-artists" element={<AllArtistsPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
-        <Route path="/ProfilePage" element={<ProfilePage />} />
+        <Route path="/ProfilePage/:userId?" element={<ProfilePage />} />
         <Route path="/public-artist/:_id" element={<PublicArtistPage />} />
         <Route path="/publicartistprofilepage/:_id" element={<PublicArtistProfilePage />} />
         <Route path="/faq" element={<FAQPage />} />
