@@ -111,7 +111,7 @@ const Login = () => {
               onChange={handleToggle}
               style={styles.toggleInput}
             />
-            {isArtist ? 'Login as Artist' : 'Login as User'}
+            {isArtist ? 'Login as Artist' : 'Login as Artist'}
           </label>
         </div>
         <input

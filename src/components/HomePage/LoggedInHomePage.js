@@ -175,7 +175,6 @@ const LoggedInHomePage = () => {
               <div className="cta-buttons">
                 <Link href="#">
                   <button className="cta-button primary-btn" onClick={handleJammingSessionClick}>Jamming Sessions Near You</button>
-                  <button className="cta-button primary-btn" onClick={handleJammingSessionClick}>Jamming Sessions Near You</button>
                 </Link>
               </div>
             </motion.div>

@@ -179,14 +179,15 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                   <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
                 )
               )}
-              {location.pathname === '/loggedInHomePageArtist' && !userProfilePic && (
+              {/* Commented out the inquiries button for artist navbar */}
+              {/* {location.pathname === '/loggedInHomePageArtist' && !userProfilePic && (
                 <>
                   <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
                   {!hideProfile && (
                     <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
                   )}
                 </>
-              )}
+              )} */}
               {/* Show artist profile pic if userProfilePic prop is provided (for public artist profile page) */}
               {userProfilePic && (
                 <img src={userProfilePic} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
