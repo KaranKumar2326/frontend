@@ -17,7 +17,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     const email = localStorage.getItem('email');
     const userId = localStorage.getItem('userId');
     if (isLoggedIn && email && userId) {
-      fetch(`http://localhost:3001/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
+      fetch(`https://backend-musical.onrender.com/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.role) setUserRole(data.role);
@@ -77,7 +77,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
 
       try {
         // Fetch artist profile to check if it's complete
-        const response = await fetch(`http://localhost:3001/api/artists/${artistId}`, {
+        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${artistId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

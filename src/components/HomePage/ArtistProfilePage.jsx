@@ -29,7 +29,7 @@ const ArtistProfilePage = () => {
     const fetchArtist = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3001/api/artists/${_id}`);
+        const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
         if (!res.ok) throw new Error('Artist not found.');
         const data = await res.json();
         setArtist(data);
@@ -50,8 +50,8 @@ const ArtistProfilePage = () => {
     const fetchMeta = async () => {
       try {
         const [genresRes, instrumentsRes] = await Promise.all([
-          fetch('http://localhost:3001/api/genres'),
-          fetch('http://localhost:3001/api/instruments'),
+          fetch('https://backend-musical.onrender.com/api/genres'),
+          fetch('https://backend-musical.onrender.com/api/instruments'),
         ]);
         const genresData = genresRes.ok ? await genresRes.json() : [];
         const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
@@ -89,7 +89,7 @@ const ArtistProfilePage = () => {
         genres: genres.filter(g => selectedGenres.includes(g.name)),
         instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
       };
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedArtist),
@@ -283,7 +283,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=profile`, {
+                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=profile`, {
                             method: 'POST',
                             body: formData,
                           });
@@ -305,7 +305,7 @@ const ArtistProfilePage = () => {
                       <div className="artist-profile-form-group">
                         <label className="artist-profile-label">Profile Image</label>
                         <img
-                          src={artist.imageUrl ? `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(artist.imageUrl)}` : ''}
+                          src={artist.imageUrl ? `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(artist.imageUrl)}` : ''}
                           alt={`${artist.stageName} gallery`}
                           className="artist-profile-img"
                           style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
@@ -330,7 +330,7 @@ const ArtistProfilePage = () => {
                         const formData = new FormData();
                         formData.append('images', file);
                         try {
-                          const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=banner`, {
+                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=banner`, {
                             method: 'POST',
                             body: formData,
                           });
@@ -351,7 +351,7 @@ const ArtistProfilePage = () => {
                   <div className="artist-profile-form-group">
                     <label className="artist-profile-label">Banner Image</label>
                     <img
-                      src={artist.coverImage ? `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(artist.coverImage)}` : ''}
+                      src={artist.coverImage ? `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(artist.coverImage)}` : ''}
                       alt={`${artist.stageName} profile`}
                       className="artist-profile-img"
                       style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}

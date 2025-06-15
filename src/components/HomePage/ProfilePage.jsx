@@ -7,7 +7,7 @@ import NavigationBar from '../NavigationBar';
 import Footer from './Footer';
 
 // Constants
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://backend-musical.onrender.com/api';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
 

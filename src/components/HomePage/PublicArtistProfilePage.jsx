@@ -31,7 +31,7 @@ export default function PublicArtistProfilePage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
+        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -71,7 +71,7 @@ export default function PublicArtistProfilePage() {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   if (loading) return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
