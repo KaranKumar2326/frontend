@@ -12,29 +12,22 @@ const FeaturedArtists = () => {
   const [showArrow, setShowArrow] = useState(false);
 
   useEffect(() => {
-    const fetchFeaturedArtists = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/artists/featured', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-          setArtists(result);
-          setLoading(false);
-        } else {
-          setError(result.message || 'Failed to fetch featured artists');
-          setLoading(false);
-        }
-      } catch (err) {
-        setError('Error: ' + err.message);
+    const loggedInArtistId = localStorage.getItem('artist_id');
+  
+    fetch('http://localhost:3001/api/artists')
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter(artist => artist._id !== loggedInArtistId);
+        setArtists(filtered);
         setLoading(false);
-      }
-    };
-
-    fetchFeaturedArtists();
+      })
+      .catch(err => {
+        setError('Failed to load artists.');
+        setLoading(false);
+      });
   }, []);
+  
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,20 +37,7 @@ const FeaturedArtists = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Helper to convert Google Drive links to direct image links and proxy through backend
-  const getImageSrc = (url) => {
-    if (!url) return null;
-    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
-    if (!match) {
-      match = url.match(/[?&]id=([\w-]+)/);
-    }
-    let directUrl = url;
-    if (match && match[1]) {
-      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
-    }
-    // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
-  };
+
 
   return (
     <Container id="featured-artists" sx={{ mt: 5 }}>
@@ -68,9 +48,9 @@ const FeaturedArtists = () => {
       {isLoading && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
 
-      <div className="featured-artists__grid">  
+      <div className="featured-artists__grid" style={{ marginBottom: '40px' }}>
         {artists?.map(artist => (
-          <ArtistCard key={artist.id} artist={{...artist, coverImage: getImageSrc(artist.coverImage)}} />
+          <ArtistCard key={artist._id} artist={artist} />
         ))}
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>

@@ -24,21 +24,21 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const loginData = {
       email: formData.emailOrPhone,
       password: formData.password,
-      role: isArtist ? 'artist' : 'user', // Include role in login data
+      role: isArtist ? 'artist' : 'user',
     };
     toast.info('Logging in...');
-
+  
     try {
       const response = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData),
       });
-
+  
       const result = await response.json();
       if (response.ok) {
         toast.success('Login successful');
@@ -47,13 +47,12 @@ const Login = () => {
         localStorage.setItem('email', result.email);
         localStorage.setItem('name', result.name);
         localStorage.setItem('isLoggedIn', 'true');
+  
         if (result.role && result.role.toLowerCase() === 'artist') {
           localStorage.setItem('role', 'artist');
-          // Always set artist_id to the backend _id for artist
           const artistId = result.userId || result._id || '';
           localStorage.setItem('artist_id', artistId);
-          
-          // Check if profile is complete, if not redirect to public artist profile page
+  
           if (result.profileComplete === false) {
             navigate(`/publicartistprofilepage/${artistId}`, {
               state: {
@@ -78,8 +77,10 @@ const Login = () => {
               },
             });
           }
-        } else if (result.role && result.role.toLowerCase() === 'user'){
+        } else if (result.role && result.role.toLowerCase() === 'user') {
           localStorage.setItem('role', 'user');
+          localStorage.removeItem('artist_id'); // ✅ clear artist_id for users
+  
           navigate('/loggedInHome', {
             state: {
               userDetails: {
@@ -98,6 +99,7 @@ const Login = () => {
       toast.error('Error: ' + err.message);
     }
   };
+  
 
   return (
     <div style={styles.container}>

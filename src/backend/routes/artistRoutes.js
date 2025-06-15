@@ -10,12 +10,13 @@ const path = require('path');
 const upload = multer({ dest: 'uploads/' });
 
 // Google Drive setup
-const DRIVE_FOLDER_ID = process.env.GDRIVE_FOLDER_ID || '1-guS2v8lJeHfQdS17N6hQgvNi1RSdogb';
+const DRIVE_FOLDER_ID = process.env.GDRIVE_FOLDER_ID || '1I7HcpPlElt-0a9cTzMvx4UE1HcCtcxB4';
 const gdriveCreds = require('../gdrive-creds.json');
 const auth = new google.auth.GoogleAuth({
   credentials: gdriveCreds,
   scopes: ['https://www.googleapis.com/auth/drive']
 });
+
 const drive = google.drive({ version: 'v3', auth });
 
 // Helper to upload file to Google Drive and get shareable link
