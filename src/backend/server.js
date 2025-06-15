@@ -111,7 +111,7 @@ app.use((req, res, next) => {
 });
 
 // Database connection
-mongoose.connect( 'mongodb+srv://musicalmeet07:dMZnrpxGEZSfqVI9@musicalmeet.vaemsc3.mongodb.net/?retryWrites=true&w=majority&appName=musicalmeet', {
+mongoose.connect( process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
