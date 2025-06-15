@@ -111,7 +111,7 @@ app.use((req, res, next) => {
 });
 
 // Database connection
-mongoose.connect( 'mongodb://localhost:27017/swigDB', {
+mongoose.connect( 'mongodb+srv://musicalmeet07:dMZnrpxGEZSfqVI9@musicalmeet.vaemsc3.mongodb.net/?retryWrites=true&w=majority&appName=musicalmeet', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

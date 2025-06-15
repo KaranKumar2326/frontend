@@ -174,7 +174,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                 </>
               )}
               {/* Always show profile pic and dropdown except on signup/home/artist home */}
-              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && !userProfilePic && (
+              {location.pathname !== '/signup' && location.pathname !== '/home'  && !userProfilePic && (
                 !hideProfile && (
                   <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
                 )
