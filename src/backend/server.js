@@ -142,8 +142,6 @@ app.get('/api/proxy-image', (req, res) => {
 
 // Add this with your other route middleware
 app.use('/api/jamming-sessions', jammingSessions);
-// Add this with your other route middleware
-app.use('/api/jamming-sessions', jammingSessions);
 // Example of protected route using JWT authentication
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({
