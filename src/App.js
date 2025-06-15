@@ -53,7 +53,7 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/event/:_id" element={<EventPage />} />
+        <Route path="/event/:eventId" element={<EventPage />} />
         <Route path="/artist-profile/:_id" element={<ArtistProfilePage />} />
         <Route path="/ArtistProfilePage/:_id" element={<ArtistProfilePage />} />
         <Route path="/all-artists" element={<AllArtistsPage />} />

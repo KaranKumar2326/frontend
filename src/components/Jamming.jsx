@@ -53,6 +53,13 @@ const JammingPage = () => {
       setLoading(false);
     }
   };
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    // Get the role from localStorage
+    const userRole = localStorage.getItem('role');
+    setRole(userRole);
+  }, []);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -213,14 +220,14 @@ const JammingPage = () => {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Find and join amazing music jam sessions in your area
             </p>
-            {(
-              <button
-                onClick={handleCreateClick}
-                className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl transition-colors duration-200"
-              >
-                Create New Jam Session
-              </button>
-            )}
+            {role === 'artist' && (
+        <button
+          onClick={handleCreateClick}
+          className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl transition-colors duration-200"
+        >
+          Create New Jam Session
+        </button>
+      )}
           </div>
         </div>
       </div>
