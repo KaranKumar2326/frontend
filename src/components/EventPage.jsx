@@ -15,8 +15,133 @@ import {
   Share2,
   Heart,
   CheckCircle,
-  Headphones
+  Headphones,
+  Navigation,
+  ExternalLink
 } from "lucide-react";
+
+// Simple Map Component using OpenStreetMap
+const LocationMap = ({ location, address }) => {
+  const [mapUrl, setMapUrl] = useState('');
+  const [coordinates, setCoordinates] = useState(null);
+
+  useEffect(() => {
+    // Simple geocoding for demo - in production, use a proper geocoding service
+    const searchLocation = async () => {
+      try {
+        // Using OpenStreetMap Nominatim for geocoding (free service)
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`
+        );
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          setCoordinates({ lat, lon });
+          
+          // Create OpenStreetMap embed URL
+          const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.01},${lat-0.01},${lon+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lon}`;
+          setMapUrl(osmUrl);
+        }
+      } catch (error) {
+        console.error('Geocoding error:', error);
+        // Fallback to a generic map
+        setMapUrl('https://www.openstreetmap.org/export/embed.html?bbox=-74.0059,-40.7128,-74.0059,-40.7128&layer=mapnik');
+      }
+    };
+
+    if (location) {
+      searchLocation();
+    }
+  }, [location]);
+
+  const openInMaps = () => {
+    if (coordinates) {
+      // Try to open in Google Maps first, fallback to OpenStreetMap
+      const googleMapsUrl = `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lon}`;
+      window.open(googleMapsUrl, '_blank');
+    } else {
+      // Fallback to search by location name
+      const searchUrl = `https://www.google.com/maps/search/${encodeURIComponent(location)}`;
+      window.open(searchUrl, '_blank');
+    }
+  };
+
+  const getDirections = () => {
+    if (coordinates) {
+      const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lon}`;
+      window.open(directionsUrl, '_blank');
+    } else {
+      const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location)}`;
+      window.open(directionsUrl, '_blank');
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200/60 overflow-hidden">
+      <div className="p-4 border-b border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Location</h3>
+        <p className="text-gray-600 text-sm flex items-start">
+          <MapPin className="w-4 h-4 mr-2 mt-0.5 text-violet-600 flex-shrink-0" />
+          {location}
+        </p>
+      </div>
+      
+      <div className="relative">
+        {mapUrl ? (
+          <iframe
+            src={mapUrl}
+            width="100%"
+            height="200"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full"
+          />
+        ) : (
+          <div className="h-48 bg-gray-100 flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <MapPin className="w-8 h-8 mx-auto mb-2" />
+              <p className="text-sm">Loading map...</p>
+            </div>
+          </div>
+        )}
+        
+        {/* Overlay buttons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-1">
+          <button
+            onClick={openInMaps}
+            className="bg-white/90 backdrop-blur-sm p-2 rounded-lg shadow-sm hover:bg-white transition-colors"
+            title="Open in Maps"
+          >
+            <ExternalLink className="w-4 h-4 text-gray-700" />
+          </button>
+        </div>
+      </div>
+      
+      <div className="p-4 bg-gray-50">
+        <div className="flex gap-2">
+          <button
+            onClick={getDirections}
+            className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium flex items-center justify-center"
+          >
+            <Navigation className="w-4 h-4 mr-2" />
+            Get Directions
+          </button>
+          <button
+            onClick={openInMaps}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center"
+          >
+            <ExternalLink className="w-4 h-4 mr-1" />
+            View
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const EventPage = () => {
   const { eventId } = useParams(); // Get event ID from URL
@@ -26,6 +151,7 @@ const EventPage = () => {
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  console.log('Event ID:', eventId);
 
   // Set axios base URL (should match your JammingPage)
   axios.defaults.baseURL = 'http://localhost:3001';
@@ -35,9 +161,12 @@ const EventPage = () => {
       try {
         setLoading(true);
         setError(null);
+
+        console.log('Event ID:', eventId);
         
         // Fetch event details from your API
         const response = await axios.get(`/api/jamming-sessions/${eventId}`);
+
         setEvent(response.data);
         
         // You can also check if user has liked or registered for this event
@@ -190,6 +319,7 @@ const EventPage = () => {
   }
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-100">
       {/* Header with Back Button */}
       <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -204,18 +334,15 @@ const EventPage = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             
-            
             {/* Hero Section */}
-            {/* add background image */}
-            
             <div 
-  className={`bg-gradient-to-r ${getGenreGradient(event.genre)} rounded-xl p-6 md:p-8 text-white relative overflow-hidden`}
-  style={{
-    backgroundImage: event.coverImage ? `url(${event.coverImage})` : 'none',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center'
-  }}
->
+              className={`bg-gradient-to-r ${getGenreGradient(event.genre)} rounded-xl p-6 md:p-8 text-white relative overflow-hidden`}
+              style={{
+                backgroundImage: event.coverImage ? `url(${event.coverImage})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
               <div className="absolute inset-0 bg-black/20"></div>
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
@@ -239,12 +366,12 @@ const EventPage = () => {
                       <Share2 className="w-4 h-4" />
                     </button>
                     <button 
-            onClick={handleBackClick}
-            className="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors duration-200 hover:bg-gray-100 px-3 py-2 rounded-lg"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Events
-          </button>
+                      onClick={handleBackClick}
+                      className="inline-flex items-center text-white hover:text-white/80 font-medium text-sm transition-colors duration-200 hover:bg-white/20 px-3 py-2 rounded-lg"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back to Events
+                    </button>
                   </div>
                 </div>
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">{event.title}</h1>
@@ -332,7 +459,7 @@ const EventPage = () => {
                     <div>
                       <p className="font-medium text-gray-900 text-sm">Price</p>
                       <p className="text-gray-600 text-sm">
-                        {event.isPaid ? `$${event.price}` : 'Free'}
+                        {event.isPaid ? `Rs${event.price}` : 'Free'}
                       </p>
                     </div>
                   </div>
@@ -348,7 +475,7 @@ const EventPage = () => {
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200/60 sticky top-20">
               <div className="text-center mb-6">
                 <div className="text-2xl font-bold text-violet-600 mb-2">
-                  {event.isPaid ? `$${event.price}` : 'Free'}
+                  {event.isPaid ? `Rs${event.price}` : 'Free'}
                 </div>
                 <p className="text-gray-500 text-sm">
                   {(event.maxCapacity - (event.currentCapacity || 0))} spots remaining
@@ -396,6 +523,9 @@ const EventPage = () => {
                 </div>
               </div>
             </div>
+
+            {/* Location Map */}
+            <LocationMap location={event.location} address={event.address} />
 
             {/* Organizer Info */}
             {event.organizer && (
