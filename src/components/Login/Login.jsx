@@ -80,7 +80,6 @@ const Login = () => {
         } else if (result.role && result.role.toLowerCase() === 'user') {
           localStorage.setItem('role', 'user');
           localStorage.removeItem('artist_id'); // ✅ clear artist_id for users
-  
           navigate('/loggedInHome', {
             state: {
               userDetails: {
