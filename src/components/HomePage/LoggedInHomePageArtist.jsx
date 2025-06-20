@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './LoggedInHomePageArtist.css';
 import CardList from '../CardList';
 import Footer from './Footer';
-import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube ,Search , Headphones , CalendarCheck} from "lucide-react";
+import { Music, MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube, Search, Headphones, CalendarCheck } from "lucide-react";
 import { Link } from "wouter";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
@@ -116,8 +116,9 @@ function LoggedInHomePageArtist() {
   }, [navigate]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner">Loading...</div>;
   }
+
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -134,118 +135,164 @@ function LoggedInHomePageArtist() {
     <>
       <NavigationBar />
       <div className="page-container">
-        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
-          <div className="background-image">
+        <div className="background-image">
           </div>
-            <header className="hero-section" style={{ zIndex: 1, height:'100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-              <div className='content'>
-                <div>
-                  <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
-                </div>
-                <div>
-                  <p className="hero-subtitle" style={{ color: 'white', fontWeight: 'bold', marginBottom: '30px', fontSize: '1.5rem' }}>
-                  Join us in celebrating the joy of music and connecting with artists from around the world.
-                  </p>
-                </div>
-                <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                  <button 
-                    className="P" 
-                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                    onClick={handleHireArtistClick}
-                  >
-                    Host a Jamming Session
-                  </button>
-                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                    onClick={handleHireArtistClick}
-                  >
-                    Collaborate with Artists 
-                  </button>
-                </div>
-              </div>
-            </header>
+        {/* Hero Section */}
+        <div className="hero-container">
+          <div className="hero-content">
+            <motion.h1 
+              className="hero-title"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Welcome to Musical Meet
+            </motion.h1>
+            <motion.p 
+              className="hero-subtitle"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Join us in celebrating the joy of music and connecting with artists from around the world.
+            </motion.p>
+            <div className="hero-buttons">
+              <motion.button
+                className="btn-primary"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleHireArtistClick}
+              >
+                Host a Jamming Session
+              </motion.button>
+              <motion.button
+                className="btn-secondary"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleHireArtistClick}
+              >
+                Collaborate with Artists
+              </motion.button>
+            </div>
+          </div>
         </div>
 
-        <div className="deck" style={{ position: 'relative' }}>
-          {/* Show hovered image as background */}
-          {hoveredCard !== null && galleryImages[hoveredCard] && (
-            <img
-              src={galleryImages[hoveredCard]}
-              alt="Deck Hover Visual"
-              className={`deck-bg-image${hoveredCard !== null ? ' deck-bg-image--visible' : ''}`}
-            />
-          )}
-          <div className="deck-container" style={{ position: 'relative', zIndex: 1 }}>
-            <div
-              className="deck-card deck-card-connect"
-              onMouseEnter={() => setHoveredCard(0)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <span className="deck-card-title">Connect</span>
-              <hr className="deck-card-separator" />
-              <h3>Connect with various artists across our platform , building your network , all across the Internet</h3>
-            </div>
-            <div
-              className="deck-card deck-card-create"
-              onMouseEnter={() => setHoveredCard(1)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <span className="deck-card-title">Create</span>
-              <hr className="deck-card-separator" />
-              <h3>Create what i need to know ? </h3>
-            </div>
-            <div
-              className="deck-card deck-card-collaborate"
-              onMouseEnter={() => setHoveredCard(3)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <span className="deck-card-title">Collaborate</span>
-              <hr className="deck-card-separator" />
-              <h3>Collaborate with artists in different events or Jamming sessions !</h3>
+        {/* Cards Deck Section */}
+        <div className="deck-section">
+          <h2 className="section-title">What We Offer</h2>
+          <div className="cards-scroll-container">
+            <div className="cards-wrapper">
+              {[
+                {
+                  title: "Connect",
+                  content: "Connect with various artists across our platform, building your network all across the Internet",
+                  className: "deck-card-connect"
+                },
+                {
+                  title: "Create",
+                  content: "Create what i need to know ?",
+                  className: "deck-card-create"
+                },
+                {
+                  title: "Collaborate",
+                  content: "Collaborate with artists in different events or Jamming sessions!",
+                  className: "deck-card-collaborate"
+                },
+                {
+                  title: "Perform",
+                  content: "Showcase your talent at events and gatherings",
+                  className: "deck-card-perform"
+                },
+                {
+                  title: "Grow",
+                  content: "Expand your audience and professional network",
+                  className: "deck-card-grow"
+                }
+              ].map((card, index) => (
+                <motion.div
+                  key={index}
+                  className={`deck-card ${card.className}`}
+                  onMouseEnter={() => setHoveredCard(index % galleryImages.length)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  whileHover={{ y: -10 }}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <span className="deck-card-title">{card.title}</span>
+                  <hr className="deck-card-separator" />
+                  <p>{card.content}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
-        <div className="search-bar-container">
-          <h2 className="search-heading">Find Artists</h2>
-          <div className="search-bar-details">
-            <p>Search for artists near you by name, genre, or location to find the perfect match for your event or project.</p>
-            <input
-              type="text"
-              placeholder="Find Artist near me..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="search-bar"
-            />
+
+        {/* Search Section */}
+        <div className="search-section">
+          <h2 className="section-title">Find Artists</h2>
+          <div className="search-container">
+            <p className="search-description">
+              Search for artists near you by name, genre, or location to find the perfect match for your event or project.
+            </p>
+            <div className="search-input-container">
+              <Search className="search-icon" />
+              <input
+                type="text"
+                placeholder="Find Artist near me..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="search-input"
+              />
+              <button className="search-button">Search</button>
+            </div>
           </div>
         </div>
+
         <FeaturedArtists />
 
+        {/* Features Section */}
         <div className="features-section">
-          <h2>Why Choose Us?</h2>
-          <div className="features">
-            <div className="feature"> 
+          <h2 className="section-title">Why Choose Us?</h2>
+          <div className="features-grid">
+            <motion.div 
+              className="feature-card"
+              whileHover={{ scale: 1.03 }}
+            >
+              <Headphones className="feature-icon" />
               <h3>Curated Artists & Customized Setups</h3>
               <p>Only verified and professional artists with customized setups to meet every occasion requirement.</p>
-            </div>
-            <div className="feature">
+            </motion.div>
+            <motion.div 
+              className="feature-card"
+              whileHover={{ scale: 1.03 }}
+            >
+              <CalendarCheck className="feature-icon" />
               <h3>Secure Payment & Free Cancellation</h3>
               <p>Flexible booking with a 20% deposit and free cancellation up to 3 days before the event.</p>
-            </div>
-            <div className="feature">
+            </motion.div>
+            <motion.div 
+              className="feature-card"
+              whileHover={{ scale: 1.03 }}
+            >
+              <Music className="feature-icon" />
               <h3>Hassle-Free Execution</h3>
               <p>Seamless end-to-end execution with 24/7 support to ensure a memorable experience.</p>
-            </div>
+            </motion.div>
           </div>
         </div>
 
-        {/* Image Slider Section */}
-        <div className="image-slider-section">
-          <h2 className="slider-heading">Gallery</h2>
+        {/* Gallery Section */}
+        <div className="gallery-section">
+          <h2 className="section-title">Gallery</h2>
           <ImageSlider images={galleryImages} />
         </div>
 
-        <Footer />
+        
       </div>
+      <Footer />
     </>
   );
 }
+
 export default LoggedInHomePageArtist;

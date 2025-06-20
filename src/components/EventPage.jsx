@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavigationBar from './NavigationBar';
+import Footer from './HomePage/Footer';
 import {
   Calendar,
   MapPin,
@@ -154,7 +156,7 @@ const EventPage = () => {
   console.log('Event ID:', eventId);
 
   // Set axios base URL (should match your JammingPage)
-  axios.defaults.baseURL = 'http://localhost:3001';
+  axios.defaults.baseURL = 'https://backend-musical.onrender.com';
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -169,10 +171,7 @@ const EventPage = () => {
 
         setEvent(response.data);
         
-        // You can also check if user has liked or registered for this event
-        // const userStatusResponse = await axios.get(`/api/jamming-sessions/${eventId}/user-status`);
-        // setIsLiked(userStatusResponse.data.isLiked);
-        // setIsRegistered(userStatusResponse.data.isRegistered);
+        
         
       } catch (err) {
         console.error('Error fetching event:', err);
@@ -319,7 +318,8 @@ const EventPage = () => {
   }
 
   return (
-    
+    <>
+    <NavigationBar />
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-100">
       {/* Header with Back Button */}
       <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -546,6 +546,8 @@ const EventPage = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

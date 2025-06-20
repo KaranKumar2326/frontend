@@ -7,7 +7,7 @@ const Footer = () => (
     <div className="footer-container">
       <div className="footer-grid">
         {/* Company Info */}
-        <div>
+        <div className="footer-section">
           <div className="footer-brand">
             <span className="footer-brand-icon"><Music /></span>
             <span className="footer-brand-name">Musical Meet</span>
@@ -17,55 +17,69 @@ const Footer = () => (
           </p>
         </div>
 
-        {/* Quick as */}
-        <div>
-          <h3 className="footer-heading">Quick as</h3>
-          <ul className="footer-as">
-            <li><a href="/artists" className="footer-a"><a>Browse Artists</a></a></li>
-            {/* <li><a href="/#how-it-works" className="footer-a"><a>How It Works</a></a></li> */}
-            <li><a href="/#testimonials" className="footer-a"><a>Testimonials</a></a></li>
-            <li><a href="/join" className="footer-a"><a>Join as Artist</a></a></li>
-            {/* <li><a href="#" className="footer-a"><a>Blog & Resources</a></a></li> */}
+        {/* Quick Links */}
+        <div className="footer-section">
+          <h3 className="footer-heading">Quick Links</h3>
+          <ul className="footer-links">
+            <li><a href="/artists" className="footer-link">Browse Artists</a></li>
+            <li><a href="/#testimonials" className="footer-link">Testimonials</a></li>
+            <li><a href="/join" className="footer-link">Join as Artist</a></li>
           </ul>
         </div>
 
         {/* For Musicians */}
-        <div>
+        <div className="footer-section">
           <h3 className="footer-heading">For Musicians</h3>
-          <ul className="footer-as">
-            <li><a href="/join"className='footer-a'><a>Join as a Artist</a></a></li>
-            {/* <li><a href="#" className="footer-a"><a>Success Stories</a></a></li> */}
-            {/* <li><a href="#" className="footer-a"><a>Pricing & Commissions</a></a></li> */}
-            <li><a href="/faq" className="footer-a"><a>FAQ for Artists</a></a></li>
-            <li><a href="/#testimonials" className="footer-a"><a>Testimonials</a></a></li>
-            {/* <li><a href="#" className="footer-a"><a>Resources</a></a></li> */}
+          <ul className="footer-links">
+            <li><a href="/join" className="footer-link">Join as a Artist</a></li>
+            <li><a href="/faq" className="footer-link">FAQ for Artists</a></li>
+            <li><a href="/#testimonials" className="footer-link">Testimonials</a></li>
           </ul>
         </div>
 
         {/* Contact */}
-        <div>
+        <div className="footer-section">
           <h3 className="footer-heading">Contact Us</h3>
           <ul className="footer-contact">
-            <li><MapPin className="icon" /><span>123 Music Avenue, New York, NY 10001</span></li>
-            <li><Phone className="icon" /><span>(555) 123-4567</span></li>
-            <li><Mail className="icon" /><span>info@musicalmeet.com</span></li>
+            <li>
+              <MapPin className="contact-icon" />
+              <span>123 Music Avenue, New York, NY 10001</span>
+            </li>
+            <li>
+              <Phone className="contact-icon" />
+              <span>(555) 123-4567</span>
+            </li>
+            <li>
+              <Mail className="contact-icon" />
+              <span>info@musicalmeet.com</span>
+            </li>
           </ul>
         </div>
       </div>
 
-          <div className="footer-socials">
-            <a href="#" className="footer-a"><Facebook size={20} /></a>
-            <a href="https://www.instagram.com/musicalmeet07/" className="footer-a"><Instagram size={20} /></a>
-            <a href="https://x.com/musicalmeeet" className="footer-a"><Twitter size={20} /></a>
-            <a href="https://www.linkedin.com/company/musical-meet/" className="footer-a"><Linkedin size={20} /></a>
-          </div>
+      {/* Social Media */}
+      <div className="footer-socials">
+        <a href="#" className="social-link" aria-label="Facebook">
+          <Facebook size={20} />
+        </a>
+        <a href="https://www.instagram.com/musicalmeet07/" className="social-link" aria-label="Instagram">
+          <Instagram size={20} />
+        </a>
+        <a href="https://x.com/musicalmeeet" className="social-link" aria-label="Twitter">
+          <Twitter size={20} />
+        </a>
+        <a href="https://www.linkedin.com/company/musical-meet/" className="social-link" aria-label="LinkedIn">
+          <Linkedin size={20} />
+        </a>
+      </div>
 
+      {/* Footer Bottom */}
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Musical Meet. All rights reserved.</p>
-        <div className="footer-bottom-as">
-          <a href="#" className="footer-a"><a>Privacy Policy</a></a>
-          <a href="#" className="footer-a"><a>Terms of Service</a></a>
-          <a href="#" className="footer-a"><a>Cookie Policy</a></a>
+        <p className="copyright">&copy; {new Date().getFullYear()} Musical Meet. All rights reserved.</p>
+        <div className="footer-bottom-links">
+          <a href="#" className="footer-link">Privacy Policy</a>
+          <a href="#" className="footer-link">Terms of Service</a>
+          <a href="#" className="footer-link">Cookie Policy</a>
         </div>
       </div>
     </div>

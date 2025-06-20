@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Headphones, DollarSign, Search, Users, X, Clock, Plus } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavigationBar from './NavigationBar';
+import Footer from './HomePage/Footer';
 // import { useAuth } from '../context/AuthContext'; // Assuming you have an auth context
 
 const JammingPage = () => {
@@ -31,7 +33,7 @@ const JammingPage = () => {
   // const { user } = useAuth(); // Get current user from auth context
 
   const navigate = useNavigate();
-  axios.defaults.baseURL = 'http://localhost:3001';
+  axios.defaults.baseURL = 'https://backend-musical.onrender.com';
 
   useEffect(() => {
     fetchEvents();
@@ -209,6 +211,8 @@ const JammingPage = () => {
     return locationMatch && genreMatch && dateMatch && paidMatch;
   });
   return (
+    <>
+    <NavigationBar />
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100">
       {/* Header with Create Button */}
       <div className="pt-12 pb-8">
@@ -526,6 +530,9 @@ const JammingPage = () => {
                 </div>
               </div>
             </div>
+
+            <br></br>
+            <br></br>
       
             {/* Event Cards */}
             <div className="container mx-auto px-6 pb-16">
@@ -604,9 +611,14 @@ const JammingPage = () => {
               )}
             </div>
 
+            <br></br>
+            <br></br>
+
       {/* Rest of your existing JammingPage content (Filter Section and Event Cards) */}
       {/* ... */}
     </div>
+    <Footer />
+    </>
   );
 };
 

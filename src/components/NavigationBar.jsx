@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import myImage from '../public/logo.jpeg';
-import './NavigationBar.css'; // Updated to use NavigationBar.css instead of LoggedInHomePage.css
+import './NavigationBar.css';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast notifications
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 
 const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown = false }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current location
+  const location = useLocation();
   const [openProfile, setOpenProfile] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Add scroll listener for navbar effect
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     // Fetch role from backend if logged in
@@ -26,39 +40,49 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     }
   }, []);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobileMenuOpen && !event.target.closest('.navbar-container')) {
+        setIsMobileMenuOpen(false);
+      }
+      if (openProfile && !event.target.closest('.profile-section')) {
+        setOpenProfile(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMobileMenuOpen, openProfile]);
+
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('name');
     localStorage.removeItem('email');
-    localStorage.removeItem('token'); // If you are storing the token too
-    localStorage.removeItem('userId'); // Remove userId if stored
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     toast.success('Logged out successfully');
-    console.log('User logged out');
     navigate('/login');
   };
 
-  // Helper function for smooth scrolling
   const scrollToSection = (id) => {
-    // Try to scroll to the element, and if not found, try scrolling to the footer tag
-    let el = document.getElementById(id);
-    if (!el && id === 'footer') {
-      el = document.querySelector('footer');
-    }
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    const el = id === 'footer' 
+      ? document.querySelector('footer') || document.getElementById(id)
+      : document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setIsMobileMenuOpen(false);
   };
 
-  // Hide nav items on artist profile page
   const isArtistProfilePage = location.pathname.startsWith('/artist-profile/');
   const isLoginOrSignup = location.pathname === '/login' || location.pathname === '/signup';
 
-  // Function to handle My Profile navigation
   const handleProfileNavigation = async () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const role = userRole || localStorage.getItem('role');
     const token = localStorage.getItem('token');
-    
     
     if (role === 'user') {
       const userId = localStorage.getItem('userId');
@@ -66,7 +90,6 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         toast.error('User ID not found. Please log in again.');
         return;
       }
-      // Navigate to profile page with user ID
       navigate(`/ProfilePage/${userId}`);
     } else if (role === 'artist') {
       const artistId = localStorage.getItem('artist_id');
@@ -76,7 +99,6 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       }
 
       try {
-        // Fetch artist profile to check if it's complete
         const response = await fetch(`https://backend-musical.onrender.com/api/artists/${artistId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -85,7 +107,6 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         
         if (response.ok) {
           const artistData = await response.json();
-          // Check if profile is complete (same logic as in backend)
           const requiredFields = ['bio', 'description', 'instruments', 'genres', 'pricePerHour'];
           const isProfileComplete = requiredFields.every(field => {
             const value = artistData[field];
@@ -101,7 +122,6 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
             navigate(`/publicartistprofilepage/${artistId}`);
           }
         } else {
-          // If we can't fetch the profile, just navigate to the public page
           navigate(`/publicartistprofilepage/${artistId}`);
         }
       } catch (error) {
@@ -110,9 +130,9 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       }
     }
     setOpenProfile(false);
+    setIsMobileMenuOpen(false);
   };
 
-  // Function to handle Home navigation for dropdown
   const handleHomeNavigation = () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const role = userRole || localStorage.getItem('role');
@@ -124,93 +144,121 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       navigate('/');
     }
     setOpenProfile(false);
+    setIsMobileMenuOpen(false);
   };
 
-  return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <div className="navbar-left">
-          <a className="navbar-brand" onClick={() => {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const role = localStorage.getItem('role');
-            if (isLoggedIn && role === 'user') {
-              navigate('/loggedInHome');
-            } else if (isLoggedIn && role === 'artist') {
-              navigate('/loggedInHomePageArtist');
-            } else {
-              navigate('/');
-            }
-          }} style={{ cursor: 'pointer' }}>
-            <span className="navbar-title">Musical Meet</span>
-          </a>
-        </div>
-        <div className="navbar-as">
-          <a className="navbar-a" href="#" onClick={e => {
-            e.preventDefault();
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const role = localStorage.getItem('role');
-            if (isLoggedIn && role === 'user') {
-              navigate('/loggedInHome');
-            } else if (isLoggedIn && role === 'artist') {
-              navigate('/loggedInHomePageArtist');
-            } else {
-              navigate('/');
-            }
-          }}>Home</a>
-          <a className="navbar-a" href="#footer" onClick={e => { e.preventDefault(); scrollToSection('footer'); }}>Contact Us</a>
-          <a className='navbar-a' href="#" onClick={e => { e.preventDefault(); navigate('/how-it-works'); }}>How it Works</a>
+  const handleNavigation = (path) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
 
-          {!isLoginOrSignup && (
+  const handleBrandClick = () => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = localStorage.getItem('role');
+    if (isLoggedIn && role === 'user') {
+      navigate('/loggedInHome');
+    } else if (isLoggedIn && role === 'artist') {
+      navigate('/loggedInHomePageArtist');
+    } else {
+      navigate('/');
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    handleHomeNavigation();
+  };
+
+ return (
+  <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
+    <div className="navbar-container">
+      <div className="navbar-brand-container" onClick={handleBrandClick}>
+        <span className="navbar-title">Musical Meet</span>
+      </div>
+
+      <button 
+        className={`hamburger ${isMobileMenuOpen ? 'is-active' : ''}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsMobileMenuOpen(!isMobileMenuOpen);
+        }}
+        aria-label="Toggle navigation"
+      >
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+      </button>
+
+      <div className={`navbar-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
+        
+        {/* Profile section for MOBILE - appears first (before Home) */}
+        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && (
+          <div className="profile-section mobile-profile">
+            {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
+              <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
+                <img 
+                  src={userProfilePic || myImage} 
+                  className="profile-pic" 
+                  alt="Profile" 
+                />
+                {openProfile && (
+                  <div className="profile-dropdown">
+                    <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
+                      {showHomeInDropdown ? 'Home' : 'My Profile'}
+                    </div>
+                    <div className="dropdown-item">Settings</div>
+                    <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+          <a className="nav-link" href="#" onClick={handleHomeClick}>Home</a>
+          <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
+          <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>How it Works</a>
+          
+          {!isLoginOrSignup && location.pathname !== '/signup' && 
+           location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && 
+           !isArtistProfilePage && (
             <>
-              {/* Hide Browse Artists and Hire an Artist on Signup and artist profile page, but keep profile pic and dropdown on artist profile page */}
-              {location.pathname !== '/signup' && location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && !isArtistProfilePage && (
-                <>
-                  <a className="navbar-a" href="#featured-artists" onClick={e => { e.preventDefault(); scrollToSection('featured-artists'); }}>Browse Artists</a>
-                  <button className="navbar-button" onClick={() => navigate('/all-artists')}>Hire an Artist</button>
-                  {/* Only show Sign Up button if hideProfile is true (i.e., HomePage.js) */}
-                  {hideProfile && (
-                    <button className="navbar-button" onClick={() => navigate('/signup')}>Sign Up</button>
-                  )}
-                </>
-              )}
-              {/* Always show profile pic and dropdown except on signup/home/artist home */}
-              {location.pathname !== '/signup' && location.pathname !== '/home'  && !userProfilePic && (
-                !hideProfile && (
-                  <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-                )
-              )}
-              {/* Commented out the inquiries button for artist navbar */}
-              {/* {location.pathname === '/loggedInHomePageArtist' && !userProfilePic && (
-                <>
-                  <button className="navbar-button" onClick={() => navigate('/login')}>Inquiries</button>
-                  {!hideProfile && (
-                    <img src={myImage} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-                  )}
-                </>
-              )} */}
-              {/* Show artist profile pic if userProfilePic prop is provided (for public artist profile page) */}
-              {userProfilePic && (
-                <img src={userProfilePic} className="user-pfp" onClick={() => setOpenProfile((prev) => !prev)} />
-              )}
-              {!hideProfile && openProfile && (
-                <div className="flex flex-col dropdown">
-                  <ul className="dropcont">
-                    {showHomeInDropdown ? (
-                      <li onClick={handleHomeNavigation}>Home</li>
-                    ) : (
-                      <li onClick={handleProfileNavigation}>My Profile</li>
-                    )}
-                    <li>Settings</li>
-                    <li onClick={handleLogout}>Logout</li>
-                  </ul>
-                </div>
+              <a className="nav-link" href="#featured-artists" onClick={(e) => { e.preventDefault(); scrollToSection('featured-artists'); }}>Artists</a>
+              <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
+              {hideProfile && (
+                <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
               )}
             </>
           )}
-        </div>
+
+          {/* Profile section for DESKTOP - appears last */}
+          {!isLoginOrSignup && !hideProfile && !isMobileMenuOpen && (
+            <div className="profile-section desktop-profile">
+              {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
+                <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
+                  <img 
+                    src={userProfilePic || myImage} 
+                    className="profile-pic" 
+                    alt="Profile" 
+                  />
+                  {openProfile && (
+                    <div className="profile-dropdown">
+                      <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
+                        {showHomeInDropdown ? 'Home' : 'My Profile'}
+                      </div>
+                      <div className="dropdown-item">Settings</div>
+                      <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
       </div>
-    </nav>
-  );
+    </div>
+  </nav>
+);
 };
 
 export default NavigationBar;
