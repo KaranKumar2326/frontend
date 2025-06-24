@@ -18,7 +18,9 @@ import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
 import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
 import './index.css'; // Import Tailwind CSS
+import EventDashboard from './components/EventDashboard';
 import { useParams } from 'react-router-dom';
+import UserRequests from './components/UserRequests';
 
 const dummyCards = [
   {
@@ -61,7 +63,9 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/ProfilePage/:userId?" element={<ProfilePage />} />
         <Route path="/public-artist/:_id" element={<PublicArtistPage />} />
         <Route path="/publicartistprofilepage/:_id" element={<PublicArtistProfilePage />} />
+        <Route path="/eventdashboard" element={<EventDashboard />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/userrequests" element={<UserRequests/>} />
       </Routes>
     </>
   );
