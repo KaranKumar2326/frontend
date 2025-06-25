@@ -73,6 +73,20 @@ const cancelBtnStyle = {
   cursor: 'pointer' 
 };
 
+// Security questions
+const SECURITY_QUESTIONS = [
+  'What was your childhood nickname?',
+  'What is the name of your favorite childhood friend?',
+  'What was the name of your first pet?',
+  'What was the first concert you attended?',
+  'What is your mother’s maiden name?',
+  'What is your favorite book?',
+  'What is your favorite movie?',
+  'What is the name of the street you grew up on?',
+  'What is your favorite food?',
+  'What city were you born in?'
+];
+
 const ProfilePage = ({ onProfileUpdate }) => {
   const { userId: urlUserId } = useParams();
   const [user, setUser] = useState(DEFAULT_USER);
@@ -86,6 +100,15 @@ const ProfilePage = ({ onProfileUpdate }) => {
     error: null,
     success: null
   });
+  const [securitySlots, setSecuritySlots] = useState([
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+  ]);
+  const [securityError, setSecurityError] = useState(null);
+  const [securitySuccess, setSecuritySuccess] = useState(null);
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
   const navigate = useNavigate();
@@ -151,6 +174,29 @@ const ProfilePage = ({ onProfileUpdate }) => {
     fetchUserData();
     return () => controller.abort();
   }, [fetchUserData]);
+
+  // Fetch user's existing security questions
+  useEffect(() => {
+    if (!userId) return;
+    fetch(`${API_BASE_URL}/users/${userId}`)
+      .then(res => res.json())
+      .then(user => {
+        if (user.securityQuestions && Array.isArray(user.securityQuestions)) {
+          const slots = [];
+          for (let i = 0; i < 5; i++) {
+            if (user.securityQuestions[i]) {
+              slots.push({
+                questionIdx: user.securityQuestions[i].questionIdx,
+                answer: user.securityQuestions[i].answer,
+              });
+            } else {
+              slots.push({ questionIdx: '', answer: '' });
+            }
+          }
+          setSecuritySlots(slots);
+        }
+      });
+  }, [userId]);
 
   // Handle form changes
   const handleChange = e => {
@@ -248,14 +294,15 @@ const ProfilePage = ({ onProfileUpdate }) => {
       
       const data = await response.json();
       
+      // Add cache-busting timestamp to force image refresh
+      const newImageUrl = data.imageUrl ? `${data.imageUrl}${data.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : data.imageUrl;
       setUser(prev => ({
         ...prev,
-        imageUrl: data.imageUrl
+        imageUrl: newImageUrl
       }));
-      
       setForm(prev => ({
         ...prev,
-        imageUrl: data.imageUrl
+        imageUrl: newImageUrl
       }));
       
       setImageState(prev => ({
@@ -265,7 +312,7 @@ const ProfilePage = ({ onProfileUpdate }) => {
       }));
       
       if (onProfileUpdate) {
-        onProfileUpdate({ ...user, imageUrl: data.imageUrl });
+        onProfileUpdate({ ...user, imageUrl: newImageUrl });
       }
       
       toast.success('Profile picture updated successfully');
@@ -312,6 +359,23 @@ const ProfilePage = ({ onProfileUpdate }) => {
     fileInputRef.current.click();
   };
 
+  // Helper to convert Google Drive links to direct image links
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
+  console.log('ProfilePage user.imageUrl:', user.imageUrl); // Debugging line
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -329,6 +393,43 @@ const ProfilePage = ({ onProfileUpdate }) => {
       </div>
     );
   }
+
+  const handleSecuritySlotChange = (slotIdx, field, value) => {
+    setSecuritySlots(prev => prev.map((slot, idx) => idx === slotIdx ? { ...slot, [field]: value } : slot));
+  };
+
+  // Security questions logic (copied/adapted from ArtistProfilePage)
+  const handleSaveSecurityQuestions = async () => {
+    setSecurityError(null);
+    setSecuritySuccess(null);
+    // Validate: 5 unique questions, all answered
+    const selected = securitySlots.filter(s => s.questionIdx !== '' && s.answer.trim() !== '');
+    if (selected.length !== 5) {
+      setSecurityError('Please select and answer exactly 5 questions.');
+      return;
+    }
+    const questionSet = new Set(selected.map(s => s.questionIdx));
+    if (questionSet.size !== 5) {
+      setSecurityError('Please select 5 different questions.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${userId}/security-questions`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          securityQuestions: securitySlots
+            .filter(s => s.questionIdx !== '' && s.answer.trim() !== '')
+            .map(s => ({ questionIdx: s.questionIdx, answer: s.answer })),
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to save security questions.');
+      setSecuritySuccess('Security questions saved!');
+      setTimeout(() => setSecuritySuccess(null), 2000);
+    } catch (err) {
+      setSecurityError(err.message || 'Failed to save security questions.');
+    }
+  };
 
   return (
     <>
@@ -361,7 +462,7 @@ const ProfilePage = ({ onProfileUpdate }) => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
             <div style={{ position: 'relative', marginBottom: '1rem' }}>
               <img 
-                src={user.imageUrl} 
+                src={getImageSrc(user.imageUrl)} 
                 alt="Profile" 
                 style={{ 
                   width: '150px', 
@@ -612,6 +713,61 @@ const ProfilePage = ({ onProfileUpdate }) => {
           </form>
         </div>
       </div>
+      
+      {/* Security Questions Section */}
+      <div style={{
+        background: '#f7f5fc',
+        border: '1.5px solid #6c2bd9',
+        borderRadius: 16,
+        padding: '2rem',
+        marginTop: 32,
+        marginBottom: 32,
+        maxWidth: 600,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}>
+        <h2 style={{ color: '#6c2bd9', fontWeight: 700, marginBottom: 18 }}>Security Questions</h2>
+        <p>Select and answer any 5 of the following questions. These will be used for account recovery.</p>
+        <form onSubmit={e => { e.preventDefault(); handleSaveSecurityQuestions(); }}>
+          {securitySlots.map((slot, idx) => (
+            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <select
+                className="profile-input"
+                value={slot.questionIdx}
+                onChange={e => handleSecuritySlotChange(idx, 'questionIdx', e.target.value)}
+                required
+                style={{ width: '60%' }}
+              >
+                <option value="">Select a question</option>
+                {SECURITY_QUESTIONS.map((q, qIdx) => (
+                  <option
+                    key={qIdx}
+                    value={qIdx}
+                    disabled={securitySlots.some((s, sIdx) => sIdx !== idx && s.questionIdx === String(qIdx))}
+                  >
+                    {q}
+                  </option>
+                ))}
+              </select>
+              <input
+                className="profile-input"
+                type="text"
+                placeholder="Your answer"
+                value={slot.answer}
+                onChange={e => handleSecuritySlotChange(idx, 'answer', e.target.value)}
+                maxLength={100}
+                required={!!slot.questionIdx}
+                disabled={!slot.questionIdx}
+                style={{ width: '40%' }}
+              />
+            </div>
+          ))}
+          {securityError && <div style={{ color: 'red' }}>{securityError}</div>}
+          {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
+          <button type="submit" style={{ ...saveBtnStyle, marginTop: 16 }}>Save Security Questions</button>
+        </form>
+      </div>
+      
       <Footer />
     </>
   );

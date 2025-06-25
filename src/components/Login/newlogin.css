@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+.newlogin-wrapper {
+  --primary: #6c2bd9;
+  --primary-dark: #4b1c8f;
+  --secondary: #f9f6ff;
+  --accent: #e2e2e2;
+  --text: #222;
+  --background: #fff;
+}
+
+.newlogin-wrapper * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.newlogin-wrapper .lcont {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  position: relative;
+  z-index: 1;
+}
+
+.newlogin-wrapper .lcont::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('../../public/loginBackground.png') center center/cover no-repeat;
+  filter: blur(5px) saturate(110%);
+  background-color: rgba(255, 255, 255, 0.45);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.newlogin-wrapper .container {
+  background-color: var(--background);
+  border-radius: 30px;
+  box-shadow: 0 8px 32px 0 rgba(108, 43, 217, 0.18), 0 5px 15px rgba(108, 43, 217, 0.15);
+  position: relative;
+  overflow: hidden;
+  width: 900px;
+  max-width: 100%;
+  min-height: 600px;
+  margin: 0;
+}
+
+.newlogin-wrapper .container h1,
+.newlogin-wrapper .container h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--primary) !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  font-size: 2.1rem;
+  margin-bottom: 10px;
+}
+
+.newlogin-wrapper .container p,
+.newlogin-wrapper .container span,
+.newlogin-wrapper .container input,
+.newlogin-wrapper .container button,
+.newlogin-wrapper .container a {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.newlogin-wrapper .container p {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.3px;
+  margin: 20px 0;
+  color: #fff;
+}
+
+.newlogin-wrapper .container span {
+  font-size: 12px;
+  color: var(--primary-dark);
+}
+
+.newlogin-wrapper .container a {
+  color: var(--primary);
+  font-size: 16px;
+  text-decoration: none;
+  margin: 15px 0 10px;
+  transition: color 0.2s;
+  font-weight: 700;
+}
+
+.newlogin-wrapper .container a:hover {
+  color: var(--primary-dark);
+}
+
+.newlogin-wrapper .container button {
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(108, 43, 217, 0.08);
+  transition: background 0.3s, color 0.3s;
+}
+
+.newlogin-wrapper .container button:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.newlogin-wrapper .container button.hidden {
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.newlogin-wrapper .container form {
+  background-color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 10px;
+  height: 100%;
+  max-width: 350px;
+}
+
+.newlogin-wrapper .container input {
+  background-color: #eee;
+  border: none;
+  margin: 8px 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  width: calc(100% + 20px);
+  outline: none;
+  box-sizing: border-box;
+  transition: border 0.2s, background 0.2s;
+}
+
+.newlogin-wrapper .form-container input:focus {
+  border: 2px solid var(--primary);
+  background: var(--secondary);
+}
+
+.newlogin-wrapper .link {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.newlogin-wrapper .form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+.newlogin-wrapper .sign-in {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newlogin-wrapper .container.active .sign-in {
+  transform: translateX(100%);
+}
+
+.newlogin-wrapper .sign-up {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newlogin-wrapper .container.active .sign-up {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: move 0.6s;
+}
+
+@keyframes move {
+  0%, 49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%, 100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+.newlogin-wrapper .social-icons {
+  margin: 20px 0;
+}
+
+.newlogin-wrapper .social-icons a {
+  border: 1px solid #ccc;
+  border-radius: 20%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 3px;
+  width: 40px;
+  height: 40px;
+}
+
+.newlogin-wrapper .toggle-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: all 0.6s ease-in-out;
+  border-radius: 150px 0 0 100px;
+  z-index: 1000;
+}
+
+.newlogin-wrapper .container.active .toggle-container {
+  transform: translateX(-100%);
+  border-radius: 0 150px 100px 0;
+}
+
+.newlogin-wrapper .toggle {
+  background: linear-gradient(to right, #5c6bc0, var(--primary));
+  color: #fff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.newlogin-wrapper .container.active .toggle {
+  transform: translateX(50%);
+}
+
+.newlogin-wrapper .toggle-panel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 30px;
+  text-align: center;
+  top: 0;
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.newlogin-wrapper .toggle-left {
+  transform: translateX(-200%);
+}
+
+.newlogin-wrapper .container.active .toggle-left {
+  transform: translateX(0);
+}
+
+.newlogin-wrapper .toggle-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.newlogin-wrapper .container.active .toggle-right {
+  transform: translateX(200%);
+}
+
+.newlogin-wrapper .toggle-panel h1 {
+  color: #fff !important;
+  font-family: 'Playfair Display', serif;
+}
+
+.newlogin-wrapper .role-select button {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0 6px 12px 0;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.newlogin-wrapper .role-select button.selected {
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--primary-dark);
+}
+
+.newlogin-wrapper .role-select button.selected:hover {
+  color: #fff;
+}

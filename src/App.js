@@ -17,6 +17,7 @@ import ProfilePage from './components/HomePage/ProfilePage';
 import PublicArtistPage from './components/HomePage/PublicArtistPage'; // Import PublicArtistPage
 import PublicArtistProfilePage from './components/HomePage/PublicArtistProfilePage';
 import FAQPage from './components/HomePage/FAQPage'; // Import FAQPage
+import Newlogin from './components/Login/newlogin';
 import './index.css'; // Import Tailwind CSS
 import { useParams } from 'react-router-dom';
 
@@ -49,8 +50,8 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
         <Route path="/jamming" element={<JammingPage />} /> 
         <Route path="/loggedInHome" element={<LoggedInHomePage />} />
         <Route path="/loggedInHomePageArtist" element={<LoggedInHomePageArtist />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/signup" element={<Newlogin />} />
+        <Route path="/login" element={<Newlogin onLogin={handleLogin} />} />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/event/:eventId" element={<EventPage />} />
