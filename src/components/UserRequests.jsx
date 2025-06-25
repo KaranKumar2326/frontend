@@ -36,7 +36,7 @@ const UserRequests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/events/user/${user}`);
+        const response = await axios.get(`https://backend-musical.onrender.com/api/events/user/${user}`);
         setRequests(response.data);
 
         // Calculate stats
@@ -78,7 +78,7 @@ const UserRequests = () => {
 
   const handleRequestAction = async (eventId, action) => {
     try {
-      const response = await axios.put(`http://localhost:3001/api/events/${eventId}`, { 
+      const response = await axios.put(`https://backend-musical.onrender.com/api/events/${eventId}`, { 
         status: action 
       });
       console.log(response);
