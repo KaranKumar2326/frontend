@@ -109,12 +109,6 @@ export default function Testimonials() {
 
               {totalSlides > 1 && (
                 <>
-                  <Button className="carousel-btn left" onClick={prevSlide}>
-                    <ChevronLeft />
-                  </Button>
-                  <Button className="carousel-btn right" onClick={nextSlide}>
-                    <ChevronRight />
-                  </Button>
 
                   <div className="carousel-indicators">
                     {Array.from({ length: totalSlides }).map((_, index) => (

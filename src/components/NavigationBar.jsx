@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import myImage from '../public/logo.jpeg';
+import myImage from '../public/defaultpic.png';
 import './NavigationBar.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,11 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
   const [userRole, setUserRole] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState(null);
+  const [artist, setArtist] = useState(null);
+
+  // Add a state to force re-render on profile image update
+  const [profileImageVersion, setProfileImageVersion] = useState(0);
 
   useEffect(() => {
     // Add scroll listener for navbar effect
@@ -31,7 +36,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     const email = localStorage.getItem('email');
     const userId = localStorage.getItem('userId');
     if (isLoggedIn && email && userId) {
-      fetch(`https://backend-musical.onrender.com/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
+      fetch(`http://localhost:3001/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.role) setUserRole(data.role);
@@ -39,6 +44,47 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         .catch(() => setUserRole(null));
     }
   }, []);
+
+  // Fetch user or artist data based on role
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const role = userRole || localStorage.getItem('role');
+    const token = localStorage.getItem('token');
+    if (!isLoggedIn || !role) return;
+    if (role === 'user') {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        fetch(`http://localhost:3001/api/users/${userId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // Remove randomuser.me default if present
+            if (data.imageUrl && data.imageUrl.includes('randomuser.me/api/portraits/')) {
+              data.imageUrl = '';
+            }
+            setUser(data);
+          })
+          .catch(() => setUser(null));
+      }
+    } else if (role === 'artist') {
+      const artistId = localStorage.getItem('artist_id');
+      if (artistId) {
+        fetch(`http://localhost:3001/api/artists/${artistId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(data => {
+            // Remove randomuser.me default if present
+            if (data.imageUrl && data.imageUrl.includes('randomuser.me/api/portraits/')) {
+              data.imageUrl = '';
+            }
+            setArtist(data);
+          })
+          .catch(() => setArtist(null));
+      }
+    }
+  }, [userRole, profileImageVersion]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -79,6 +125,32 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
   const isArtistProfilePage = location.pathname.startsWith('/artist-profile/');
   const isLoginOrSignup = location.pathname === '/login' || location.pathname === '/signup';
 
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
+  // Helper to get the correct profile image src
+  const getProfilePicSrc = () => {
+    if (userRole === 'artist') {
+      if (artist && artist.imageUrl) return getImageSrc(artist.imageUrl);
+      return myImage;
+    } else if (userRole === 'user') {
+      if (user && user.imageUrl) return getImageSrc(user.imageUrl);
+      return myImage;
+    }
+    return myImage;
+  };
+
   const handleProfileNavigation = async () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const role = userRole || localStorage.getItem('role');
@@ -99,7 +171,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       }
 
       try {
-        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${artistId}`, {
+        const response = await fetch(`http://localhost:3001/api/artists/${artistId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -170,6 +242,22 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     handleHomeNavigation();
   };
 
+  // Listen for profile image updates in localStorage (e.g., after upload)
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === 'profileImageUpdated') {
+        setProfileImageVersion(v => v + 1); // Force re-render
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also check on mount in case the event doesn't fire in same tab
+    if (localStorage.getItem('profileImageUpdated')) {
+      setProfileImageVersion(v => v + 1);
+      localStorage.removeItem('profileImageUpdated');
+    }
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
  return (
   <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
     <div className="navbar-container">
@@ -198,7 +286,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
             {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
               <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
                 <img 
-                  src={userProfilePic || myImage} 
+                  src={getProfilePicSrc()} 
                   className="profile-pic" 
                   alt="Profile" 
                 />
@@ -237,11 +325,12 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
             <div className="profile-section desktop-profile">
               {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
                 <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
-                  <img 
-                    src={userProfilePic || myImage} 
-                    className="profile-pic" 
-                    alt="Profile" 
+                  <img
+                    src={getProfilePicSrc()}
+                    className="profile-pic"
+                    alt="Profile"
                   />
+
                   {openProfile && (
                     <div className="profile-dropdown">
                       <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>

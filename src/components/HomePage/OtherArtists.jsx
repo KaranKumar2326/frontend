@@ -9,7 +9,7 @@ export default function OtherArtists({ currentArtistId }) {
   useEffect(() => {
     const fetchArtists = async () => {
       try {
-        const res = await fetch("https://backend-musical.onrender.com/api/artists");
+        const res = await fetch("http://localhost:3001/api/artists");
         const data = await res.json();
         if (Array.isArray(data)) {
           setArtists(data.filter(a => (a._id || a.id) !== currentArtistId));

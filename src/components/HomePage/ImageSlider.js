@@ -32,7 +32,7 @@ export default function ImageSlider({ images }) {
         if (images[0]._id) {
           try {
             const urls = await Promise.all(images.map(async (img) => {
-              const res = await fetch(`https://backend-musical.onrender.com/api/images/${img._id}`);
+              const res = await fetch(`http://localhost:3001/api/images/${img._id}`);
               if (res.ok) {
                 const data = await res.json();
                 return data.url;

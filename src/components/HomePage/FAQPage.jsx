@@ -37,50 +37,44 @@ export default function FAQPage() {
             {selected === 'artist' && (
               <div>
                 <p className="howitworks-desc">
-                  Promote your artistry, connect with an audience, and receive bookings for paid private 
-                  performances and curated jamming sessions.<br/>
+                  Artists showcase their talent, hosts discover performers — our platform makes meaningful musical connections happen with ease.
                 </p>
-                <p className='sub-heading'> Set Up Your Profile</p>
-                <p className='howitworks-desc'>Showcase your musical expertise with a comprehensive profile featuring your bio, sample 
-                  performances, pricing, and availability.</p>
-                <p className='sub-heading'>Gain Visibility </p>
-                <p className='howitworks-desc'>Get discovered by users seeking live music for private events in your local area.</p>
-                <p className='sub-heading'> Accept and Manage Bookings</p>
-                <p className='howitworks-desc'>Receive booking requests directly through the platform. Upon accepting, the payment is 
-                  processed securely and the performance is confirmed.</p>
-                <p className='sub-heading'>Organise Jamming Sessions </p>
-                <p className='howitworks-desc'>Host public or exclusive jamming sessions to engage with audiences, experiment creatively, 
-                  and generate additional income.</p>
-                <p className='sub-heading'>Build Your Reputation</p>
-                <p className='howitworks-desc'>Enhance your professional network, gather reviews, and increase your visibility by 
-                  consistently delivering high-quality performances.</p>
+                <p className='sub-heading'>Setting Your Fee</p>
+                <p className='howitworks-desc'>You set your own “ask price,” which should cover performance time, travel, equipment, and special requests if any.</p>
+                <p className='sub-heading'> Receiving & Managing Bookings</p>
+                <p className='howitworks-desc'>You receive booking requests via notifications and can accept or reject them. Customers can also chat with you before confirming.</p>
+                <p className='sub-heading'>Payments & Payouts</p>
+                <p className='howitworks-desc'>Customers pay upfront, and you receive payment after the performance, minus any platform fee.</p>
+                <p className='sub-heading'> Cancellations & Penalties</p>
+                <p className='howitworks-desc'>Avoid last-minute cancellations, as they may affect your visibility. If a customer cancels late, you may still receive partial compensation.</p>
+                <p className='sub-heading'> Getting More Bookings</p>
+                <p className='howitworks-desc'>Maintain professionalism, deliver great performances, and collect positive reviews. Top-rated artists may be featured for better exposure.</p>
               </div>
             )}
             {selected === 'host' && (
               <div>
                 <p className="howitworks-desc">
-                  Engage professional artists to elevate your private events with live performances and discover 
-                  unique musical experiences.<br/>
+                  Artists showcase their talent, hosts discover performers — our platform makes meaningful musical connections happen with ease.
+                  <br/>
                 </p>
-                <p className='sub-heading'> Explore Local Talent</p>
-                <p className='howitworks-desc'>Browse a curated selection of verified singers, musicians, and performers available in your 
-                  city.</p>
-                <p className='sub-heading'>Review Artist Profiles</p>
-                <p className='howitworks-desc'>View detailed profiles, including performance samples, pricing, availability, and client 
-                  feedback to make an informed decision.</p>
-                <p className='sub-heading'>Secure a Booking</p>
-                <p className='howitworks-desc'>Submit a booking request by paying the artist’s listed rate. Once the artist confirms, the 
-                  performance is officially scheduled.</p>
-                <p className='sub-heading'>Attend Jamming Sessions</p>
-                <p className='howitworks-desc'>Participate in artist-led jamming sessions—an excellent opportunity to enjoy live music in 
-                  an intimate setting and connect with emerging talent.</p>
-                <p className='sub-heading'>Host Memorable Events</p>
-                <p className='howitworks-desc'>Whether for private gatherings, celebrations, or corporate functions, enhance your event 
-                  with professionally delivered live entertainment.</p>
+                <p className='sub-heading'>Finding Artists</p>
+                <p className='howitworks-desc'>You can search for artists by location, genre, instrument, price, or performance type using filters. A live calendar helps confirm their availability.</p>
+                
+                <p className='sub-heading'>Viewing Artist Profiles</p>
+                <p className='howitworks-desc'>Artist profiles include audio/video samples, bios, past gigs, reviews, and their quoted fee (“ask price”).</p>
+                
+                <p className='sub-heading'>Booking & Payment</p>
+                <p className='howitworks-desc'>Bookings are confirmed through upfront payment, securely held by the platform until the performance is complete.</p>
+                
+                <p className='sub-heading'>Performance Customization</p>
+                <p className='howitworks-desc'>Many artists accept custom performances and song requests, provided they’re informed in advance.</p>
+                
+                <p className='sub-heading'>Cancellation & Refunds</p>
+                <p className='howitworks-desc'>If the artist cancels, you’ll receive either a full refund or a replacement artist. Customer-initiated cancellations follow platform policy for partial or full refunds based on notice period.</p>
               </div>
             )}
             <p className="howitworks-summary">
-              Musical Meet connects artists and hosts for unforgettable live music experiences. Whether you're a performer or planning an event, our platform makes it easy, safe, and inspiring to connect and create memorable moments.
+              Musical Meet brings artists and hosts together for unforgettable live music moments, simply and securely.
             </p>
           </div>
         </div>

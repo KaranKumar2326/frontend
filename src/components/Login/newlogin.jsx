@@ -67,7 +67,7 @@ const NewLogin = () => {
     e.preventDefault();
     toast.info('Logging in...');
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/login', {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,7 +160,7 @@ const NewLogin = () => {
     };
     try {
       toast.info('Processing your request...', { autoClose: 3000 });
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/signup', {
+      const response = await fetch('http://localhost:3001/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupPayload),
@@ -184,36 +184,45 @@ const NewLogin = () => {
   };
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    // If artist, fetch security questions first
+    // Validate at least one field is filled
+    if (!forgotForm.email && !forgotForm.phone) {
+      toast.error('Please enter either Email or Phone to proceed.');
+      return;
+    }
+    // If artist, verify existence before showing security questions
     if (isArtist) {
       try {
-        // Fetch artist by email/phone to get security questions
-        const res = await fetch(`https://backend-musical.onrender.com/api/artists?email=${encodeURIComponent(forgotForm.email)}&phone=${encodeURIComponent(forgotForm.phone)}`);
+        // Build query string only with filled fields
+        const params = [];
+        if (forgotForm.email) params.push(`email=${encodeURIComponent(forgotForm.email)}`);
+        if (forgotForm.phone) params.push(`phone=${encodeURIComponent(forgotForm.phone)}`);
+        const query = params.length ? `?${params.join('&')}` : '';
+        // First, verify artist exists
+        const res = await fetch(`http://localhost:3001/api/artists${query}`);
         const artists = await res.json();
-        if (res.ok && Array.isArray(artists) && artists.length > 0) {
-          const artist = artists[0];
-          if (artist.securityQuestions && artist.securityQuestions.length > 0) {
-            setArtistSecurityQuestions(artist.securityQuestions);
-          } else {
-            setArtistSecurityQuestions([]);
-          }
-          // Show security question selection UI
-          setFormStep('artist-security');
-          return;
-        } else {
+        if (!res.ok || !Array.isArray(artists) || artists.length === 0) {
           setArtistSecurityQuestions([]);
-          toast.error('Artist not found or no security questions set.');
+          toast.error('Artist not found. Please check your Email/Phone.');
           return;
         }
+        const artist = artists[0];
+        if (!artist.securityQuestions || artist.securityQuestions.length === 0) {
+          setArtistSecurityQuestions([]);
+          toast.error('No security questions set for this artist.');
+          return;
+        }
+        setArtistSecurityQuestions(artist.securityQuestions);
+        setFormStep('artist-security');
+        return;
       } catch (err) {
         toast.error('Error: ' + err.message);
         return;
       }
     }
-    // For user, fetch security questions first
+    // For user, verify existence before showing security questions
     try {
       // POST to /api/auth/verify-user to get security questions
-      const res = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const res = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -224,19 +233,19 @@ const NewLogin = () => {
         })
       });
       const result = await res.json();
-      if (res.ok && result.securityQuestions && Array.isArray(result.securityQuestions) && result.securityQuestions.length > 0) {
-        setUserSecurityQuestions(result.securityQuestions);
-        setFormStep('user-security');
+      if (!res.ok) {
+        setUserSecurityQuestions([]);
+        toast.error(result.message || 'User not found. Please check your Email/Phone.');
         return;
-      } else if (res.ok) {
+      }
+      if (!result.securityQuestions || !Array.isArray(result.securityQuestions) || result.securityQuestions.length === 0) {
         setUserSecurityQuestions([]);
         toast.error('No security questions set for this user.');
         return;
-      } else {
-        setUserSecurityQuestions([]);
-        toast.error(result.message || 'User not found or no security questions set.');
-        return;
       }
+      setUserSecurityQuestions(result.securityQuestions);
+      setFormStep('user-security');
+      return;
     } catch (err) {
       toast.error('Error: ' + err.message);
       return;
@@ -250,7 +259,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const response = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -280,7 +289,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const response = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -315,7 +324,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/reset-password', {
+      const response = await fetch('http://localhost:3001/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -387,8 +396,11 @@ const NewLogin = () => {
           {formStep === 'forgot' && (
             <form onSubmit={handleForgotSubmit}>
               <h2>Forgot Password</h2>
-              <input type="email" name="email" placeholder="Email" value={forgotForm.email} onChange={handleForgotChange} required />
-              <input type="text" name="phone" placeholder="Phone" value={forgotForm.phone} onChange={handleForgotChange} required />
+              <input type="email" name="email" placeholder="Email" value={forgotForm.email} onChange={handleForgotChange} />
+              <input type="text" name="phone" placeholder="Phone" value={forgotForm.phone} onChange={handleForgotChange} />
+              <div style={{ fontSize: '0.9em', color: '#888', marginBottom: 8 }}>
+                Enter either Email or Phone (at least one is required)
+              </div>
               <button type="submit">Verify</button>
               <span className="link" onClick={() => setFormStep('login')}>Back to Login</span>
             </form>

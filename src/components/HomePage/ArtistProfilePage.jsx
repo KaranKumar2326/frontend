@@ -36,9 +36,7 @@ const ArtistProfilePage = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(null);
-  const [securityAnswers, setSecurityAnswers] = useState({});
-  const [securityError, setSecurityError] = useState(null);
-  const [securitySuccess, setSecuritySuccess] = useState(null);
+  // Define securitySlots before any useEffect that uses it
   const [securitySlots, setSecuritySlots] = useState([
     { questionIdx: '', answer: '' },
     { questionIdx: '', answer: '' },
@@ -46,13 +44,29 @@ const ArtistProfilePage = () => {
     { questionIdx: '', answer: '' },
     { questionIdx: '', answer: '' },
   ]);
+  // securityAnswers is not used in the UI, but let's make it functional for future use:
+  // We'll keep it in sync with securitySlots for possible future recovery flows.
+  const [securityAnswers, setSecurityAnswers] = useState({});
+
+  useEffect(() => {
+    // Keep securityAnswers in sync with securitySlots
+    const answersObj = {};
+    securitySlots.forEach((slot, idx) => {
+      if (slot.questionIdx && slot.answer) {
+        answersObj[slot.questionIdx] = slot.answer;
+      }
+    });
+    setSecurityAnswers(answersObj);
+  }, [securitySlots]);
+  const [securityError, setSecurityError] = useState(null);
+  const [securitySuccess, setSecuritySuccess] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchArtist = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
+        const res = await fetch(`http://localhost:3001/api/artists/${_id}`);
         if (!res.ok) throw new Error('Artist not found.');
         const data = await res.json();
         setArtist(data);
@@ -73,8 +87,8 @@ const ArtistProfilePage = () => {
     const fetchMeta = async () => {
       try {
         const [genresRes, instrumentsRes] = await Promise.all([
-          fetch('https://backend-musical.onrender.com/api/genres'),
-          fetch('https://backend-musical.onrender.com/api/instruments'),
+          fetch('http://localhost:3001/api/genres'),
+          fetch('http://localhost:3001/api/instruments'),
         ]);
         const genresData = genresRes.ok ? await genresRes.json() : [];
         const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
@@ -134,7 +148,7 @@ const ArtistProfilePage = () => {
         genres: genres.filter(g => selectedGenres.includes(g.name)),
         instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
       };
-      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`, {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedArtist),
@@ -166,7 +180,7 @@ const ArtistProfilePage = () => {
       return;
     }
     try {
-      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/security-questions`, {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/security-questions`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -195,7 +209,7 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Helper to convert Google Drive links to direct video links and proxy through backend
@@ -210,7 +224,162 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
+  const [showImageButtons, setShowImageButtons] = useState(false);
+  const [showBannerButtons, setShowBannerButtons] = useState(false);
+  const [showVideoButtons, setShowVideoButtons] = useState([false, false]); // For up to 2 videos
+  const imageInputRef = React.useRef(null);
+  const bannerInputRef = React.useRef(null);
+  const videoInputRefs = [React.useRef(null), React.useRef(null)];
+
+  // Helper for animated button style
+  const actionBtnStyle = {
+    background: '#fff',
+    color: '#6c2bd9',
+    border: '2px solid #6c2bd9',
+    borderRadius: 8,
+    padding: '0.5rem 1.5rem',
+    fontWeight: 700,
+    fontSize: '1rem',
+    cursor: 'pointer',
+    marginBottom: 0
+  };
+
+  // Remove/replace/upload handlers for image
+  const handleRemoveImage = async () => {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-image`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to remove image');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Profile image removed!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Failed to remove image');
+    }
+    setUploading(false);
+  };
+  const handleTriggerImageInput = () => imageInputRef.current.click();
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      // Always remove old image if exists
+      if (artist.imageUrl) {
+        await fetch(`http://localhost:3001/api/artists/${_id}/remove-image`, { method: 'DELETE' });
+      }
+      const formData = new FormData();
+      formData.append('images', file);
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=profile`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Profile pic uploaded!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Upload failed');
+    }
+    setUploading(false);
+    e.target.value = '';
+  };
+
+  // Remove/replace/upload handlers for banner
+  const handleRemoveBanner = async () => {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to remove banner');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Banner image removed!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Failed to remove banner');
+    }
+    setUploading(false);
+  };
+  const handleTriggerBannerInput = () => bannerInputRef.current.click();
+  const handleBannerChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      // Always remove old banner if exists
+      if (artist.coverImage) {
+        await fetch(`http://localhost:3001/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
+      }
+      const formData = new FormData();
+      formData.append('images', file);
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=banner`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Banner image uploaded!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Upload failed');
+    }
+    setUploading(false);
+    e.target.value = '';
+  };
+
+  // Remove/replace/upload handlers for videos
+  const handleRemoveVideo = async (idx) => {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to remove video');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Video removed!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Failed to remove video');
+    }
+    setUploading(false);
+  };
+  const handleTriggerVideoInput = (idx) => videoInputRefs[idx].current.click();
+  const handleVideoChange = async (e, idx) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      // Always remove old video if exists at this idx
+      if (artist.videos && artist.videos[idx]) {
+        await fetch(`http://localhost:3001/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
+      }
+      const formData = new FormData();
+      formData.append('videos', file);
+      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-videos`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setArtist(data);
+      setUploadSuccess('Video uploaded!');
+      setTimeout(() => setUploadSuccess(null), 2000);
+    } catch (err) {
+      setUploadError(err.message || 'Upload failed');
+    }
+    setUploading(false);
+    e.target.value = '';
   };
 
   if (loading) return <div>Loading...</div>;
@@ -220,6 +389,24 @@ const ArtistProfilePage = () => {
   return (
     <>
       <NavigationBar />
+      {/* Show upload success/error messages */}
+      {(uploadSuccess || uploadError) && (
+        <div style={{
+          position: 'fixed',
+          top: 80,
+          right: 30,
+          zIndex: 9999,
+          background: uploadSuccess ? '#d4edda' : '#f8d7da',
+          color: uploadSuccess ? '#155724' : '#721c24',
+          border: `1px solid ${uploadSuccess ? '#c3e6cb' : '#f5c6cb'}`,
+          borderRadius: 8,
+          padding: '1rem 2rem',
+          fontWeight: 600,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}>
+          {uploadSuccess || uploadError}
+        </div>
+      )}
       <div className="artist-profile-bg">
         <div className="artist-profile-card">
           {/* Left column with options */}
@@ -374,138 +561,158 @@ const ArtistProfilePage = () => {
             )}
             {selectedMenu === 'Gallery' && (
               <>
-                {/* Upload UI */}
                 <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
-                  {/* Profile Pic Upload */}
-                  <div>
-                    <label style={{ fontWeight: 600 }}>Upload Profile Pic</label><br />
-                    {/* UTHANA HAI YE */}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploading(true);
-                        setUploadError(null);
-                        const formData = new FormData();
-                        formData.append('images', file);
-                        try {
-                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=profile`, {
-                            method: 'POST',
-                            body: formData,
-                          });
-                          if (!res.ok) throw new Error('Upload failed');
-                          const data = await res.json();
-                          setArtist(data);
-                          setUploadSuccess('Profile pic uploaded!');
-                          setTimeout(() => setUploadSuccess(null), 2000);
-                        } catch (err) {
-                          setUploadError(err.message || 'Upload failed');
-                        }
-                        setUploading(false);
-                        e.target.value = '';
-                      }}
-                      disabled={uploading}
-                      style={{ marginRight: '0.5rem' }}
-                    />
-                    {artist.imageUrl ? (
-                      <div className="artist-profile-form-group">
-                        <label className="artist-profile-label">Profile Image</label>
-                        <img
-                          src={getImageSrc(artist.imageUrl)}
-                          alt={`${artist.stageName} gallery`}
-                          className="artist-profile-img"
-                          style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
+                  {/* Profile Pic Upload with action buttons */}
+                  <div style={{ position: 'relative' }}>
+                    <label style={{ fontWeight: 600 }}>Profile Pic</label><br />
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <img
+                        src={artist.imageUrl ? getImageSrc(artist.imageUrl) : undefined}
+                        alt="Profile"
+                        className="artist-profile-img"
+                        style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem', background: '#eee', cursor: 'pointer' }}
+                        onClick={() => setShowImageButtons(v => !v)}
+                      />
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                          gap: showImageButtons ? '0.7rem' : '0rem',
+                          position: 'absolute',
+                          left: '100%',
+                          top: '50%',
+                          transform: showImageButtons ? 'translateY(-50%) translateX(20px) scale(1)' : 'translateY(-50%) translateX(-40px) scale(0.2)',
+                          opacity: showImageButtons ? 1 : 0,
+                          pointerEvents: showImageButtons ? 'auto' : 'none',
+                          zIndex: 2,
+                          transition: 'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
+                          boxShadow: showImageButtons ? '0 8px 32px 0 rgba(108,43,217,0.18)' : 'none',
+                        }}
+                      >
+                        {artist.imageUrl && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleRemoveImage}>Remove</button>
+                        )}
+                        {artist.imageUrl && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleTriggerImageInput}>Replace</button>
+                        )}
+                        {!artist.imageUrl && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleTriggerImageInput}>Upload</button>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={imageInputRef}
+                        onChange={handleImageChange}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </div>
+                  </div>
+                  {/* Banner Upload with action buttons */}
+                  <div style={{ position: 'relative' }}>
+                    <label style={{ fontWeight: 600 }}>Banner Image</label><br />
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <img
+                        src={artist.coverImage ? getImageSrc(artist.coverImage) : undefined}
+                        alt="Banner"
+                        className="artist-profile-img"
+                        style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem', background: '#eee', cursor: 'pointer' }}
+                        onClick={() => setShowBannerButtons(v => !v)}
+                      />
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                          gap: showBannerButtons ? '0.7rem' : '0rem',
+                          position: 'absolute',
+                          left: '100%',
+                          top: '50%',
+                          transform: showBannerButtons ? 'translateY(-50%) translateX(20px) scale(1)' : 'translateY(-50%) translateX(-40px) scale(0.2)',
+                          opacity: showBannerButtons ? 1 : 0,
+                          pointerEvents: showBannerButtons ? 'auto' : 'none',
+                          zIndex: 2,
+                          transition: 'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
+                          boxShadow: showBannerButtons ? '0 8px 32px 0 rgba(108,43,217,0.18)' : 'none',
+                        }}
+                      >
+                        {artist.coverImage && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleRemoveBanner}>Remove</button>
+                        )}
+                        {artist.coverImage && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleTriggerBannerInput}>Replace</button>
+                        )}
+                        {!artist.coverImage && (
+                          <button type="button" style={actionBtnStyle} disabled={uploading} onClick={handleTriggerBannerInput}>Upload</button>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={bannerInputRef}
+                        onChange={handleBannerChange}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </div>
+                  </div>
+                  {/* Video Upload with action buttons (max 2) */}
+                  {[0, 1].map(idx => (
+                    <div key={idx} style={{ position: 'relative' }}>
+                      <label style={{ fontWeight: 600 }}>{`Video ${idx + 1}`}</label><br />
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <video
+                          src={artist.videos && artist.videos[idx] ? getVideoSrc(artist.videos[idx]) : undefined}
+                          controls={!!(artist.videos && artist.videos[idx])}
+                          style={{ width: '120px', height: '120px', borderRadius: '12px', background: '#000', cursor: 'pointer', marginBottom: '0.5rem' }}
+                          onClick={() => setShowVideoButtons(v => {
+                            const arr = [...v];
+                            arr[idx] = !arr[idx];
+                            return arr;
+                          })}
+                        />
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                            gap: showVideoButtons[idx] ? '0.7rem' : '0rem',
+                            position: 'absolute',
+                            left: '100%',
+                            top: '50%',
+                            transform: showVideoButtons[idx] ? 'translateY(-50%) translateX(20px) scale(1)' : 'translateY(-50%) translateX(-40px) scale(0.2)',
+                            opacity: showVideoButtons[idx] ? 1 : 0,
+                            pointerEvents: showVideoButtons[idx] ? 'auto' : 'none',
+                            zIndex: 2,
+                            transition: 'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
+                            boxShadow: showVideoButtons[idx] ? '0 8px 32px 0 rgba(108,43,217,0.18)' : 'none',
+                          }}
+                        >
+                          {artist.videos && artist.videos[idx] && (
+                            <button type="button" style={actionBtnStyle} disabled={uploading} onClick={() => handleRemoveVideo(idx)}>Remove</button>
+                          )}
+                          {artist.videos && artist.videos[idx] && (
+                            <button type="button" style={actionBtnStyle} disabled={uploading} onClick={() => handleTriggerVideoInput(idx)}>Replace</button>
+                          )}
+                          {(!artist.videos || !artist.videos[idx]) && (
+                            <button type="button" style={actionBtnStyle} disabled={uploading} onClick={() => handleTriggerVideoInput(idx)}>Upload</button>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          ref={videoInputRefs[idx]}
+                          onChange={e => handleVideoChange(e, idx)}
+                          style={{ display: 'none' }}
+                          disabled={uploading}
                         />
                       </div>
-                    ) : (
-                      <p>No images uploaded yet.</p>
-                    )}  
-                  </div>
-                  {/* UTHANA HAI YE */}
-                  {/* Banner Upload */}
-                  <div>
-                    <label style={{ fontWeight: 600 }}>Upload Banner Image</label><br />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploading(true);
-                        setUploadError(null);
-                        const formData = new FormData();
-                        formData.append('images', file);
-                        try {
-                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=banner`, {
-                            method: 'POST',
-                            body: formData,
-                          });
-                          if (!res.ok) throw new Error('Upload failed');
-                          const data = await res.json();
-                          setArtist(data);
-                          setUploadSuccess('Banner image uploaded!');
-                          setTimeout(() => setUploadSuccess(null), 2000);
-                        } catch (err) {
-                          setUploadError(err.message || 'Upload failed');
-                        }
-                        setUploading(false);
-                        e.target.value = '';
-                      }}
-                      disabled={uploading}
-                    />
-                    {artist.coverImage ? (
-                  <div className="artist-profile-form-group">
-                    <label className="artist-profile-label">Banner Image</label>
-                    <img
-                      src={getImageSrc(artist.coverImage)}
-                      alt={`${artist.stageName} profile`}
-                      className="artist-profile-img"
-                      style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
-                    />
-                  </div>
-                ):(
-                  <p>No images uploaded yet.</p>
-                )}
-                  </div>
-                  {/* Video Upload */}
-                  <div>
-                    <label style={{ fontWeight: 600 }}>Upload Video</label><br />
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploading(true);
-                        setUploadError(null);
-                        const formData = new FormData();
-                        formData.append('videos', file);
-                        try {
-                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-videos`, {
-                            method: 'POST',
-                            body: formData,
-                          });
-                          if (!res.ok) throw new Error('Upload failed');
-                          const data = await res.json();
-                          setArtist(data);
-                          setUploadSuccess('Video uploaded!');
-                          setTimeout(() => setUploadSuccess(null), 2000);
-                        } catch (err) {
-                          setUploadError(err.message || 'Upload failed');
-                        }
-                        setUploading(false);
-                        e.target.value = '';
-                      }}
-                      disabled={uploading}
-                    />
-                  </div>
-                  {uploading && <span style={{ color: '#6c2bd9' }}>Uploading...</span>}
-                  {uploadError && <span style={{ color: 'red' }}>{uploadError}</span>}
-                  {uploadSuccess && <span style={{ color: 'green' }}>{uploadSuccess}</span>}
+                    </div>
+                  ))}
                 </div>
-                {/* Video Gallery */}
+                {/* Video Gallery (read-only, below action buttons) */}
                 <div style={{ marginTop: '1rem' }}>
       <label className="artist-profile-label">Uploaded Videos</label>
       {artist.videos && artist.videos.length > 0 ? (
@@ -548,6 +755,12 @@ const ArtistProfilePage = () => {
               <>
                 <h2>Security Questions</h2>
                 <p>Select and answer any 5 of the following questions. These will be used for account recovery.</p>
+                {/* For debugging/future use: show current answers */}
+                {Object.keys(securityAnswers).length > 0 && (
+                  <div style={{ fontSize: '0.9rem', color: '#888', marginBottom: 8 }}>
+                    <b>Current Answers:</b> {Object.entries(securityAnswers).map(([idx, ans]) => `${SECURITY_QUESTIONS[idx]}: ${ans}`).join(' | ')}
+                  </div>
+                )}
                 <form onSubmit={e => { e.preventDefault(); handleSaveSecurityQuestions(); }}>
                   {securitySlots.map((slot, idx) => (
                     <div key={idx} className="artist-profile-form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
