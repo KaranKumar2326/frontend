@@ -268,7 +268,7 @@ export default function PublicArtistPage() {
       console.log(bookingData);
       const token = localStorage.getItem('token');
       // console.log(token);
-      const response = await fetch('http://localhost:3001/api/events/request', {
+      const response = await fetch('https://backend-musical.onrender.com/api/events/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ export default function PublicArtistPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
+        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -337,7 +337,7 @@ export default function PublicArtistPage() {
     if (match && match[1]) {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   const renderStars = (rating = 0) => {

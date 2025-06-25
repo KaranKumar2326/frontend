@@ -66,7 +66,7 @@ const ArtistProfilePage = () => {
     const fetchArtist = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3001/api/artists/${_id}`);
+        const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
         if (!res.ok) throw new Error('Artist not found.');
         const data = await res.json();
         setArtist(data);
@@ -87,8 +87,8 @@ const ArtistProfilePage = () => {
     const fetchMeta = async () => {
       try {
         const [genresRes, instrumentsRes] = await Promise.all([
-          fetch('http://localhost:3001/api/genres'),
-          fetch('http://localhost:3001/api/instruments'),
+          fetch('https://backend-musical.onrender.com/api/genres'),
+          fetch('https://backend-musical.onrender.com/api/instruments'),
         ]);
         const genresData = genresRes.ok ? await genresRes.json() : [];
         const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
@@ -148,7 +148,7 @@ const ArtistProfilePage = () => {
         genres: genres.filter(g => selectedGenres.includes(g.name)),
         instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
       };
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedArtist),
@@ -180,7 +180,7 @@ const ArtistProfilePage = () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/security-questions`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/security-questions`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -209,7 +209,7 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Helper to convert Google Drive links to direct video links and proxy through backend
@@ -224,7 +224,7 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   const [showImageButtons, setShowImageButtons] = useState(false);
@@ -252,7 +252,7 @@ const ArtistProfilePage = () => {
     setUploading(true);
     setUploadError(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-image`, { method: 'DELETE' });
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-image`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to remove image');
       const data = await res.json();
       setArtist(data);
@@ -272,11 +272,11 @@ const ArtistProfilePage = () => {
     try {
       // Always remove old image if exists
       if (artist.imageUrl) {
-        await fetch(`http://localhost:3001/api/artists/${_id}/remove-image`, { method: 'DELETE' });
+        await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-image`, { method: 'DELETE' });
       }
       const formData = new FormData();
       formData.append('images', file);
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=profile`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=profile`, {
         method: 'POST',
         body: formData,
       });
@@ -297,7 +297,7 @@ const ArtistProfilePage = () => {
     setUploading(true);
     setUploadError(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to remove banner');
       const data = await res.json();
       setArtist(data);
@@ -317,11 +317,11 @@ const ArtistProfilePage = () => {
     try {
       // Always remove old banner if exists
       if (artist.coverImage) {
-        await fetch(`http://localhost:3001/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
+        await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-banner`, { method: 'DELETE' });
       }
       const formData = new FormData();
       formData.append('images', file);
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-images?type=banner`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-images?type=banner`, {
         method: 'POST',
         body: formData,
       });
@@ -342,7 +342,7 @@ const ArtistProfilePage = () => {
     setUploading(true);
     setUploadError(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to remove video');
       const data = await res.json();
       setArtist(data);
@@ -362,11 +362,11 @@ const ArtistProfilePage = () => {
     try {
       // Always remove old video if exists at this idx
       if (artist.videos && artist.videos[idx]) {
-        await fetch(`http://localhost:3001/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
+        await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/remove-video/${idx}`, { method: 'DELETE' });
       }
       const formData = new FormData();
       formData.append('videos', file);
-      const res = await fetch(`http://localhost:3001/api/artists/${_id}/upload-videos`, {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-videos`, {
         method: 'POST',
         body: formData,
       });
