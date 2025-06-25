@@ -12,7 +12,7 @@ const AllArtistsPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://backend-musical.onrender.com/api/artists')
+    fetch('http://localhost:3001/api/artists')
       .then(res => res.json())
       .then(data => {
         setArtists(data);

@@ -156,7 +156,7 @@ const EventPage = () => {
   console.log('Event ID:', eventId);
 
   // Set axios base URL (should match your JammingPage)
-  axios.defaults.baseURL = 'https://backend-musical.onrender.com';
+  axios.defaults.baseURL = 'http://localhost:3001';
 
   useEffect(() => {
     const fetchEvent = async () => {

@@ -72,7 +72,7 @@ const FeaturedArtists = () => {
   useEffect(() => {
     const loggedInArtistId = localStorage.getItem('artist_id');
   
-    fetch('https://backend-musical.onrender.com/api/artists')
+    fetch('http://localhost:3001/api/artists')
       .then(res => res.json())
       .then(data => {
         const filtered = data.filter(artist => artist._id !== loggedInArtistId);

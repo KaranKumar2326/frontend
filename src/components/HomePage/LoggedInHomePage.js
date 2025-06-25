@@ -35,7 +35,7 @@ const LoggedInHomePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Retrieve user info from localStorage when the component mounts
@@ -63,7 +63,7 @@ const LoggedInHomePage = () => {
 
   useEffect(() => {
     // Fetch all artists and collect all images
-    fetch('https://backend-musical.onrender.com/api/artists')
+    fetch('http://localhost:3001/api/artists')
       .then(res => res.json())
       .then(data => {
         let allImages = [];

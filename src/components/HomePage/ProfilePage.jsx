@@ -1,32 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import myImage from '../../public/defaultpic.png';
 import PropTypes from 'prop-types';
 import 'react-toastify/dist/ReactToastify.css';
 import NavigationBar from '../NavigationBar';
 import Footer from './Footer';
 
 // Constants
-// const API_BASE_URL = 'https://backend-musical.onrender.com/api';
-const API_BASE_URL = 'https://backend-musical.onrender.com/api';
+// const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
-
-// Default user object
-const DEFAULT_USER = {
-  name: '',
-  email: '',
-  phone: '',
-  pincode: '',
-  genre: '',
-  experience: 0,
-  address: '',
-  geoLocation: { latitude: 0, longitude: 0 },
-  role: 'user',
-  avgRating: 0,
-  upcomingBookings: 0,
-  imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg'
-};
 
 // Style constants
 const inputStyle = (edit) => ({
@@ -89,10 +74,12 @@ const SECURITY_QUESTIONS = [
 ];
 
 const ProfilePage = ({ onProfileUpdate }) => {
+  // State for showing image action buttons on hover
+  const [showImageButtons, setShowImageButtons] = useState(false);
   const { userId: urlUserId } = useParams();
-  const [user, setUser] = useState(DEFAULT_USER);
+  const [user, setUser] = useState(null); // No default user
   const [edit, setEdit] = useState(false);
-  const [form, setForm] = useState({ ...DEFAULT_USER });
+  const [form, setForm] = useState(null); // No default user
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageState, setImageState] = useState({
@@ -153,6 +140,10 @@ const ProfilePage = ({ onProfileUpdate }) => {
       }
 
       const userData = await response.json();
+      // Remove randomuser.me default if present
+      if (userData.imageUrl && userData.imageUrl.includes('randomuser.me/api/portraits/')) {
+        userData.imageUrl = '';
+      }
       setUser(userData);
       setForm(userData);
     } catch (err) {
@@ -265,7 +256,7 @@ const ProfilePage = ({ onProfileUpdate }) => {
   const uploadProfileImage = async (file) => {
     try {
       validateFile(file);
-      
+
       setImageState({
         uploading: true,
         progress: 0,
@@ -275,10 +266,10 @@ const ProfilePage = ({ onProfileUpdate }) => {
 
       const formData = new FormData();
       formData.append('image', file);
-      
+
       abortControllerRef.current = new AbortController();
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`${API_BASE_URL}/users/${userId}/upload-image`, {
         method: 'POST',
         headers: {
@@ -287,35 +278,26 @@ const ProfilePage = ({ onProfileUpdate }) => {
         body: formData,
         signal: abortControllerRef.current.signal,
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Upload failed');
       }
-      
-      const data = await response.json();
-      
-      // Add cache-busting timestamp to force image refresh
-      const newImageUrl = data.imageUrl ? `${data.imageUrl}${data.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : data.imageUrl;
-      setUser(prev => ({
-        ...prev,
-        imageUrl: newImageUrl
-      }));
-      setForm(prev => ({
-        ...prev,
-        imageUrl: newImageUrl
-      }));
-      
+
+      // After upload, fetch the latest user data to get the updated imageUrl from DB
+      await fetchUserData();
+
       setImageState(prev => ({
         ...prev,
         uploading: false,
         success: 'Profile picture updated successfully'
       }));
-      
+
       if (onProfileUpdate) {
-        onProfileUpdate({ ...user, imageUrl: newImageUrl });
+        // Use the latest user data
+        onProfileUpdate(user);
       }
-      
+
       toast.success('Profile picture updated successfully');
     } catch (err) {
       console.error('Error uploading image:', err);
@@ -342,18 +324,7 @@ const ProfilePage = ({ onProfileUpdate }) => {
     }
   };
 
-  // Cancel upload
-  const handleCancelUpload = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    setImageState({
-      uploading: false,
-      progress: 0,
-      error: null,
-      success: null
-    });
-  };
+  // Cancel upload (unused, can be safely removed)
 
   // Trigger file input
   const triggerFileInput = () => {
@@ -372,10 +343,10 @@ const ProfilePage = ({ onProfileUpdate }) => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
-  console.log('ProfilePage user.imageUrl:', user.imageUrl); // Debugging line
+  console.log('ProfilePage user.imageUrl:', user?.imageUrl); // Debugging line
 
   if (loading) {
     return (
@@ -393,6 +364,11 @@ const ProfilePage = ({ onProfileUpdate }) => {
         <button onClick={() => window.location.reload()}>Try Again</button>
       </div>
     );
+  }
+
+  // If user or form is not loaded, don't render the profile
+  if (!user || !form) {
+    return null;
   }
 
   const handleSecuritySlotChange = (slotIdx, field, value) => {
@@ -461,50 +437,135 @@ const ProfilePage = ({ onProfileUpdate }) => {
         }}>
           {/* Profile Picture Section */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ position: 'relative', marginBottom: '1rem' }}>
-              <img 
-                src={getImageSrc(user.imageUrl)} 
-                alt="Profile" 
-                style={{ 
-                  width: '150px', 
-                  height: '150px', 
-                  borderRadius: '50%', 
-                  border: '5px solid #fff', 
-                  objectFit: 'cover',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                }} 
-              />
-              <div 
+            {/* Profile image hover wrapper */}
+            <div
+              style={{ position: 'relative', marginBottom: '1rem' }}
+              className="profile-image-action-wrapper"
+            >
+              <img
+                src={user.imageUrl ? getImageSrc(user.imageUrl) : myImage}
+                alt="Profile"
                 style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  right: '10px',
-                  background: '#fff',
+                  width: '150px',
+                  height: '150px',
                   borderRadius: '50%',
-                  width: '36px',
-                  height: '36px',
+                  border: '5px solid #fff',
+                  objectFit: 'cover',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setShowImageButtons(v => !v)}
+              />
+              {/* Show buttons only on hover */}
+              <div
+                style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: imageState.uploading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                }} 
-                onClick={imageState.uploading ? handleCancelUpload : triggerFileInput}
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  gap: showImageButtons ? '0.7rem' : '0rem',
+                  position: 'absolute',
+                  left: '100%',
+                  top: '50%',
+                  transform: showImageButtons
+                    ? 'translateY(-50%) translateX(20px) scale(1)'
+                    : 'translateY(-50%) translateX(-40px) scale(0.2)',
+                  opacity: showImageButtons ? 1 : 0,
+                  pointerEvents: showImageButtons ? 'auto' : 'none',
+                  zIndex: 2,
+                  transition: 'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
+                  boxShadow: showImageButtons ? '0 8px 32px 0 rgba(108,43,217,0.18)' : 'none',
+                }}
               >
-                <span style={{ fontSize: '18px', color: '#6c2bd9' }}>
-                  {imageState.uploading ? '✕' : '📷'}
-                </span>
+                
+                {user.imageUrl && (
+                  <button
+                    type="button"
+                    style={{
+                      ...editBtnStyle,
+                      background: '#fff',
+                      color: '#6c2bd9',
+                      border: '2px solid #6c2bd9',
+                      padding: '0.5rem 1.5rem',
+                      marginBottom: 0,
+                      fontWeight: 700
+                    }}
+                    disabled={imageState.uploading || !user.imageUrl}
+                    onClick={async () => {
+                      if (!user.imageUrl) return;
+                      setImageState({ ...imageState, uploading: true, error: null, success: null });
+                      try {
+                        const token = localStorage.getItem('token');
+                        const res = await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
+                          method: 'DELETE',
+                          headers: { 'Authorization': `Bearer ${token}` },
+                        });
+                        if (!res.ok) throw new Error('Failed to remove image');
+                        setUser(prev => ({ ...prev, imageUrl: '' }));
+                        setForm(prev => ({ ...prev, imageUrl: '' }));
+                        setImageState({ ...imageState, uploading: false, success: 'Profile image removed' });
+                        localStorage.setItem('profileImageUpdated', Date.now());
+                      } catch (err) {
+                        setImageState({ ...imageState, uploading: false, error: err.message || 'Failed to remove image' });
+                      }
+                    }}
+                  >Remove</button>
+                )}
+                {user.imageUrl && (
+                  <button
+                    type="button"
+                    style={{
+                      ...editBtnStyle,
+                      background: '#fff',
+                      color: '#6c2bd9',
+                      border: '2px solid #6c2bd9',
+                      padding: '0.5rem 1.5rem',
+                      marginBottom: 0,
+                      fontWeight: 700
+                    }}
+                    disabled={imageState.uploading}
+                    onClick={() => triggerFileInput()}
+                  >Replace</button>
+                )}
+                {!user.imageUrl && (
+                  <button
+                    type="button"
+                    style={{
+                      ...editBtnStyle,
+                      background: '#fff',
+                      color: '#6c2bd9',
+                      border: '2px solid #6c2bd9',
+                      padding: '0.5rem 1.5rem',
+                      marginBottom: 0,
+                      fontWeight: 700
+                    }}
+                    disabled={imageState.uploading}
+                    onClick={() => triggerFileInput()}
+                  >Upload</button>
+                )}
               </div>
               <input
                 type="file"
                 ref={fileInputRef}
-                onChange={handleImageChange}
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  // Always remove old image from Google Drive if replacing
+                  if (user.imageUrl) {
+                    try {
+                      const token = localStorage.getItem('token');
+                      await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                      });
+                    } catch {}
+                  }
+                  await handleImageChange(e);
+                }}
                 accept="image/*"
                 style={{ display: 'none' }}
                 disabled={imageState.uploading}
               />
-            </div>
-            
+            </div>           
             {imageState.uploading && (
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ 

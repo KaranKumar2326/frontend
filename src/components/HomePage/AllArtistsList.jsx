@@ -8,7 +8,7 @@ const AllArtistsList = ({ searchQuery }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let url = 'https://backend-musical.onrender.com/api/artists';
+    let url = 'http://localhost:3001/api/artists';
     // Optionally filter by search query (if backend supports it)
     if (searchQuery && searchQuery.trim() !== '') {
       url += `?q=${encodeURIComponent(searchQuery)}`;

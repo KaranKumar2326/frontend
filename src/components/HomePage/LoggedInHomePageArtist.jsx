@@ -51,7 +51,7 @@ function LoggedInHomePageArtist() {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ function LoggedInHomePageArtist() {
 
         // Fetch artist details if ID exists
         if (id) {
-          const artistResponse = await fetch(`https://backend-musical.onrender.com/api/artists/${id}`);
+          const artistResponse = await fetch(`http://localhost:3001/api/artists/${id}`);
           const artistData = await artistResponse.json();
           
           if (Array.isArray(artistData.gallery) && artistData.gallery.length > 0) {
@@ -88,7 +88,7 @@ function LoggedInHomePageArtist() {
         }
 
         // Fetch all artists for the gallery
-        const allArtistsResponse = await fetch('https://backend-musical.onrender.com/api/artists');
+        const allArtistsResponse = await fetch('http://localhost:3001/api/artists');
         const allArtistsData = await allArtistsResponse.json();
         
         let allImages = [];
