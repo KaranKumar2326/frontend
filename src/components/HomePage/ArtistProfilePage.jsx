@@ -6,6 +6,19 @@ import './ArtistProfilePage.css';
 import NavigationBar from '../NavigationBar';
 import Footer from './Footer';
 
+const SECURITY_QUESTIONS = [
+  'What was your childhood nickname?',
+  'What is the name of your favorite childhood friend?',
+  'What was the name of your first pet?',
+  'What was the first concert you attended?',
+  'What is your mother’s maiden name?',
+  'What is your favorite book?',
+  'What is your favorite movie?',
+  'What is the name of the street you grew up on?',
+  'What is your favorite food?',
+  'What city were you born in?'
+];
+
 const ArtistProfilePage = () => {
   const { _id } = useParams();
   const [artist, setArtist] = useState(null);
@@ -23,6 +36,16 @@ const ArtistProfilePage = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(null);
+  const [securityAnswers, setSecurityAnswers] = useState({});
+  const [securityError, setSecurityError] = useState(null);
+  const [securitySuccess, setSecuritySuccess] = useState(null);
+  const [securitySlots, setSecuritySlots] = useState([
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+    { questionIdx: '', answer: '' },
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,6 +95,24 @@ const ArtistProfilePage = () => {
     }
   }, [isEditing, artist]);
 
+  useEffect(() => {
+    if (artist && artist.securityQuestions && Array.isArray(artist.securityQuestions)) {
+      // Convert object or array to slots [{questionIdx, answer}]
+      const slots = [];
+      for (let i = 0; i < 5; i++) {
+        if (artist.securityQuestions[i]) {
+          slots.push({
+            questionIdx: artist.securityQuestions[i].questionIdx,
+            answer: artist.securityQuestions[i].answer,
+          });
+        } else {
+          slots.push({ questionIdx: '', answer: '' });
+        }
+      }
+      setSecuritySlots(slots);
+    }
+  }, [artist]);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -79,7 +120,11 @@ const ArtistProfilePage = () => {
   const handleInputChange = (field, value) => {
     setEditArtist(prev => ({ ...prev, [field]: value }));
   };
-  // THIS TOOO
+
+  const handleSecuritySlotChange = (slotIdx, field, value) => {
+    setSecuritySlots(prev => prev.map((slot, idx) => idx === slotIdx ? { ...slot, [field]: value } : slot));
+  };
+
   const handleSave = async () => {
     if (!editArtist) return;
     setLoading(true);
@@ -106,6 +151,68 @@ const ArtistProfilePage = () => {
     setLoading(false);
   };
 
+  const handleSaveSecurityQuestions = async () => {
+    setSecurityError(null);
+    setSecuritySuccess(null);
+    // Validate: 5 unique questions, all answered
+    const selected = securitySlots.filter(s => s.questionIdx !== '' && s.answer.trim() !== '');
+    if (selected.length !== 5) {
+      setSecurityError('Please select and answer exactly 5 questions.');
+      return;
+    }
+    const questionSet = new Set(selected.map(s => s.questionIdx));
+    if (questionSet.size !== 5) {
+      setSecurityError('Please select 5 different questions.');
+      return;
+    }
+    try {
+      const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/security-questions`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          securityQuestions: securitySlots
+            .filter(s => s.questionIdx !== '' && s.answer.trim() !== '')
+            .map(s => ({ questionIdx: s.questionIdx, answer: s.answer })),
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to save security questions.');
+      setSecuritySuccess('Security questions saved!');
+      setTimeout(() => setSecuritySuccess(null), 2000);
+    } catch (err) {
+      setSecurityError(err.message || 'Failed to save security questions.');
+    }
+  };
+
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
+  // Helper to convert Google Drive links to direct video links and proxy through backend
+  const getVideoSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!artist) return <div>No artist found.</div>;
@@ -123,6 +230,7 @@ const ArtistProfilePage = () => {
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Booking Information')}>Booking Information</div>
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Gallery')}>Gallery</div>
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Social Media Links')}>Social Media Links</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Security Questions')}>Security Questions</div>
           </div>
           {/* Main profile content */}
           <div className="artist-profile-main-content">
@@ -301,17 +409,17 @@ const ArtistProfilePage = () => {
                       disabled={uploading}
                       style={{ marginRight: '0.5rem' }}
                     />
-                      {artist.imageUrl ? (
+                    {artist.imageUrl ? (
                       <div className="artist-profile-form-group">
                         <label className="artist-profile-label">Profile Image</label>
                         <img
-                          src={artist.imageUrl ? `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(artist.imageUrl)}` : ''}
+                          src={getImageSrc(artist.imageUrl)}
                           alt={`${artist.stageName} gallery`}
                           className="artist-profile-img"
                           style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
                         />
                       </div>
-                    ) :(
+                    ) : (
                       <p>No images uploaded yet.</p>
                     )}  
                   </div>
@@ -351,7 +459,7 @@ const ArtistProfilePage = () => {
                   <div className="artist-profile-form-group">
                     <label className="artist-profile-label">Banner Image</label>
                     <img
-                      src={artist.coverImage ? `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(artist.coverImage)}` : ''}
+                      src={getImageSrc(artist.coverImage)}
                       alt={`${artist.stageName} profile`}
                       className="artist-profile-img"
                       style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', marginBottom: '0.5rem' }}
@@ -361,10 +469,62 @@ const ArtistProfilePage = () => {
                   <p>No images uploaded yet.</p>
                 )}
                   </div>
+                  {/* Video Upload */}
+                  <div>
+                    <label style={{ fontWeight: 600 }}>Upload Video</label><br />
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploading(true);
+                        setUploadError(null);
+                        const formData = new FormData();
+                        formData.append('videos', file);
+                        try {
+                          const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}/upload-videos`, {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          if (!res.ok) throw new Error('Upload failed');
+                          const data = await res.json();
+                          setArtist(data);
+                          setUploadSuccess('Video uploaded!');
+                          setTimeout(() => setUploadSuccess(null), 2000);
+                        } catch (err) {
+                          setUploadError(err.message || 'Upload failed');
+                        }
+                        setUploading(false);
+                        e.target.value = '';
+                      }}
+                      disabled={uploading}
+                    />
+                  </div>
                   {uploading && <span style={{ color: '#6c2bd9' }}>Uploading...</span>}
                   {uploadError && <span style={{ color: 'red' }}>{uploadError}</span>}
                   {uploadSuccess && <span style={{ color: 'green' }}>{uploadSuccess}</span>}
                 </div>
+                {/* Video Gallery */}
+                <div style={{ marginTop: '1rem' }}>
+      <label className="artist-profile-label">Uploaded Videos</label>
+      {artist.videos && artist.videos.length > 0 ? (
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          {artist.videos.map((videoUrl, idx) => (
+            <video
+              key={idx}
+              src={getVideoSrc(videoUrl)}
+              controls
+              style={{ width: '200px', height: '120px', borderRadius: '10px', background: '#000' }}
+            >
+              Your browser does not support the video tag.
+            </video>
+          ))}
+        </div>
+      ) : (
+        <p>No videos uploaded yet.</p>
+      )}
+    </div>
               </>
             )}
             {selectedMenu === 'Social Media Links' && (
@@ -382,6 +542,48 @@ const ArtistProfilePage = () => {
                 ) : (
                   <p>No social media links available.</p>
                 )}
+              </>
+            )}
+            {selectedMenu === 'Security Questions' && (
+              <>
+                <h2>Security Questions</h2>
+                <p>Select and answer any 5 of the following questions. These will be used for account recovery.</p>
+                <form onSubmit={e => { e.preventDefault(); handleSaveSecurityQuestions(); }}>
+                  {securitySlots.map((slot, idx) => (
+                    <div key={idx} className="artist-profile-form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <select
+                        className="artist-profile-input"
+                        value={slot.questionIdx}
+                        onChange={e => handleSecuritySlotChange(idx, 'questionIdx', e.target.value)}
+                        required
+                      >
+                        <option value="">Select a question</option>
+                        {SECURITY_QUESTIONS.map((q, qIdx) => (
+                          <option
+                            key={qIdx}
+                            value={qIdx}
+                            disabled={securitySlots.some((s, sIdx) => sIdx !== idx && s.questionIdx === String(qIdx))}
+                          >
+                            {q}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        className="artist-profile-input"
+                        type="text"
+                        placeholder="Your answer"
+                        value={slot.answer}
+                        onChange={e => handleSecuritySlotChange(idx, 'answer', e.target.value)}
+                        maxLength={100}
+                        required={!!slot.questionIdx}
+                        disabled={!slot.questionIdx}
+                      />
+                    </div>
+                  ))}
+                  {securityError && <div style={{ color: 'red' }}>{securityError}</div>}
+                  {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
+                  <button type="submit" className="artist-profile-save-btn">Save Answers</button>
+                </form>
               </>
             )}
           </div>

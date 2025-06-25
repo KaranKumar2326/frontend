@@ -42,16 +42,12 @@ const Footer = () => (
           <h3 className="footer-heading">Contact Us</h3>
           <ul className="footer-contact">
             <li>
-              <MapPin className="contact-icon" />
-              <span>123 Music Avenue, New York, NY 10001</span>
-            </li>
-            <li>
               <Phone className="contact-icon" />
-              <span>(555) 123-4567</span>
+              <span>7779887407</span>
             </li>
             <li>
               <Mail className="contact-icon" />
-              <span>info@musicalmeet.com</span>
+              <span>musicalmeet07@gmail.com</span>
             </li>
           </ul>
         </div>
