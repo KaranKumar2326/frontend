@@ -118,44 +118,42 @@ const LoggedInHomePage = () => {
     <>
       <NavigationBar />
       <div className="page-container">
-        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px' }}>
-          <div className="background-image"></div>
-          <header className="hero-section" style={{ zIndex: 1, height: '100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-            <div className='content'>
-              <div>
-                <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
-              </div>
-              <div style={{ color: 'white', marginBottom: '20px', fontSize: '1.2rem' }}>
-                <p>Welcome, {user.name}!</p>
-                <p>Your email: {user.email}</p>
-              </div>
-              <div>
-                <p className="hero-subtitle" style={{ color: 'white', fontWeight: 'bold', marginBottom: '30px', fontSize: '1.5rem' }}>
-                  Join us in celebrating the joy of music and connecting with artists from around the world.
-                </p>
-              </div>
-
-              {/* Display user info */}
-              
-
-              <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                <button 
-                  className="P" 
-                  style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px', borderColor: '#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                  onClick={handleHireArtistClick}
-                >
-                  Hire an Artist
-                </button>
-                <button className="Y" style={{ fontWeight: 'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a', color: '#6c2bd9', border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                  onClick={handleJammingSessionClick}
-                >
-                  Jamming sessions near you 
-                </button>
-              </div>
+        <div className="background-image"></div>
+        
+        {/* Hero Section */}
+        <div className="hero-container">
+          <div className="hero-content">
+            <div>
+              <h1 className="hero-title">Welcome to Musical Meet</h1>
             </div>
-          </header>
+            <div className="user-info">
+              <p>Welcome, {user.name}!</p>
+              <p>Your email: {user.email}</p>
+            </div>
+            <div>
+              <p className="hero-subtitle">
+                Join us in celebrating the joy of music and connecting with artists from around the world.
+              </p>
+            </div>
+
+            <div className="hero-buttons">
+              <button 
+                className="btn-primary" 
+                onClick={handleHireArtistClick}
+              >
+                Hire an Artist
+              </button>
+              <button 
+                className="btn-secondary" 
+                onClick={handleJammingSessionClick}
+              >
+                Jamming sessions near you 
+              </button>
+            </div>
+          </div>
         </div>
 
+        {/* Call to Action Section */}
         <section className="call-to-action-section">
           <div className="call-to-action-bg">
             <div className="hero-gradient"></div>
@@ -174,49 +172,55 @@ const LoggedInHomePage = () => {
               </p>
               <div className="cta-buttons">
                 <Link href="#">
-                  <button className="cta-button primary-btn" onClick={handleJammingSessionClick}>Jamming Sessions Near You</button>
+                  <button className="cta-button primary-btn" onClick={handleJammingSessionClick}>
+                    Jamming Sessions Near You
+                  </button>
                 </Link>
               </div>
             </motion.div>
           </div>
         </section>
 
-        <div className="search-bar-container">
-          <h2 className="search-heading">Find Artists</h2>
-          <div className="search-bar-details">
-            <p>Search for your favorite artists, or checkout our featured artists. Choose what suits best for your occasion!</p>
+        {/* Search Section */}
+        <div className="search-section">
+          <h2 className="section-title">Find Artists</h2>
+          <div className="search-container">
+            <p className="search-description">
+              Search for your favorite artists, or checkout our featured artists. Choose what suits best for your occasion!
+            </p>
             <input
               type="text"
               placeholder="Find Artist near me..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="search-bar"
+              className="search-input"
             />
           </div>
           <FeaturedArtist />
         </div>
 
+        {/* Features Section */}
         <div className="features-section">
-          <h2>Why Choose Us?</h2>
-          <div className="features">
-            <div className="feature">
+          <h2 className="section-title">Why Choose Us?</h2>
+          <div className="features-grid">
+            <div className="feature-card">
               <h3>Curated Artists & Customized Setups</h3>
               <p>Only verified and professional artists with customized setups to meet every occasion requirement.</p>
             </div>
-            <div className="feature">
+            <div className="feature-card">
               <h3>Secure Payment & Free Cancellation</h3>
               <p>Flexible booking with a 20% deposit and free cancellation up to 3 days before the event.</p>
             </div>
-            <div className="feature">
+            <div className="feature-card">
               <h3>Hassle-Free Execution</h3>
               <p>Seamless end-to-end execution with 24/7 support to ensure a memorable experience.</p>
             </div>
           </div>
         </div>
 
-        {/* Image Slider Section */}
-        <div className="image-slider-section">
-          <h2 className="slider-heading">Gallery</h2>
+        {/* Gallery Section */}
+        <div className="gallery-section">
+          <h2 className="section-title">Gallery</h2>
           <ImageSlider images={galleryImages} />
         </div>
 

@@ -197,8 +197,10 @@ export default function PublicArtistProfilePage() {
           </Box>
         </Box>
 
-        <Footer />
+        
       </Box>
+      <Footer />
     </>
   );
 }
+

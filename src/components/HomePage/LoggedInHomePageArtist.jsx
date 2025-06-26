@@ -145,6 +145,8 @@ function LoggedInHomePageArtist() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              // text color
+              style={{ color: 'white' , textAlign: 'left' }}
             >
               Welcome to Musical Meet
             </motion.h1>
@@ -190,7 +192,7 @@ function LoggedInHomePageArtist() {
                 },
                 {
                   title: "Create",
-                  content: "Create what i need to know ?",
+                  content: "Create joy with your music and share it with the world",
                   className: "deck-card-create"
                 },
                 {
@@ -221,7 +223,7 @@ function LoggedInHomePageArtist() {
                 >
                   <span className="deck-card-title">{card.title}</span>
                   <hr className="deck-card-separator" />
-                  <p>{card.content}</p>
+                  <p style={{ color: 'black' }}>{card.content}</p>
                 </motion.div>
               ))}
             </div>
@@ -248,6 +250,10 @@ function LoggedInHomePageArtist() {
             </div>
           </div>
         </div>
+
+
+
+
 
         <FeaturedArtists />
 
