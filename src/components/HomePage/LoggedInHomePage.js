@@ -118,7 +118,7 @@ const LoggedInHomePage = () => {
     <>
       <NavigationBar />
       <div className="page-container">
-        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px' }}>
+        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'cen', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px' }}>
           <div className="background-image"></div>
           <header className="hero-section" style={{ zIndex: 1, height: '100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
             <div className='content'>
@@ -220,8 +220,9 @@ const LoggedInHomePage = () => {
           <ImageSlider images={galleryImages} />
         </div>
 
-        <Footer />
+        
       </div>
+      <Footer />
     </>
   );
 };
