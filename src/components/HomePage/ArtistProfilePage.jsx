@@ -6,6 +6,29 @@ import './ArtistProfilePage.css';
 import NavigationBar from '../NavigationBar';
 import Footer from './Footer';
 
+// Helper component for auto-resizing textarea
+const AutoResizeTextarea = ({ value, onChange, className, readOnly }) => {
+  const textareaRef = React.useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={onChange}
+      className={className}
+      readOnly={readOnly}
+      style={{ minHeight: '100px' }}
+    />
+  );
+};
+
 const SECURITY_QUESTIONS = [
   'What was your childhood nickname?',
   'What is the name of your favorite childhood friend?',
@@ -87,16 +110,25 @@ const ArtistProfilePage = () => {
     const fetchMeta = async () => {
       try {
         const [genresRes, instrumentsRes] = await Promise.all([
-          fetch('https://backend-musical.onrender.com/api/genres'),
-          fetch('https://backend-musical.onrender.com/api/instruments'),
+          fetch('https://backend-musical.onrender.com/api/artists/genres'),
+          fetch('https://backend-musical.onrender.com/api/artists/instruments'),
         ]);
-        const genresData = genresRes.ok ? await genresRes.json() : [];
-        const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
-        setGenres(genresData);
-        setInstruments(instrumentsData);
+        // Transform string arrays to objects with _id and name if API returns simple arrays
+        const genresData = genresRes.ok ? await genresRes.json() : ['Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
+        const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : ['Guitar', 'Piano', 'Drums', 'Violin', 'Flute'];
+        
+        // Ensure genres and instruments have proper structure with unique IDs
+        setGenres(Array.isArray(genresData) ? 
+          genresData.map((g, idx) => typeof g === 'string' ? { _id: `genre-${idx}`, name: g } : g) : 
+          genresData);
+        
+        setInstruments(Array.isArray(instrumentsData) ? 
+          instrumentsData.map((i, idx) => typeof i === 'string' ? { _id: `instrument-${idx}`, name: i } : i) : 
+          instrumentsData);
       } catch (e) {
-        setGenres([]);
-        setInstruments([]);
+        // Create proper objects with unique IDs for defaults
+        setGenres(['Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'].map((g, idx) => ({ _id: `genre-${idx}`, name: g })));
+        setInstruments(['Guitar', 'Piano', 'Drums', 'Violin', 'Flute'].map((i, idx) => ({ _id: `instrument-${idx}`, name: i })));
       }
     };
     fetchMeta();
@@ -209,7 +241,7 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Helper to convert Google Drive links to direct video links and proxy through backend
@@ -482,6 +514,8 @@ const ArtistProfilePage = () => {
                             } else {
                               setSelectedInstruments([...selectedInstruments, inst.name]);
                             }
+                            // Close dropdown immediately after selection
+                            setShowInstrumentDropdown(false);
                           }}
                         >
                           {inst.name}
@@ -533,6 +567,8 @@ const ArtistProfilePage = () => {
                             } else {
                               setSelectedGenres([...selectedGenres, genre.name]);
                             }
+                            // Close dropdown immediately after selection
+                            setShowGenreDropdown(false);
                           }}
                         >
                           {genre.name}
@@ -806,25 +842,5 @@ const ArtistProfilePage = () => {
     </>
   );
 };
-
-function AutoResizeTextarea({ value, className, ...props }) {
-  const textareaRef = React.useRef(null);
-  React.useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  }, [value]);
-  return (
-    <textarea
-      ref={textareaRef}
-      className={className}
-      value={value}
-      {...props}
-      rows={1}
-      style={{ overflow: 'hidden' }}
-    />
-  );
-}
 
 export default ArtistProfilePage;
