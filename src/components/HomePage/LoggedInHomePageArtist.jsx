@@ -130,6 +130,13 @@ function LoggedInHomePageArtist() {
       navigate('/jamming');
     }
   };
+  const handleCollaboration = () => {
+    if (!localStorage.getItem('isLoggedIn')) {
+      navigate('/login');
+    } else {
+      navigate('/all-artists');
+    }
+  };
 
   return (
     <>
@@ -171,7 +178,7 @@ function LoggedInHomePageArtist() {
                 className="btn-secondary"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleHireArtistClick}
+                onClick={handleCollaboration}
               >
                 Collaborate with Artists
               </motion.button>
