@@ -125,10 +125,7 @@ const LoggedInHomePage = () => {
               <div>
                 <h1 className="hero-title" style={{ color: 'white', fontWeight: 'bold', marginBottom: '20px', fontSize: '3rem' }}>Welcome to Musical Meet</h1>
               </div>
-              <div style={{ color: 'white', marginBottom: '20px', fontSize: '1.2rem' }}>
-                <p>Welcome, {user.name}!</p>
-                <p>Your email: {user.email}</p>
-              </div>
+              
               <div>
                 <p className="hero-subtitle" style={{ color: 'white', fontWeight: 'bold', marginBottom: '30px', fontSize: '1.5rem' }}>
                   Join us in celebrating the joy of music and connecting with artists from around the world.

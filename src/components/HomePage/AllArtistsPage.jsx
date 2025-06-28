@@ -12,10 +12,13 @@ const AllArtistsPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loggedInArtistId = localStorage.getItem('artist_id');
+
     fetch('https://backend-musical.onrender.com/api/artists')
       .then(res => res.json())
       .then(data => {
-        setArtists(data);
+        const filtered = data.filter(artist => artist._id !== loggedInArtistId);
+        setArtists(filtered);
         setLoading(false);
       })
       .catch(err => {

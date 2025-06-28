@@ -25,6 +25,8 @@ import { Star, StarHalf } from "lucide-react";
 import "./css/PublicArtistPage.css";
 import NavigationBar from "../NavigationBar";
 import Footer from "./Footer";
+import myImage from "../../public/defaultpic.png";
+import myBg from "../../public/defaultbg.png";
 
 const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -364,10 +366,10 @@ export default function PublicArtistPage() {
         {/* Banner Image */}
         <Box className="public-artist-banner">
           <img
-            src={getImageSrc(artist.coverImage) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+            src={getImageSrc(artist.coverImage) || myBg}
             alt={artist.stageName}
             className="public-artist-banner-img"
-            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
+            onError={e => { e.target.onerror = null; e.target.src =myBg; }}
           />
         </Box>
 
@@ -377,10 +379,10 @@ export default function PublicArtistPage() {
             {/* Profile Pic + Rating (left) */}
             <Box className="public-artist-pic" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 200 }}>
               <img
-                src={getImageSrc(artist.imageUrl) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+                src={getImageSrc(artist.imageUrl) || myImage}
                 alt={artist.stageName}
                 className="public-artist-pic-img"
-                onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
+                onError={e => { e.target.onerror = null; e.target.src = myImage; }}
               />
               <div className="public-artist-rating-row" style={{ marginTop: '1rem' }}>
                 {renderStars(Number(artist.rating))}

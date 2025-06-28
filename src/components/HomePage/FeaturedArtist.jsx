@@ -3,6 +3,7 @@ import { Typography, Container, CircularProgress, Alert, IconButton, Box } from 
 import ArtistCard from './ArtistCard';
 import { ArrowForwardIos, ArrowBackIos, ArrowUpward, KeyboardArrowRight } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 
 const HorizontalScrollContainer = styled('div')({
   display: 'flex',
@@ -68,6 +69,11 @@ const FeaturedArtists = () => {
   const [error, setError] = useState(null);
   const [showArrow, setShowArrow] = useState(false);
   const scrollContainerRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   useEffect(() => {
     const loggedInArtistId = localStorage.getItem('artist_id');
@@ -179,7 +185,7 @@ const FeaturedArtists = () => {
       </Box>
 
       <Box display="flex" justifyContent="center" mt={8}>
-        <ShowMoreButton onClick={() => window.open('/all-artists', '_blank')}>
+        <ShowMoreButton onClick={() => handleNavigation('/all-artists')}>
           Show More Artists <KeyboardArrowRight sx={{ fontSize: '1.2rem' }} />
         </ShowMoreButton>
       </Box>

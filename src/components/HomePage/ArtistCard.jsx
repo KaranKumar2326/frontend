@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import "./ArtistCard.css"; // Custom CSS styles
+import myImage from "../../public/defaultpic.png"
 
 // Helper to convert Google Drive links to direct image links and proxy through backend
 const getImageSrc = (url) => {
@@ -76,11 +77,10 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             component="img"
             height="240"
             image={
-              getImageSrc(artist.imageUrl) ||
-              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              getImageSrc(artist.imageUrl) || myImage
             }
             alt={artist.stageName}
-            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
+            onError={e => { e.target.onerror = null; e.target.src = myImage; }}
             className="artist-card__image"
             sx={{
               borderTopLeftRadius: '12px',
@@ -232,7 +232,7 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               variant="contained"
               size="small"
               className="artist-card__button"
-              onClick={() => window.open(`/public-artist/${artist._id || artist.id}`, '_blank')}
+              onClick={() => navigate(`/public-artist/${artist._id || artist.id}`)}
               sx={{
                 borderRadius: '8px',
                 textTransform: 'none',
