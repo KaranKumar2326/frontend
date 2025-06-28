@@ -10,6 +10,9 @@ import "./PublicArtistPage.css";
 import NavigationBar from "../NavigationBar";
 import Footer from "./Footer";
 import OtherArtists from "./OtherArtists";
+import myImage from "../../public/defaultpic.png";
+import myBg from "../../public/defaultbg.png";
+
 
 export default function PublicArtistProfilePage() {
   const { _id } = useParams();
@@ -90,10 +93,10 @@ export default function PublicArtistProfilePage() {
         {/* Banner Image */}
         <Box className="artist-profile-banner" >
           <img
-            src={getImageSrc(artist.coverImage) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+            src={getImageSrc(artist.coverImage) || myBg}
             alt={artist.stageName}
             className="artist-profile-banner-img"
-            onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
+            onError={e => { e.target.onerror = null; e.target.src = myBg; }}
           />
         </Box>
         {/* Profile Info Card */}
@@ -103,10 +106,10 @@ export default function PublicArtistProfilePage() {
               {/* Profile Pic - left */}
               <Box className="artist-profile-pic public-profile-pic-top-centered" style={{ marginRight: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <img
-                  src={getImageSrc(artist.imageUrl) || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
+                  src={getImageSrc(artist.imageUrl) || myImage}
                   alt={artist.imageUrl}
                   className="artist-profile-pic-img public-profile-pic-img-bordered"
-                  onError={e => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; }}
+                  onError={e => { e.target.onerror = null; e.target.src = myImage; }}
                 />
               </Box>
               {/* Name and Info - center */}
@@ -117,8 +120,8 @@ export default function PublicArtistProfilePage() {
                     {renderStars(Number(artist.rating))}
                     <span className="artist-profile-rating">{artist.rating}</span>
                   </Box>
-                  <div className="artist-profile-location">{artist.location || "Unknown"}</div>
-                  <div className="artist-profile-experience">Experience: {artist.experience || 'N/A'} years</div>
+                  <div className="artist-profile-location">{artist.preferredLocation || "Unknown"}</div>
+                  <div className="artist-profile-experience">Experience: {artist.exp || 'N/A'} years</div>
                   <div className="artist-profile-genre">
                     Genre: {artist.genres?.map(g => g.name).join(', ') || 'N/A'}
                   </div>

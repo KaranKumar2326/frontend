@@ -114,6 +114,16 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     navigate('/login');
   };
 
+  const HandleArtistClick = (e) => {
+    e.preventDefault();
+    const section = document.getElementById('featured-artists');
+    if(section){
+      section.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/all-artists');
+    }
+  };
+  
   const scrollToSection = (id) => {
     const el = id === 'footer' 
       ? document.querySelector('footer') || document.getElementById(id)
@@ -258,6 +268,9 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // Helper to check if user is logged in
+  const isLoggedIn = !!localStorage.getItem('isLoggedIn');
+
  return (
   <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
     <div className="navbar-container">
@@ -279,9 +292,8 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       </button>
 
       <div className={`navbar-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
-        
         {/* Profile section for MOBILE - appears first (before Home) */}
-        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && (
+        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && isLoggedIn && (
           <div className="profile-section mobile-profile">
             {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
               <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
@@ -304,46 +316,57 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
           </div>
         )}
 
-          <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
-          <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
-          <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>How it Works</a>
-          
-          {!isLoginOrSignup && location.pathname !== '/signup' && 
-           location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && 
-           !isArtistProfilePage && (
-            <>
-              <a className="nav-link" href="#featured-artists" onClick={(e) => { e.preventDefault(); scrollToSection('featured-artists'); }}>Artists</a>
-              <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
-              {hideProfile && (
-                <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
-              )}
-            </>
-          )}
+        {/* Show Sign Up button if not logged in and not on login/signup/home */}
+        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && !isLoggedIn && (
+          <button className="nav-button secondary mobile-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+        )}
 
-          {/* Profile section for DESKTOP - appears last */}
-          {!isLoginOrSignup && !hideProfile && !isMobileMenuOpen && (
-            <div className="profile-section desktop-profile">
-              {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
-                <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
-                  <img
-                    src={getProfilePicSrc()}
-                    className="profile-pic"
-                    alt="Profile"
-                  />
+        <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
+        <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
+        <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>How it Works</a>
+        
+        {/* Show Artists/Hire/Sign Up only if not login/signup/home/artist profile and not logged in */}
+        {!isLoginOrSignup && location.pathname !== '/signup' && 
+         location.pathname !== '/home' && location.pathname !== '/loggedInHomePageArtist' && 
+         !isArtistProfilePage && !isLoggedIn && (
+          <>
+            <a className="nav-link" href="#featured-artists" onClick={HandleArtistClick}>Artists</a>
+            <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
+            {hideProfile && (
+              <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+            )}
+          </>
+        )}
 
-                  {openProfile && (
-                    <div className="profile-dropdown">
-                      <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
-                        {showHomeInDropdown ? 'Home' : 'My Profile'}
-                      </div>
-                      <div className="dropdown-item">Settings</div>
-                      <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+        {/* Profile section for DESKTOP - appears last */}
+        {!isLoginOrSignup && !hideProfile && !isMobileMenuOpen && isLoggedIn && (
+          <div className="profile-section desktop-profile">
+            {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
+              <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
+                <img
+                  src={getProfilePicSrc()}
+                  className="profile-pic"
+                  alt="Profile"
+                />
+
+                {openProfile && (
+                  <div className="profile-dropdown">
+                    <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
+                      {showHomeInDropdown ? 'Home' : 'My Profile'}
                     </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                    <div className="dropdown-item">Settings</div>
+                    <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Show Sign Up button for desktop if not logged in and not on login/signup/home */}
+        {!isLoginOrSignup && !hideProfile && !isMobileMenuOpen && !isLoggedIn && (
+          <button className="nav-button secondary desktop-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+        )}
       </div>
     </div>
   </nav>

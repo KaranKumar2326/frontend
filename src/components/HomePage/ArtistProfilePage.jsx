@@ -176,6 +176,7 @@ const ArtistProfilePage = () => {
     setLoading(true);
     try {
       const updatedArtist = {
+        ...artist,
         ...editArtist,
         genres: genres.filter(g => selectedGenres.includes(g.name)),
         instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
@@ -241,7 +242,7 @@ const ArtistProfilePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Helper to convert Google Drive links to direct video links and proxy through backend
@@ -450,6 +451,7 @@ const ArtistProfilePage = () => {
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Gallery')}>Gallery</div>
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Social Media Links')}>Social Media Links</div>
             <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Security Questions')}>Security Questions</div>
+            <div className="artist-profile-left-menu-option" onClick={() => setSelectedMenu('Address')}>Address</div>
           </div>
           {/* Main profile content */}
           <div className="artist-profile-main-content">
@@ -457,7 +459,15 @@ const ArtistProfilePage = () => {
               <>
                 <div className="artist-profile-form-group">
                   <label className="artist-profile-label">Name</label>
+                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.name : artist.name} readOnly={!isEditing} onChange={e => handleInputChange('name', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Stage Name</label>
                   <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.stageName : artist.stageName} readOnly={!isEditing} onChange={e => handleInputChange('stageName', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Experience </label>
+                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.exp : artist.exp} readOnly={!isEditing} onChange={e => handleInputChange('exp', e.target.value)} />
                 </div>
                 <div className="artist-profile-form-group">
                   <label className="artist-profile-label">Bio</label>
@@ -465,11 +475,7 @@ const ArtistProfilePage = () => {
                 </div>
                 <div className="artist-profile-form-group">
                   <label className="artist-profile-label">Location</label>
-                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.location : artist.location} readOnly={!isEditing} onChange={e => handleInputChange('location', e.target.value)} />
-                </div>
-                <div className="artist-profile-form-group">
-                  <label className="artist-profile-label">Rating</label>
-                  <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.rating : artist.rating} readOnly={!isEditing} onChange={e => handleInputChange('rating', e.target.value)} />
+                  <input className="artist-profile-input" type="text" placeholder="e.g. Mumbai, Delhi, Online, etc." value={isEditing ? editArtist?.preferredLocation : artist.preferredLocation} readOnly={!isEditing} onChange={e => handleInputChange('preferredLocation', e.target.value)} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
                   {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
@@ -772,7 +778,7 @@ const ArtistProfilePage = () => {
             )}
             {selectedMenu === 'Social Media Links' && (
               <>
-                <h2>Social Media Links</h2>
+                <h2>Social Media</h2>
                 {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 ? (
                   <ul style={{ padding: 0, listStyle: 'none' }}>
                     {artist.socialMediaLinks.map((link, idx) => (
@@ -833,6 +839,65 @@ const ArtistProfilePage = () => {
                   {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
                   <button type="submit" className="artist-profile-save-btn">Save Answers</button>
                 </form>
+              </>
+            )}
+            {selectedMenu === 'Address' && (
+              <>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Address Line 1</label>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={isEditing ? editArtist?.address : artist.address}
+                    readOnly={!isEditing}
+                    onChange={e => handleInputChange('address', e.target.value)}
+                  />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">City</label>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={isEditing ? editArtist?.city : artist.city || ''}
+                    readOnly={!isEditing}
+                    onChange={e => handleInputChange('city', e.target.value)}
+                  />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">State</label>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={isEditing ? editArtist?.state : artist.state || ''}
+                    readOnly={!isEditing}
+                    onChange={e => handleInputChange('state', e.target.value)}
+                  />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Country</label>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={isEditing ? editArtist?.country : artist.country || ''}
+                    readOnly={!isEditing}
+                    onChange={e => handleInputChange('country', e.target.value)}
+                  />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Pincode</label>
+                  <input
+                    className="artist-profile-input"
+                    type="text"
+                    value={isEditing ? editArtist?.pincode : artist.pincode || ''}
+                    readOnly={!isEditing}
+                    onChange={e => handleInputChange('pincode', e.target.value)}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
+                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                </div>
               </>
             )}
           </div>
