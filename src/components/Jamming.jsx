@@ -33,7 +33,7 @@ const JammingPage = () => {
   // const { user } = useAuth(); // Get current user from auth context
 
   const navigate = useNavigate();
-  axios.defaults.baseURL = 'https://backend-musical.onrender.com';
+  axios.defaults.baseURL = 'http://localhost:3001';
 
   useEffect(() => {
     fetchEvents();

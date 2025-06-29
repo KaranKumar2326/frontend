@@ -27,6 +27,12 @@ import NavigationBar from "../NavigationBar";
 import Footer from "./Footer";
 import myImage from "../../public/defaultpic.png";
 import myBg from "../../public/defaultbg.png";
+import insta from "../../public/insta.jpeg";
+import spotify from "../../public/spotify.png";
+import apple from "../../public/apple.jpeg";
+import SoundCloud from "../../public/soundcloud.jpeg";
+import youtube from "../../public/youtube.png";
+import ImageSlider from './ImageSlider';
 
 const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -270,7 +276,7 @@ export default function PublicArtistPage() {
       console.log(bookingData);
       const token = localStorage.getItem('token');
       // console.log(token);
-      const response = await fetch('https://backend-musical.onrender.com/api/events/request', {
+      const response = await fetch('http://localhost:3001/api/events/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -314,7 +320,7 @@ export default function PublicArtistPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
+        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -339,8 +345,30 @@ export default function PublicArtistPage() {
     if (match && match[1]) {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
+
+  // Create galleryMedia array from artist's galleryImages and videos
+  const galleryImages = Array.isArray(artist?.galleryImages)
+    ? artist.galleryImages.filter(img => !!img).map(img => ({ type: 'image', src: getImageSrc(img) }))
+    : [];
+  // Videos are stored in artist.videos as Google Drive links
+  const getVideoSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+  const galleryVideos = Array.isArray(artist?.videos)
+    ? artist.videos.filter(v => !!v).map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) }))
+    : [];
+  const galleryMedia = [...galleryImages, ...galleryVideos];
 
   const renderStars = (rating = 0) => {
     const stars = [];
@@ -408,6 +436,46 @@ export default function PublicArtistPage() {
             >
               Book Now
             </button>
+            {/* Social Media Links below Book Now */}
+            {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
+              <div style={{ position: 'absolute', top: '5.5rem', right: '2rem', zIndex: 1, display: 'flex', flexDirection: 'row', gap: 18, justifyContent: 'flex-end' }}>
+                {artist.socialMediaLinks.map((link, idx) => {
+                  const platformIcons = {
+                    Instagram: insta,
+                    Spotify: spotify,
+                    'Apple Music': apple,
+                    SoundCloud: SoundCloud,
+                    YouTube: youtube,
+                  };
+                  const iconSrc = platformIcons[link.platform]; // No fallback to linkIcon
+                  return (
+                    <a
+                      key={idx}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 44,
+                        height: 44,
+                        borderRadius: '50%',
+                        background: '#fff',
+                        boxShadow: '0 2px 8px #e0e0e0',
+                        padding: 6,
+                        border: '2px solid #eee',
+                        transition: 'box-shadow 0.2s, border 0.2s',
+                        margin: 0
+                      }}
+                      title={link.platform}
+                    >
+                      {iconSrc && <img src={iconSrc} alt={link.platform} style={{ width: 28, height: 28, objectFit: 'contain', borderRadius: '50%' }} />}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </Box>
         </Box>
 
@@ -466,6 +534,11 @@ export default function PublicArtistPage() {
             }
           }}
         />
+        {/* Image Slider Section */}
+        <div className="image-slider-section">
+          <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
+          <ImageSlider media={galleryMedia} />
+        </div>
 
         <Footer />
       </Box>

@@ -21,7 +21,7 @@ const LoggedInHomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState({ name: '', email: '' });
   const [loading, setLoading] = useState(true);
-  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryMedia, setGalleryMedia] = useState([]);
 
   // Helper to convert Google Drive links to direct image links and proxy through backend
   const getImageSrc = (url) => {
@@ -35,7 +35,7 @@ const LoggedInHomePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Retrieve user info from localStorage when the component mounts
@@ -62,22 +62,43 @@ const LoggedInHomePage = () => {
   }, [navigate]);
 
   useEffect(() => {
-    // Fetch all artists and collect all images
-    fetch('https://backend-musical.onrender.com/api/artists')
+    // Fetch all artists and collect all non-null images and videos from galleryImages and videos
+    fetch('http://localhost:3001/api/artists')
       .then(res => res.json())
       .then(data => {
-        let allImages = [];
+        let allGalleryMedia = [];
         data.forEach(artist => {
-          if (Array.isArray(artist.gallery)) {
-            allImages = allImages.concat(artist.gallery.map(getImageSrc));
+          // Images
+          if (Array.isArray(artist.galleryImages)) {
+            const validImages = artist.galleryImages.filter(img => !!img);
+            allGalleryMedia = allGalleryMedia.concat(validImages.map(img => ({ type: 'image', src: getImageSrc(img) })));
           }
-          if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
-          if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
+          // Videos (Google Drive links)
+          if (Array.isArray(artist.videos)) {
+            const getVideoSrc = (url) => {
+              if (!url) return null;
+              let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+              if (!match) {
+                match = url.match(/[?&]id=([\w-]+)/);
+              }
+              let directUrl = url;
+              if (match && match[1]) {
+                directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+              }
+              return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+            };
+            const validVideos = artist.videos.filter(v => !!v);
+            allGalleryMedia = allGalleryMedia.concat(validVideos.map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) })));
+          }
         });
-        allImages = Array.from(new Set(allImages.filter(Boolean)));
-        setGalleryImages(allImages);
+        // Shuffle the array to get random media
+        for (let i = allGalleryMedia.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allGalleryMedia[i], allGalleryMedia[j]] = [allGalleryMedia[j], allGalleryMedia[i]];
+        }
+        setGalleryMedia(allGalleryMedia);
       })
-      .catch(() => setGalleryImages([]));
+      .catch(() => setGalleryMedia([]));
   }, []);
 
   if (loading) {
@@ -213,8 +234,8 @@ const LoggedInHomePage = () => {
 
         {/* Image Slider Section */}
         <div className="image-slider-section">
-          <h2 className="slider-heading">Gallery</h2>
-          <ImageSlider images={galleryImages} />
+          <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
+          <ImageSlider media={galleryMedia} />
         </div>
 
         

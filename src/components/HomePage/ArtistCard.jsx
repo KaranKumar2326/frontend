@@ -26,7 +26,7 @@ const getImageSrc = (url) => {
     directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
   }
   // Always proxy through backend for CORS
-  return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
 export default function ArtistCard({ artist, priority = 0, hidePrice = false }) {

@@ -67,7 +67,7 @@ const NewLogin = () => {
     e.preventDefault();
     toast.info('Logging in...');
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/login', {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,7 +160,7 @@ const NewLogin = () => {
     };
     try {
       toast.info('Processing your request...', { autoClose: 3000 });
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/signup', {
+      const response = await fetch('http://localhost:3001/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupPayload),
@@ -198,7 +198,7 @@ const NewLogin = () => {
         if (forgotForm.phone) params.push(`phone=${encodeURIComponent(forgotForm.phone)}`);
         const query = params.length ? `?${params.join('&')}` : '';
         // First, verify artist exists
-        const res = await fetch(`https://backend-musical.onrender.com/api/artists${query}`);
+        const res = await fetch(`http://localhost:3001/api/artists${query}`);
         const artists = await res.json();
         if (!res.ok || !Array.isArray(artists) || artists.length === 0) {
           setArtistSecurityQuestions([]);
@@ -222,7 +222,7 @@ const NewLogin = () => {
     // For user, verify existence before showing security questions
     try {
       // POST to /api/auth/verify-user to get security questions
-      const res = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const res = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -259,7 +259,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const response = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -289,7 +289,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/verify-user', {
+      const response = await fetch('http://localhost:3001/api/auth/verify-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -324,7 +324,7 @@ const NewLogin = () => {
       return;
     }
     try {
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/reset-password', {
+      const response = await fetch('http://localhost:3001/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -9,10 +9,14 @@ import FeaturedArtist from './FeaturedArtist';
 import Testimonials from './Testimonials';
 import NavigationBar from '../NavigationBar'; // Importing the NavigationBar component
 import Footer from './Footer'; // Importing the new Footer component
+import ImageSlider from './ImageSlider';
+
 export const Motion = motion;
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [galleryImages, setGalleryImages] = React.useState([]);
+  const [galleryMedia, setGalleryMedia] = React.useState([]);
 
   const handleHireArtistClick = () => {
     navigate('/login');
@@ -21,6 +25,61 @@ const HomePage = () => {
   const JoinAsArtist = () => {
     navigate('/login');
   };
+
+  // Helper to convert Google Drive links to direct image links and proxy through backend
+  const getImageSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    // Always proxy through backend for CORS
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+
+  React.useEffect(() => {
+    // Fetch all artists and collect all non-null images and videos from galleryImages and videos
+    fetch('http://localhost:3001/api/artists')
+      .then(res => res.json())
+      .then(data => {
+        let allGalleryMedia = [];
+        data.forEach(artist => {
+          // Images
+          if (Array.isArray(artist.galleryImages)) {
+            const validImages = artist.galleryImages.filter(img => !!img);
+            allGalleryMedia = allGalleryMedia.concat(validImages.map(img => ({ type: 'image', src: getImageSrc(img) })));
+          }
+          // Videos (Google Drive links)
+          if (Array.isArray(artist.videos)) {
+            const getVideoSrc = (url) => {
+              if (!url) return null;
+              let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+              if (!match) {
+                match = url.match(/[?&]id=([\w-]+)/);
+              }
+              let directUrl = url;
+              if (match && match[1]) {
+                directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+              }
+              return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+            };
+            const validVideos = artist.videos.filter(v => !!v);
+            allGalleryMedia = allGalleryMedia.concat(validVideos.map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) })));
+          }
+        });
+        // Shuffle the array to get random media
+        for (let i = allGalleryMedia.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allGalleryMedia[i], allGalleryMedia[j]] = [allGalleryMedia[j], allGalleryMedia[i]];
+        }
+        setGalleryMedia(allGalleryMedia);
+      })
+      .catch(() => setGalleryMedia([]));
+  }, []);
 
   return (
     <>
@@ -57,8 +116,14 @@ const HomePage = () => {
         {/* </div> */}
       </div>
       <FeaturedArtist /> 
+      
       <Testimonials/>
       <CallToAction/>
+      {/* Image Slider Section */}
+      <div className="image-slider-section">
+        <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
+        <ImageSlider media={galleryMedia} />
+      </div>
       <Footer id="footer" />
     </>
   );

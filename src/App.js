@@ -1,6 +1,6 @@
 // App.js
 import React, { useState, useEffect } from 'react';
-import { useLocation ,BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useLocation ,BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login/Login';
 import SignUp from './components/Login/Signup';
 import CardList from './components/CardList';
@@ -39,6 +39,28 @@ const dummyCards = [
   // more cards...
 ];
 
+function ProtectedRedirect({ children, role, allowHomeRedirect }) {
+  // role: 'user' or 'artist'
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const storedRole = (localStorage.getItem('role') || '').toLowerCase();
+  const location = window.location.pathname;
+  if (isLoggedIn) {
+    if (allowHomeRedirect && (location === '/' || location === '/home')) {
+      if (storedRole === 'artist') {
+        return <Navigate to="/loggedInHomePageArtist" replace />;
+      } else if (storedRole === 'user') {
+        return <Navigate to="/loggedInHome" replace />;
+      }
+    }
+    if (storedRole === 'artist' && location !== '/loggedInHomePageArtist') {
+      return <Navigate to="/loggedInHomePageArtist" replace />;
+    } else if (storedRole === 'user' && location !== '/loggedInHome') {
+      return <Navigate to="/loggedInHome" replace />;
+    }
+  }
+  return children;
+}
+
 function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
   const location = useLocation();
 
@@ -47,13 +69,37 @@ function AppContent({ isLoggedIn, handleLogout, handleLogin }) {
     <>
       {/* {location.pathname !== '/' && location.pathname !== '/home' && location.pathname !== '/loggedInHome' && <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />} */}
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={
+          <ProtectedRedirect allowHomeRedirect>
+            <HomePage />
+          </ProtectedRedirect>
+        } />
+        <Route path="/home" element={
+          <ProtectedRedirect allowHomeRedirect>
+            <HomePage />
+          </ProtectedRedirect>
+        } />
         <Route path="/jamming" element={<JammingPage />} /> 
-        <Route path="/loggedInHome" element={<LoggedInHomePage />} />
-        <Route path="/loggedInHomePageArtist" element={<LoggedInHomePageArtist />} />
-        <Route path="/signup" element={<Newlogin />} />
-        <Route path="/login" element={<Newlogin onLogin={handleLogin} />} />
+        <Route path="/loggedInHome" element={
+          <ProtectedRedirect role="user">
+            <LoggedInHomePage />
+          </ProtectedRedirect>
+        } />
+        <Route path="/loggedInHomePageArtist" element={
+          <ProtectedRedirect role="artist">
+            <LoggedInHomePageArtist />
+          </ProtectedRedirect>
+        } />
+        <Route path="/signup" element={
+          <ProtectedRedirect>
+            <Newlogin />
+          </ProtectedRedirect>
+        } />
+        <Route path="/login" element={
+          <ProtectedRedirect>
+            <Newlogin onLogin={handleLogin} />
+          </ProtectedRedirect>
+        } />
         <Route path="/cards" element={<CardList />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/event/:eventId" element={<EventPage />} />
