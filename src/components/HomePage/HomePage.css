@@ -12,6 +12,12 @@
   text-align: left;
 }
 
+h1, h2, h3, .search-heading, .slider-heading {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
 .hero-section{
   z-index: 1;
   display: flex;

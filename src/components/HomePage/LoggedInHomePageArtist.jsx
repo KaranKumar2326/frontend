@@ -21,6 +21,7 @@ function LoggedInHomePageArtist() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({ name: '', email: '' });
   const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryMedia, setGalleryMedia] = useState([]);
   const [artistId, setArtistId] = useState('');
 
   // Check for artist login on mount
@@ -59,59 +60,56 @@ function LoggedInHomePageArtist() {
       try {
         const id = localStorage.getItem('artist_id');
         setArtistId(id);
-        
         // Fetch user info
         const userName = localStorage.getItem('name');
         const userEmail = localStorage.getItem('email');
-        
         if (userName && userEmail) {
           setUser({ name: userName, email: userEmail });
-          setLoading(false);
         } else {
           navigate('/login');
           return;
         }
-
-        // Fetch artist details if ID exists
-        if (id) {
-          const artistResponse = await fetch(`https://backend-musical.onrender.com/api/artists/${id}`);
-          const artistData = await artistResponse.json();
-          
-          if (Array.isArray(artistData.gallery) && artistData.gallery.length > 0) {
-            setGalleryImages(artistData.gallery.map(getImageSrc));
-          } else {
-            const imgs = [];
-            if (artistData.imageUrl) imgs.push(getImageSrc(artistData.imageUrl));
-            if (artistData.coverImage) imgs.push(getImageSrc(artistData.coverImage));
-            setGalleryImages(imgs);
-          }
-        }
-
         // Fetch all artists for the gallery
         const allArtistsResponse = await fetch('https://backend-musical.onrender.com/api/artists');
         const allArtistsData = await allArtistsResponse.json();
-        
-        let allImages = [];
+        let allGalleryMedia = [];
         allArtistsData.forEach(artist => {
-          if (Array.isArray(artist.gallery)) {
-            allImages = allImages.concat(artist.gallery.map(getImageSrc));
+          // Images
+          if (Array.isArray(artist.galleryImages)) {
+            const validImages = artist.galleryImages.filter(img => !!img);
+            allGalleryMedia = allGalleryMedia.concat(validImages.map(img => ({ type: 'image', src: getImageSrc(img) })));
           }
-          if (artist.imageUrl) allImages.push(getImageSrc(artist.imageUrl));
-          if (artist.coverImage) allImages.push(getImageSrc(artist.coverImage));
+          // Videos (Google Drive links)
+          if (Array.isArray(artist.videos)) {
+            const getVideoSrc = (url) => {
+              if (!url) return null;
+              let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+              if (!match) {
+                match = url.match(/[?&]id=([\w-]+)/);
+              }
+              let directUrl = url;
+              if (match && match[1]) {
+                directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+              }
+              return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+            };
+            const validVideos = artist.videos.filter(v => !!v);
+            allGalleryMedia = allGalleryMedia.concat(validVideos.map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) })));
+          }
         });
-        
-        // Remove duplicates and falsy values
-        allImages = Array.from(new Set(allImages.filter(Boolean)));
-        setGalleryImages(prev => [...new Set([...prev, ...allImages])]);
-        
+        // Shuffle the array to get random media
+        for (let i = allGalleryMedia.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allGalleryMedia[i], allGalleryMedia[j]] = [allGalleryMedia[j], allGalleryMedia[i]];
+        }
+        setGalleryMedia(allGalleryMedia);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setGalleryImages([]);
+        setGalleryMedia([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [navigate]);
 
@@ -298,7 +296,7 @@ function LoggedInHomePageArtist() {
         {/* Gallery Section */}
         <div className="gallery-section">
           <h2 className="section-title">Gallery</h2>
-          <ImageSlider images={galleryImages} />
+          <ImageSlider media={galleryMedia} />
         </div>
 
         

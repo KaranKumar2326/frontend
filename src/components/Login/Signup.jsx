@@ -136,7 +136,7 @@ const SignUp = () => {
 
     try {
       toast.info('Processing your request...', { autoClose: 3000 });
-      const response = await fetch('https://backend-musical.onrender.com/api/auth/signup', {
+      const response = await fetch('http://localhost:3001/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupData),

@@ -12,6 +12,12 @@ import Footer from "./Footer";
 import OtherArtists from "./OtherArtists";
 import myImage from "../../public/defaultpic.png";
 import myBg from "../../public/defaultbg.png";
+import insta from "../../public/insta.jpeg";
+import spotify from "../../public/spotify.png";
+import apple from "../../public/apple.jpeg";
+import SoundCloud from "../../public/soundcloud.jpeg";
+import youtube from "../../public/youtube.png";
+import ImageSlider from './ImageSlider';
 
 
 export default function PublicArtistProfilePage() {
@@ -34,7 +40,7 @@ export default function PublicArtistProfilePage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
+        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -74,8 +80,32 @@ export default function PublicArtistProfilePage() {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
+
+  // Prepare gallery media (images and videos) for the slider
+  const galleryImages = Array.isArray(artist?.galleryImages)
+    ? artist.galleryImages.filter(img => !!img).map(img => ({ type: 'image', src: getImageSrc(img) }))
+    : [];
+  // Videos are stored in artist.videos as Google Drive links
+  const getVideoSrc = (url) => {
+    if (!url) return null;
+    let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+    if (!match) {
+      match = url.match(/[?&]id=([\w-]+)/);
+    }
+    let directUrl = url;
+    if (match && match[1]) {
+      // For video, use Google Drive's direct video link
+      directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+    // Proxy through backend for CORS if needed
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+  };
+  const galleryVideos = Array.isArray(artist?.videos)
+    ? artist.videos.filter(v => !!v).map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) }))
+    : [];
+  const galleryMedia = [...galleryImages, ...galleryVideos];
 
   if (loading) return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
   if (error) return <Alert severity="error">{error}</Alert>;
@@ -135,10 +165,54 @@ export default function PublicArtistProfilePage() {
                 </Box>
               </Box>
               {/* Edit Profile Button - right */}
-              <Box style={{ marginLeft: 32, display: 'flex', alignItems: 'center' }}>
+              <Box style={{ marginLeft: 32, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                 <button className="artist-profile-book-btn" onClick={() => navigate(`/ArtistProfilePage/${_id}`)}>
                   Edit Profile
                 </button>
+                {/* Social Media Links */}
+                {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
+                  <Box mt={2} style={{ width: '100%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 600, marginBottom: 4 }}>Social Links</div>
+                    <div style={{ display: 'flex', flexDirection: 'row', gap: 20, justifyContent: 'center' }}>
+                      {artist.socialMediaLinks.map((link, idx) => {
+                        // Map platform to icon URL (SVGs or PNGs in public folder)
+                        const platformIcons = {
+                          Instagram: insta,
+                          Spotify: spotify,
+                          'Apple Music': apple,
+                          SoundCloud: SoundCloud,
+                          YouTube: youtube,
+                        };
+                        const iconSrc = platformIcons[link.platform] || '/icons/link.svg';
+                        return (
+                          <a
+                            key={idx}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 54,
+                              height: 54,
+                              borderRadius: '50%',
+                              background: '#fff',
+                              boxShadow: '0 2px 8px #e0e0e0',
+                              padding: 6,
+                              border: '2px solid #eee',
+                              transition: 'box-shadow 0.2s, border 0.2s',
+                              margin: 0
+                            }}
+                            title={link.platform}
+                          >
+                            <img src={iconSrc} alt={link.platform} style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '50%' }} />
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>
@@ -200,6 +274,11 @@ export default function PublicArtistProfilePage() {
           </Box>
         </Box>
 
+        {/* Image Slider Section */}
+        <div className="image-slider-section">
+          <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
+          <ImageSlider media={galleryMedia} />
+        </div>
         
       </Box>
       <Footer />

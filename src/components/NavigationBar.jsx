@@ -36,7 +36,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     const email = localStorage.getItem('email');
     const userId = localStorage.getItem('userId');
     if (isLoggedIn && email && userId) {
-      fetch(`https://backend-musical.onrender.com/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
+      fetch(`http://localhost:3001/api/auth/get-role?email=${encodeURIComponent(email)}&userId=${userId}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.role) setUserRole(data.role);
@@ -54,7 +54,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     if (role === 'user') {
       const userId = localStorage.getItem('userId');
       if (userId) {
-        fetch(`https://backend-musical.onrender.com/api/users/${userId}`, {
+        fetch(`http://localhost:3001/api/users/${userId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
           .then(res => res.json())
@@ -70,7 +70,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     } else if (role === 'artist') {
       const artistId = localStorage.getItem('artist_id');
       if (artistId) {
-        fetch(`https://backend-musical.onrender.com/api/artists/${artistId}`, {
+        fetch(`http://localhost:3001/api/artists/${artistId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
           .then(res => res.json())
@@ -146,7 +146,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Helper to get the correct profile image src
@@ -181,7 +181,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
       }
 
       try {
-        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${artistId}`, {
+        const response = await fetch(`http://localhost:3001/api/artists/${artistId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
