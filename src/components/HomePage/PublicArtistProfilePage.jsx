@@ -40,7 +40,7 @@ export default function PublicArtistProfilePage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3001/api/artists/${_id}`);
+        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
         const result = await response.json();
         if (response.ok && result) {
           setArtist(result);
@@ -80,7 +80,7 @@ export default function PublicArtistProfilePage() {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Prepare gallery media (images and videos) for the slider
@@ -100,7 +100,7 @@ export default function PublicArtistProfilePage() {
       directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
     }
     // Proxy through backend for CORS if needed
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
   const galleryVideos = Array.isArray(artist?.videos)
     ? artist.videos.filter(v => !!v).map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) }))

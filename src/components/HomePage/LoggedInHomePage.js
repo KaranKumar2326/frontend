@@ -35,7 +35,7 @@ const LoggedInHomePage = () => {
       directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
     // Always proxy through backend for CORS
-    return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+    return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
   };
 
   // Retrieve user info from localStorage when the component mounts
@@ -63,7 +63,7 @@ const LoggedInHomePage = () => {
 
   useEffect(() => {
     // Fetch all artists and collect all non-null images and videos from galleryImages and videos
-    fetch('http://localhost:3001/api/artists')
+    fetch('https://backend-musical.onrender.com/api/artists')
       .then(res => res.json())
       .then(data => {
         let allGalleryMedia = [];
@@ -85,7 +85,7 @@ const LoggedInHomePage = () => {
               if (match && match[1]) {
                 directUrl = `https://drive.google.com/uc?export=download&id=${match[1]}`;
               }
-              return `http://localhost:3001/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
+              return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
             };
             const validVideos = artist.videos.filter(v => !!v);
             allGalleryMedia = allGalleryMedia.concat(validVideos.map(videoUrl => ({ type: 'video', src: getVideoSrc(videoUrl) })));

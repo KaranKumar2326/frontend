@@ -14,7 +14,7 @@ const AllArtistsPage = () => {
   useEffect(() => {
     const loggedInArtistId = localStorage.getItem('artist_id');
 
-    fetch('http://localhost:3001/api/artists')
+    fetch('https://backend-musical.onrender.com/api/artists')
       .then(res => res.json())
       .then(data => {
         const filtered = data.filter(artist => artist._id !== loggedInArtistId);
