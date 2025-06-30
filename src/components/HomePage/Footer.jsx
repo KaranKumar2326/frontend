@@ -21,9 +21,9 @@ const Footer = () => (
         <div className="footer-section">
           <h3 className="footer-heading">Quick Links</h3>
           <ul className="footer-links">
-            <li><a href="/artists" className="footer-link">Browse Artists</a></li>
+            <li><a href="/all-artists" className="footer-link">Browse Artists</a></li>
             <li><a href="/#testimonials" className="footer-link">Testimonials</a></li>
-            <li><a href="/join" className="footer-link">Join as Artist</a></li>
+            <li><a href="/login" className="footer-link" onClick={e => { e.preventDefault(); window.location.href = '/login?signup=1&artist=0'; }}>Join as a User</a></li>
           </ul>
         </div>
 
@@ -31,7 +31,7 @@ const Footer = () => (
         <div className="footer-section">
           <h3 className="footer-heading">For Musicians</h3>
           <ul className="footer-links">
-            <li><a href="/join" className="footer-link">Join as a Artist</a></li>
+            <li><a href="/login" className="footer-link" onClick={e => { e.preventDefault(); window.location.href = '/login?signup=1&artist=1'; }}>Join as an Artist</a></li>
             <li><a href="/faq" className="footer-link">FAQ for Artists</a></li>
             <li><a href="/#testimonials" className="footer-link">Testimonials</a></li>
           </ul>

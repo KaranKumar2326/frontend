@@ -22,15 +22,16 @@
   width: 100vw;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Center vertically */
   background: none;
   position: relative;
   z-index: 1;
+  /* Removed padding-top to allow true centering */
 }
 
 .newlogin-wrapper .lcont::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
@@ -52,6 +53,7 @@
   max-width: 100%;
   min-height: 600px;
   margin: 0;
+  margin-top: 2vh;
 }
 
 .newlogin-wrapper .container h1,
@@ -62,7 +64,7 @@
   letter-spacing: 1px;
   text-align: center;
   font-size: 2.1rem;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .newlogin-wrapper .container p,
@@ -243,7 +245,7 @@
 }
 
 .newlogin-wrapper .toggle {
-  background: linear-gradient(to right, #5c6bc0, var(--primary));
+  background: linear-gradient(to right, #6c2bd9);
   color: #fff;
   position: relative;
   left: -100%;

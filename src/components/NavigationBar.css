@@ -308,3 +308,25 @@
     height: 45px;
   }
 }
+
+/* Add this at the end of the file for specificity */
+.navbar[style*="transparent"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Hide all children except the brand when onlyBrand is true (for extra safety) */
+.navbar.only-brand .navbar-container > *:not(.navbar-title) {
+  display: none !important;
+}
+
+/* Make the brand text larger when onlyBrand is true (login page) */
+.navbar[style*="transparent"] .navbar-title {
+  font-size: 3.5rem !important;
+  letter-spacing: 0.05em;
+}
+@media (max-width: 480px) {
+  .navbar[style*="transparent"] .navbar-title {
+    font-size: 1rem !important;
+  }
+}

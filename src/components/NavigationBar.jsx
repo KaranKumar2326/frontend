@@ -5,10 +5,7 @@ import './NavigationBar.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
-
-const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown = false }) => {
+const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown = false, onlyBrand = false, style }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [openProfile, setOpenProfile] = useState(false);
@@ -270,6 +267,23 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
 
   // Helper to check if user is logged in
   const isLoggedIn = !!localStorage.getItem('isLoggedIn');
+
+  if (onlyBrand) {
+    // Render only the brand text, with transparent background and no extra elements
+    return (
+      <nav className="navbar only-brand" style={{ background: 'transparent', boxShadow: 'none', ...style, position: 'relative', zIndex: 1005 }}>
+        <div className="navbar-container" style={{ justifyContent: 'flex-start' }}>
+          <span
+            className="navbar-title"
+            style={{ cursor: 'pointer' }}
+            onClick={() => window.location.replace('/')}
+          >
+            Musical Meet
+          </span>
+        </div>
+      </nav>
+    );
+  }
 
  return (
   <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>

@@ -23,7 +23,7 @@ const HomePage = () => {
   };
 
   const JoinAsArtist = () => {
-    navigate('/login');
+    navigate('/login', { state: { signup: true, artist: true } });
   };
 
   // Helper to convert Google Drive links to direct image links and proxy through backend
@@ -108,7 +108,7 @@ const HomePage = () => {
                   </button>
                   <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color :'#6c2bd9' , border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
                   onClick={JoinAsArtist}>
-                    Join as a Artist
+                    Join as an Artist
                   </button>
                 </div>
               </div>
