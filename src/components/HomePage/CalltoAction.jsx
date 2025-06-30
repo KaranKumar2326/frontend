@@ -17,7 +17,7 @@ export default function CallToAction() {
           transition={{ duration: 0.6 }}
           className="text-container"
         >
-          <h2 className="cta-heading">
+          <h2 className="cta-heading" style={{ color: "#fff" }}>
             Ready to Make Your Event Unforgettable?
           </h2>
           <p className="cta-subheading">

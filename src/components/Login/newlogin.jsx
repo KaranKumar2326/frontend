@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './newlogin.css';
+import { Eye, EyeOff } from 'lucide-react';
+import Footer from '../HomePage/Footer';
+import NavigationBar from '../NavigationBar';
 
 const NewLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   // Login state
   const [loginData, setLoginData] = useState({ emailOrPhone: '', password: '' });
   const [isArtist, setIsArtist] = useState(false);
@@ -33,6 +37,10 @@ const NewLogin = () => {
   const [userSecurityQuestions, setUserSecurityQuestions] = useState([]);
   const [selectedUserSecurityIdx, setSelectedUserSecurityIdx] = useState('');
   const [userSecurityAnswer, setUserSecurityAnswer] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = React.useRef(null);
+  const signupPasswordInputRef = React.useRef(null);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   // Security questions array for display
   const SECURITY_QUESTIONS = [
@@ -66,15 +74,27 @@ const NewLogin = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     toast.info('Logging in...');
+    // Determine if input is email or phone
+    const input = loginData.emailOrPhone.trim();
+    const isEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input);
+    const isPhone = /^\d{10}$/.test(input); // Adjust regex for your phone format
+    let loginPayload = {
+      password: loginData.password,
+      role: isArtist ? 'artist' : 'user',
+    };
+    if (isEmail) {
+      loginPayload.email = input;
+    } else if (isPhone) {
+      loginPayload.phone = input;
+    } else {
+      toast.error('Please enter a valid email or 10-digit phone number');
+      return;
+    }
     try {
       const response = await fetch('https://backend-musical.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: loginData.emailOrPhone,
-          password: loginData.password,
-          role: isArtist ? 'artist' : 'user',
-        }),
+        body: JSON.stringify(loginPayload),
       });
       const result = await response.json();
       if (response.ok) {
@@ -145,6 +165,21 @@ const NewLogin = () => {
   };
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    // Email format validation
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRegex.test(signupData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    // Phone number validation
+    if (!/^\d{10}$/.test(signupData.phone)) {
+      toast.error('Phone number must be exactly 10 digits');
+      return;
+    }
+    if (signupData.password.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      return;
+    }
     if (signupData.password !== signupData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -348,155 +383,320 @@ const NewLogin = () => {
     }
   };
 
+  React.useEffect(() => {
+    // Handle navigation from state (HomePage.js)
+    if (location.state && location.state.signup) {
+      setIsActive(true);
+      setFormStep('signup');
+      if (location.state.artist) {
+        setIsArtist(true);
+        setSignupData((prev) => ({ ...prev, role: 'Artist' }));
+      }
+    }
+    // Handle navigation from query params (Footer links)
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      if (params.get('signup') === '1') {
+        setIsActive(true);
+        setFormStep('signup');
+        if (params.get('artist') === '1') {
+          setIsArtist(true);
+          setSignupData((prev) => ({ ...prev, role: 'Artist' }));
+        }
+      }
+    }
+  }, [location.state, location.search]);
+
   // UI rendering
   return (
-    <div className='newlogin-wrapper'>
-      <div id="login-bg-blur"></div>
-      <div className="lcont">
-      <div className={`container${isActive ? ' active' : ''}`} id="container">
-        {/* Sign Up Form */}
-        <div className="form-container sign-up">
-          {formStep === 'signup' && (
-            <form onSubmit={handleSignupSubmit}>
-              <h1>Create Account</h1>
-              <div className="role-select">
-                <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
-                <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
-              </div>
-              <input type="text" name="name" placeholder="Name" value={signupData.name} onChange={handleSignupChange} required />
-              {isArtist && (
-                <input type="text" name="stageName" placeholder="Stage Name" value={signupData.stageName} onChange={handleSignupChange} required />
+    <>
+      <div className='newlogin-wrapper'>
+        {/* Top left brand text */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 24,
+            left: 32,
+            zIndex: 1100,
+            background: 'rgba(255,255,255,0.95)',//bg
+            borderRadius: '40px/50%', // elliptical for pill/semi-circle ends
+            boxShadow: '0 2px 12px 0 rgba(108,43,217,0.08)', //bg
+            padding: '8px 32px 8px 28px',//bg
+            fontFamily: 'Playfair Display, serif',
+            fontWeight: 700,
+            fontSize: '2.8rem',
+            color: '#6c2bd9',
+            letterSpacing: '1px',
+            userSelect: 'none',
+            cursor: 'pointer',
+            pointerEvents: 'auto',
+            transition: 'background 0.2s',//bg
+            display: 'inline-block',//bg
+          }}
+          onClick={() => navigate('/')}
+          title="Go to Home"
+        >
+          Musical Meet
+        </div>
+        <div id="login-bg-blur"></div>
+        <div className="lcont">
+          <div className={`container${isActive ? ' active' : ''}`} id="container">
+            {/* Sign Up Form */}
+            <div className="form-container sign-up">
+              {formStep === 'signup' && (
+                <form onSubmit={handleSignupSubmit}>
+                  <h1>Create Account</h1>
+                  <small style={{
+                    display: 'block',
+                    fontFamily: 'Playfair Display, serif',
+                    color: '#888',
+                    fontSize: '1.3rem',
+                    marginBottom: '10px',
+                    marginTop: '-8px',
+                    textAlign: 'center',
+                    letterSpacing: '0.2px',
+                  }}>
+                    as
+                  </small>
+                  <div className="role-select">
+                    <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
+                    <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
+                  </div>
+                  <input type="text" name="name" placeholder="Full Name (as per ID)" value={signupData.name} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  {isArtist && (
+                    <input type="text" name="stageName" placeholder="Stage Name (publically known as)" value={signupData.stageName} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  )}
+                  <input type="email" name="email" placeholder="Email (for updates)" value={signupData.email} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  <input type="text" name="phone" placeholder="Phone (10 digits)" value={signupData.phone} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  <input type="text" name="pincode" placeholder="Pincode (area code)" value={signupData.pincode} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                      ref={signupPasswordInputRef}
+                      type={showSignupPassword ? 'text' : 'password'}
+                      name="password"
+                      placeholder="Password (min 8 chars)"
+                      value={signupData.password}
+                      onChange={handleSignupChange}
+                      required
+                      style={{ width: '100%', boxSizing: 'border-box', display: 'block' }}
+                    />
+                    <span
+                      onClick={() => {
+                        setShowSignupPassword((prev) => !prev);
+                        setTimeout(() => {
+                          if (signupPasswordInputRef.current) {
+                            const len = signupPasswordInputRef.current.value.length;
+                            signupPasswordInputRef.current.setSelectionRange(len, len);
+                            signupPasswordInputRef.current.focus();
+                          }
+                        }, 0);
+                      }}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        color: '#888',
+                        userSelect: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'color 0.2s, font-size 0.2s',
+                      }}
+                      title={showSignupPassword ? 'Hide password' : 'Show password'}
+                      onMouseDown={e => e.preventDefault()}
+                    >
+                      {showSignupPassword ? <EyeOff size={18} style={{ transition: 'all 0.2s' }} /> : <Eye size={18} style={{ transition: 'all 0.2s' }} />}
+                    </span>
+                  </div>
+                  <input type="password" name="confirmPassword" placeholder="Confirm Password" value={signupData.confirmPassword} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
+                  <button type="submit">Sign Up</button>
+                  <span>Already have an account? <span className="link" onClick={handleSignInClick}>Sign In</span></span>
+                </form>
               )}
-              <input type="email" name="email" placeholder="Email" value={signupData.email} onChange={handleSignupChange} required />
-              <input type="text" name="phone" placeholder="Phone" value={signupData.phone} onChange={handleSignupChange} required />
-              <input type="text" name="pincode" placeholder="Pincode" value={signupData.pincode} onChange={handleSignupChange} required />
-              <input type="password" name="password" placeholder="Password" value={signupData.password} onChange={handleSignupChange} required />
-              <input type="password" name="confirmPassword" placeholder="Confirm Password" value={signupData.confirmPassword} onChange={handleSignupChange} required />
-              <button type="submit">Sign Up</button>
-              <span>Already have an account? <span className="link" onClick={handleSignInClick}>Sign In</span></span>
-            </form>
-          )}
-        </div>
-        {/* Sign In Form */}
-        <div className="form-container sign-in">
-          {formStep === 'login' && (
-            <form onSubmit={handleLoginSubmit}>
-              <h1>Sign In</h1>
-              <div className="role-select">
-                <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
-                <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
-              </div>
-              <input type="text" name="emailOrPhone" placeholder="Email or Phone" value={loginData.emailOrPhone} onChange={handleLoginChange} required />
-              <input type="password" name="password" placeholder="Password" value={loginData.password} onChange={handleLoginChange} required />
-              <span className="link" onClick={() => setFormStep('forgot')}>Forgot Password?</span>
-              <button type="submit">Sign In</button>
-              <span>Don't have an account? <span className="link" onClick={handleSignUpClick}>Sign Up</span></span>
-            </form>
-          )}
-          {formStep === 'forgot' && (
-            <form onSubmit={handleForgotSubmit}>
-              <h2>Forgot Password</h2>
-              <input type="email" name="email" placeholder="Email" value={forgotForm.email} onChange={handleForgotChange} />
-              <input type="text" name="phone" placeholder="Phone" value={forgotForm.phone} onChange={handleForgotChange} />
-              <div style={{ fontSize: '0.9em', color: '#888', marginBottom: 8 }}>
-                Enter either Email or Phone (at least one is required)
-              </div>
-              <button type="submit">Verify</button>
-              <span className="link" onClick={() => setFormStep('login')}>Back to Login</span>
-            </form>
-          )}
-          {formStep === 'artist-security' && (
-            <form onSubmit={handleArtistSecurityVerify}>
-              <h2>Security Question Verification</h2>
-              <label>Select one of your security questions:</label>
-              <div style={{ position: 'relative', width: '100%' }}>
-                <select
-                  value={selectedSecurityIdx}
-                  onChange={e => setSelectedSecurityIdx(e.target.value)}
-                  required
-                  className="artist-profile-input"
-                  style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                >
-                  <option value="">Select a question</option>
-                  {artistSecurityQuestions.map((q, idx) => (
-                    <option key={idx} value={q.questionIdx}>
-                      {SECURITY_QUESTIONS[q.questionIdx] || `Question`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <input
-                type="text"
-                placeholder="Your answer"
-                value={securityAnswer}
-                onChange={e => setSecurityAnswer(e.target.value)}
-                required
-                className="artist-profile-input"
-              />
-              <button type="submit">Verify</button>
-              <span className="link" onClick={() => setFormStep('forgot')}>Back</span>
-            </form>
-          )}
-          {formStep === 'user-security' && (
-            <form onSubmit={handleUserSecurityVerify}>
-              <h2>Security Question Verification</h2>
-              <label>Select one of your security questions:</label>
-              <div style={{ position: 'relative', width: '100%' }}>
-                <select
-                  value={selectedUserSecurityIdx}
-                  onChange={e => setSelectedUserSecurityIdx(e.target.value)}
-                  required
-                  className="artist-profile-input"
-                  style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                >
-                  <option value="">Select a question</option>
-                  {userSecurityQuestions.map((q, idx) => (
-                    <option key={idx} value={q.questionIdx}>
-                      {SECURITY_QUESTIONS[q.questionIdx] || `Question`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <input
-                type="text"
-                placeholder="Your answer"
-                value={userSecurityAnswer}
-                onChange={e => setUserSecurityAnswer(e.target.value)}
-                required
-                className="artist-profile-input"
-              />
-              <button type="submit">Verify</button>
-              <span className="link" onClick={() => setFormStep('forgot')}>Back</span>
-            </form>
-          )}
-          {formStep === 'reset' && (
-            <form onSubmit={handleResetSubmit}>
-              <h2>Reset Password</h2>
-              <input type="password" name="password" placeholder="New Password" value={resetPassword.password} onChange={handleResetChange} required />
-              <input type="password" name="confirmPassword" placeholder="Confirm New Password" value={resetPassword.confirmPassword} onChange={handleResetChange} required />
-              <button type="submit">Reset Password</button>
-              <span className="link" onClick={() => setFormStep('login')}>Back to Login</span>
-            </form>
-          )}
-        </div>
-        {/* Toggle Panel */}
-        <div className="toggle-container">
-          <div className="toggle">
-            <div className="toggle-panel toggle-left">
-              <h1>Welcome Back!</h1>
-              <p>Enter your personal details to use all of site features</p>
-              <button className="hidden" id="login" type="button" onClick={handleSignInClick}>Sign In</button>
             </div>
-            <div className="toggle-panel toggle-right">
-              <h1>Hello, Friend!</h1>
-              <p>Register with your personal details to use all of site features</p>
-              <button className="hidden" id="register" type="button" onClick={handleSignUpClick}>Sign Up</button>
+            {/* Sign In Form */}
+            <div className="form-container sign-in">
+              {formStep === 'login' && (
+                <form onSubmit={handleLoginSubmit}>
+                  <h1>Sign In</h1>
+                  <small style={{
+                    display: 'block',
+                    fontFamily: 'Playfair Display, serif',
+                    color: '#888',
+                    fontSize: '1.3rem',
+                    marginBottom: '5px',
+                    marginTop: '-8px',
+                    textAlign: 'center',
+                    letterSpacing: '0.2px',
+                  }}>
+                    as
+                  </small>
+                  <div className="role-select">
+                    <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
+                    <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <input type="text" name="emailOrPhone" placeholder="Email or Phone" value={loginData.emailOrPhone} onChange={handleLoginChange} required style={{ width: '100%', boxSizing: 'border-box' }} />
+                  </div>
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                      ref={passwordInputRef}
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      placeholder="Password"
+                      value={loginData.password}
+                      onChange={handleLoginChange}
+                      required
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    />
+                    <span
+                      onClick={() => {
+                        setShowPassword((prev) => !prev);
+                        // Move cursor to end after toggling
+                        setTimeout(() => {
+                          if (passwordInputRef.current) {
+                            const len = passwordInputRef.current.value.length;
+                            passwordInputRef.current.setSelectionRange(len, len);
+                            passwordInputRef.current.focus();
+                          }
+                        }, 0);
+                      }}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        color: '#888',
+                        userSelect: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        transition: 'color 0.2s, font-size 0.2s',
+                      }}
+                      title={showPassword ? 'Hide password' : 'Show password'}
+                      onMouseDown={e => e.preventDefault()}
+                    >
+                      {showPassword ? <EyeOff size={18} style={{ transition: 'all 0.2s' }} /> : <Eye size={18} style={{ transition: 'all 0.2s' }} />}
+                    </span>
+                  </div>
+                  <span className="link" onClick={() => setFormStep('forgot')}>Forgot Password?</span>
+                  <button type="submit">Sign In</button>
+                  <span>Don't have an account? <span className="link" onClick={handleSignUpClick}>Sign Up</span></span>
+                </form>
+              )}
+              {formStep === 'forgot' && (
+                <form onSubmit={handleForgotSubmit}>
+                  <h2>Forgot Password</h2>
+                  <div className="role-select">
+                    <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
+                    <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
+                  </div>
+                  <input type="email" name="email" placeholder="Email" value={forgotForm.email} onChange={handleForgotChange} />
+                  <input type="text" name="phone" placeholder="Phone" value={forgotForm.phone} onChange={handleForgotChange} />
+                  <div style={{ fontSize: '0.9em', color: '#888', marginBottom: 8 }}>
+                    Verify your email and phone number to move to the next step
+                  </div>
+                  <button type="submit">Verify</button>
+                  <span className="link" onClick={() => setFormStep('login')}>Back to Login</span>
+                </form>
+              )}
+              {formStep === 'artist-security' && (
+                <form onSubmit={handleArtistSecurityVerify}>
+                  <h2>Security Question Verification</h2>
+                  <label>Select one of your security questions:</label>
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <select
+                      value={selectedSecurityIdx}
+                      onChange={e => setSelectedSecurityIdx(e.target.value)}
+                      required
+                      className="artist-profile-input"
+                      style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      <option value="">Select a question</option>
+                      {artistSecurityQuestions.map((q, idx) => (
+                        <option key={idx} value={q.questionIdx}>
+                          {SECURITY_QUESTIONS[q.questionIdx] || `Question`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Your answer"
+                    value={securityAnswer}
+                    onChange={e => setSecurityAnswer(e.target.value)}
+                    required
+                    className="artist-profile-input"
+                  />
+                  <button type="submit">Verify</button>
+                  <span className="link" onClick={() => setFormStep('forgot')}>Back</span>
+                </form>
+              )}
+              {formStep === 'user-security' && (
+                <form onSubmit={handleUserSecurityVerify}>
+                  <h2>Security Question Verification</h2>
+                  <label>Select one of your security questions:</label>
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <select
+                      value={selectedUserSecurityIdx}
+                      onChange={e => setSelectedUserSecurityIdx(e.target.value)}
+                      required
+                      className="artist-profile-input"
+                      style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      <option value="">Select a question</option>
+                      {userSecurityQuestions.map((q, idx) => (
+                        <option key={idx} value={q.questionIdx}>
+                          {SECURITY_QUESTIONS[q.questionIdx] || `Question`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Your answer"
+                    value={userSecurityAnswer}
+                    onChange={e => setUserSecurityAnswer(e.target.value)}
+                    required
+                    className="artist-profile-input"
+                  />
+                  <button type="submit">Verify</button>
+                  <span className="link" onClick={() => setFormStep('forgot')}>Back</span>
+                </form>
+              )}
+              {formStep === 'reset' && (
+                <form onSubmit={handleResetSubmit}>
+                  <h2>Reset Password</h2>
+                  <input type="password" name="password" placeholder="New Password" value={resetPassword.password} onChange={handleResetChange} required />
+                  <input type="password" name="confirmPassword" placeholder="Confirm New Password" value={resetPassword.confirmPassword} onChange={handleResetChange} required />
+                  <button type="submit">Reset Password</button>
+                  <span className="link" onClick={() => setFormStep('login')}>Back to Login</span>
+                </form>
+              )}
+            </div>
+            {/* Toggle Panel */}
+            <div className="toggle-container">
+              <div className="toggle">
+                <div className="toggle-panel toggle-left">
+                  <h1>Join the Musical Journey!</h1>
+                  <p>Register now to discover, book, and collaborate with amazing talent</p>
+                  <button className="hidden" id="login" type="button" onClick={handleSignInClick}>Sign In</button>
+                </div>
+                <div className="toggle-panel toggle-right">
+                  <h1>Welcome Back to the Jam!</h1>
+                  <p>Sign in to connect, jam, and create music with artists and fans.</p>
+                  <button className="hidden" id="register" type="button" onClick={handleSignUpClick}>Sign Up</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
-    </div>
+      <Footer style={{ zIndex: 1006}}/>
+    </>
   );
 };
 

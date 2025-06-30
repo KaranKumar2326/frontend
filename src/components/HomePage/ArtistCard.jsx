@@ -222,7 +222,7 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
                 fontSize: '1rem'
               }}>
                 {artist.pricing && artist.pricingUnit ? (
-                  `$${artist.pricing}/${artist.pricingUnit}`
+                  `₹${artist.pricing}/${artist.pricingUnit}`
                 ) : (
                   <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.9rem' }}>Not listed</span>
                 )}
