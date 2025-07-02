@@ -153,11 +153,13 @@ export default function PublicArtistProfilePage() {
                   <div className="artist-profile-location">{artist.preferredLocation || "Unknown"}</div>
                   <div className="artist-profile-experience">Experience: {artist.exp || 'N/A'} years</div>
                   <div className="artist-profile-genre">
-                    Genre: {artist.genres?.map(g => g.name).join(', ') || 'N/A'}
+                    Genre: {Array.isArray(artist.genres)
+                      ? artist.genres.map(g => (g && g.name ? g.name : '')).filter(Boolean).join(', ') || 'N/A'
+                      : 'N/A'}
                   </div>
                   <div className="artist-profile-pricing">
                     {artist.pricing && artist.pricingUnit ? (
-                      `$${artist.pricing}/${artist.pricingUnit}`
+                      `₹${artist.pricing}/${artist.pricingUnit}`
                     ) : (
                       <span className="artist-profile-not-listed">Not listed</span>
                     )}
@@ -253,13 +255,15 @@ export default function PublicArtistProfilePage() {
             )}
             {selectedTab === 1 && (
               <div className="artist-profile-tab-body">
-                {artist.instruments?.map(i => i.name).join(', ') || 'No instruments listed.'}
+                {Array.isArray(artist.instruments)
+                  ? artist.instruments.map(i => (i && i.name ? i.name : '')).filter(Boolean).join(', ') || 'No instruments listed.'
+                  : 'No instruments listed.'}
               </div>
             )}
             {selectedTab === 2 && (
               <div className="artist-profile-tab-body">
                 {artist.pricing && artist.pricingUnit
-                  ? `Booking Price: $${artist.pricing} per ${artist.pricingUnit}`
+                  ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
                   : 'No booking options listed.'}
                 <br />
                 {artist.email && (

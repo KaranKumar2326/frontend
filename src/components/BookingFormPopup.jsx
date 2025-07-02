@@ -100,7 +100,7 @@ const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
           Book {artist?.stageName}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          {artist?.pricing && `$${artist.pricing} per ${artist.pricingUnit}`}
+          {artist?.pricing && `₹${artist.pricing} per ${artist.pricingUnit}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit}>
@@ -199,7 +199,7 @@ const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
             value={formData.budget}
             onChange={handleChange}
             InputProps={{
-              startAdornment: <Typography>$</Typography>,
+              startAdornment: <Typography>₹</Typography>,
             }}
             required
           />

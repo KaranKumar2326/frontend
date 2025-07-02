@@ -418,10 +418,6 @@ const NewLogin = () => {
             top: 24,
             left: 32,
             zIndex: 1100,
-            background: 'rgba(255,255,255,0.95)',//bg
-            borderRadius: '40px/50%', // elliptical for pill/semi-circle ends
-            boxShadow: '0 2px 12px 0 rgba(108,43,217,0.08)', //bg
-            padding: '8px 32px 8px 28px',//bg
             fontFamily: 'Playfair Display, serif',
             fontWeight: 700,
             fontSize: '2.8rem',

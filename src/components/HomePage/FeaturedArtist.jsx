@@ -127,6 +127,7 @@ const FeaturedArtists = () => {
           fontFamily: 'Playfair Display, serif',
           fontWeight: 700,
           mb: 6,
+          color: '#444',
           position: 'relative',
           '&:after': {
             content: '""',
@@ -135,7 +136,7 @@ const FeaturedArtists = () => {
             height: '4px',
             background: 'linear-gradient(90deg, #6c2bd9, #f0e11a)',
             margin: '16px auto 0',
-            borderRadius: '2px'
+            borderRadius: '2px',
           }
         }}
       >

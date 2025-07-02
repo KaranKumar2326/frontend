@@ -121,7 +121,7 @@ const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
           Book {artist?.stageName}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          {artist?.pricing && `$${artist.pricing} per ${artist.pricingUnit}`}
+          {artist?.pricing && `₹${artist.pricing} per ${artist.pricingUnit}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit}>
@@ -422,7 +422,7 @@ export default function PublicArtistPage() {
               <div className="public-artist-name">{artist.stageName}</div>
               <div style={{ fontFamily: 'Montserrat, Inter, Arial, sans-serif', fontWeight: 600, color: '#6c2bd9', fontSize: '1.1rem', marginTop: 4 }}>
                 {artist.pricing && artist.pricingUnit ? (
-                  `$${artist.pricing} / ${artist.pricingUnit}`
+                  `₹${artist.pricing} / ${artist.pricingUnit}`
                 ) : (
                   <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
                 )}
@@ -503,7 +503,7 @@ export default function PublicArtistPage() {
           {selectedTab === 2 && (
             <div className="public-artist-tab-body">
               {artist.pricing && artist.pricingUnit
-                ? `Booking Price: $${artist.pricing} per ${artist.pricingUnit}`
+                ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
                 : 'No booking options listed.'}
               <br />
               {artist.email && <span>Email: {artist.email}</span>}

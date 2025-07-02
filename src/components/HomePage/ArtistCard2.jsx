@@ -177,19 +177,6 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             </Box>
           </Box>
 
-          <Typography variant="body2" sx={{
-            color: '#64748b',
-            fontSize: '0.9375rem',
-            lineHeight: 1.6,
-            marginBottom: '1.5rem',
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden'
-          }}>
-            {artist.description || "No description available"}
-          </Typography>
-
           <Box sx={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -211,6 +198,39 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             )}
           </Box>
 
+          <Typography variant="body2" sx={{
+            color: '#64748b',
+            fontSize: '0.9375rem',
+            lineHeight: 1.6,
+            marginBottom: '0.5rem',
+            display: 'block',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {Array.isArray(artist.instruments)
+              ? (artist.instruments.map(i => (i && i.name ? i.name : ''))
+                  .filter(Boolean).length > 0
+                ? artist.instruments.map(i => (i && i.name ? i.name : ''))
+                    .filter(Boolean)
+                    .join(', ')
+                : (artist.instruments.length > 0 ? 'N/A' : 'No instruments listed.'))
+              : 'No instruments listed.'}
+          </Typography>
+
+          <Typography variant="body2" sx={{
+            color: '#64748b',
+            fontSize: '0.9375rem',
+            lineHeight: 1.6,
+            marginBottom: '1.5rem',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden'
+          }}>
+            {artist.description || "No description available"}
+          </Typography>
+
           <Box sx={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
@@ -224,7 +244,7 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
                 fontSize: '1rem'
               }}>
                 {artist.pricing && artist.pricingUnit ? (
-                  `$${artist.pricing}/${artist.pricingUnit}`
+                  `₹${artist.pricing}/${artist.pricingUnit}`
                 ) : (
                   <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.9rem' }}>Not listed</span>
                 )}
