@@ -42,9 +42,19 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, .search-heading, .slider-heading {
+h1, h2, h3, .search-heading{
   font-family: 'Playfair Display', serif;
   font-weight: bold;
+  color: #444;
+}
+
+.whychooseus{
+  color: #444 !important;
+}
+.slider-heading {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
   color: var(--text-dark);
 }
 

@@ -144,7 +144,15 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             alignItems: 'center',
             gap: '4px'
           }}>
-            {artist.instruments && artist.instruments.length > 0 ? artist.instruments.map((i) => i.name).join(", ") : "No instruments"}
+            {/* Show instrument names from populated collection, fallback to ObjectId if not populated */}
+            {Array.isArray(artist.instruments)
+              ? (artist.instruments.map(i => (i && i.name ? i.name : ''))
+                  .filter(Boolean).length > 0
+                ? artist.instruments.map(i => (i && i.name ? i.name : ''))
+                    .filter(Boolean)
+                    .join(', ')
+                : (artist.instruments.length > 0 ? 'N/A' : 'No instruments listed.'))
+              : 'No instruments listed.'}
             {artist.location && (
               <>
                 <span style={{ color: '#ddd', margin: '0 4px' }}>•</span>
@@ -152,46 +160,53 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               </>
             )}
           </Typography>
-
           <Box className="artist-card__badges" sx={{
             display: 'flex',
             flexWrap: 'wrap',
             gap: '6px',
             marginBottom: '12px'
           }}>
-            {artist.genres?.slice(0, 3).map((genre) => (
-              <Chip
-                key={genre.id}
-                label={genre.name}
-                size="small"
-                variant="outlined"
-                className="artist-card__badge"
-                sx={{
-                  borderRadius: '6px',
-                  borderColor: '#e0e0e0',
-                  backgroundColor: 'rgba(0,0,0,0.03)',
-                  color: '#555',
-                  fontSize: '0.75rem',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0,0,0,0.05)'
-                  }
-                }}
-              />
-            ))}
-            {artist.genres?.length > 3 && (
-              <Chip
-                label={`+${artist.genres.length - 3}`}
-                size="small"
-                variant="outlined"
-                sx={{
-                  borderRadius: '6px',
-                  borderColor: '#e0e0e0',
-                  backgroundColor: 'rgba(0,0,0,0.03)',
-                  color: '#555',
-                  fontSize: '0.75rem'
-                }}
-              />
-            )}
+            {/* Show genre names from populated collection, fallback to ObjectId if not populated */}
+            {Array.isArray(artist.genres)
+              ? (artist.genres.filter(g => g && g.name).length > 0
+                ? artist.genres.filter(g => g && g.name).slice(0, 3).map((genre, idx) => (
+                    <Chip
+                      key={genre.id || genre._id || idx}
+                      label={genre.name}
+                      size="small"
+                      variant="outlined"
+                      className="artist-card__badge"
+                      sx={{
+                        borderRadius: '6px',
+                        borderColor: '#e0e0e0',
+                        backgroundColor: 'rgba(0,0,0,0.03)',
+                        color: '#555',
+                        fontSize: '0.75rem',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0,0,0,0.05)'
+                        }
+                      }}
+                    />
+                  ))
+                  .concat(
+                    (artist.genres.filter(g => g && g.name).length > 3)
+                      ? [<Chip
+                          key="more-genres"
+                          label={`+${artist.genres.filter(g => g && g.name).length - 3}`}
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            borderRadius: '6px',
+                            borderColor: '#e0e0e0',
+                            backgroundColor: 'rgba(0,0,0,0.03)',
+                            color: '#555',
+                            fontSize: '0.75rem'
+                          }}
+                        />]
+                      : []
+                  )
+                : (artist.genres.length > 0 ? <span style={{color:'#888',fontSize:'0.8em'}}>N/A</span> : <span style={{color:'#888',fontSize:'0.8em'}}>No genres</span>))
+              : <span style={{color:'#888',fontSize:'0.8em'}}>No genres</span>}
           </Box>
 
           <Typography variant="body2" className="artist-card__bio" sx={{

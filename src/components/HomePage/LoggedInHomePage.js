@@ -215,7 +215,7 @@ const LoggedInHomePage = () => {
         </div>
 
         <div className="features-section">
-          <h2>Why Choose Us?</h2>
+          <h2 className='whychooseus'>Why Choose Us?</h2>
           <div className="features">
             <div className="feature">
               <h3>Curated Artists & Customized Setups</h3>

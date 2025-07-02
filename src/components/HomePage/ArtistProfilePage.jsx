@@ -50,8 +50,29 @@ const ArtistProfilePage = () => {
   const [selectedMenu, setSelectedMenu] = useState('General Information');
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
   const [showInstrumentDropdown, setShowInstrumentDropdown] = useState(false);
+  const [genreSearch, setGenreSearch] = useState('');
+  const [instrumentSearch, setInstrumentSearch] = useState('');
+
+  // For closing dropdowns on outside click
+  const genreDropdownRef = React.useRef(null);
+  const instrumentDropdownRef = React.useRef(null);
+  React.useEffect(() => {
+    function handleClickOutside(event) {
+      if (genreDropdownRef.current && !genreDropdownRef.current.contains(event.target)) {
+        setShowGenreDropdown(false);
+      }
+      if (instrumentDropdownRef.current && !instrumentDropdownRef.current.contains(event.target)) {
+        setShowInstrumentDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedInstruments, setSelectedInstruments] = useState([]);
+  // Temporary states for editing
+  const [tempSelectedGenres, setTempSelectedGenres] = useState([]);
+  const [tempSelectedInstruments, setTempSelectedInstruments] = useState([]);
   const [genres, setGenres] = useState([]);
   const [instruments, setInstruments] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -95,8 +116,8 @@ const ArtistProfilePage = () => {
         if (!res.ok) throw new Error('Artist not found.');
         const data = await res.json();
         setArtist(data);
-        setSelectedGenres(data.genres ? data.genres.map(g => g.name) : []);
-        setSelectedInstruments(data.instruments ? data.instruments.map(i => i.name) : []);
+        setSelectedGenres(data.genres ? data.genres.map(g => g._id) : []);
+        setSelectedInstruments(data.instruments ? data.instruments.map(i => i._id) : []);
         setError(null);
       } catch (err) {
         setArtist(null);
@@ -108,29 +129,20 @@ const ArtistProfilePage = () => {
   }, [_id]);
 
   useEffect(() => {
-    // Fetch genres and instruments from backend
+    // Fetch genres and instruments from new meta endpoints
     const fetchMeta = async () => {
       try {
         const [genresRes, instrumentsRes] = await Promise.all([
-          fetch('https://backend-musical.onrender.com/api/artists/genres'),
-          fetch('https://backend-musical.onrender.com/api/artists/instruments'),
+          fetch('https://backend-musical.onrender.com/api/meta/genres'),
+          fetch('https://backend-musical.onrender.com/api/meta/instruments'),
         ]);
-        // Transform string arrays to objects with _id and name if API returns simple arrays
-        const genresData = genresRes.ok ? await genresRes.json() : ['Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
-        const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : ['Guitar', 'Piano', 'Drums', 'Violin', 'Flute'];
-        
-        // Ensure genres and instruments have proper structure with unique IDs
-        setGenres(Array.isArray(genresData) ? 
-          genresData.map((g, idx) => typeof g === 'string' ? { _id: `genre-${idx}`, name: g } : g) : 
-          genresData);
-        
-        setInstruments(Array.isArray(instrumentsData) ? 
-          instrumentsData.map((i, idx) => typeof i === 'string' ? { _id: `instrument-${idx}`, name: i } : i) : 
-          instrumentsData);
+        const genresData = genresRes.ok ? await genresRes.json() : [];
+        const instrumentsData = instrumentsRes.ok ? await instrumentsRes.json() : [];
+        setGenres(genresData);
+        setInstruments(instrumentsData);
       } catch (e) {
-        // Create proper objects with unique IDs for defaults
-        setGenres(['Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'].map((g, idx) => ({ _id: `genre-${idx}`, name: g })));
-        setInstruments(['Guitar', 'Piano', 'Drums', 'Violin', 'Flute'].map((i, idx) => ({ _id: `instrument-${idx}`, name: i })));
+        setGenres([]);
+        setInstruments([]);
       }
     };
     fetchMeta();
@@ -163,6 +175,8 @@ const ArtistProfilePage = () => {
 
   const handleEdit = () => {
     setIsEditing(true);
+    setTempSelectedGenres([...selectedGenres]);
+    setTempSelectedInstruments([...selectedInstruments]);
   };
 
   const handleInputChange = (field, value) => {
@@ -177,11 +191,13 @@ const ArtistProfilePage = () => {
     if (!editArtist) return;
     setLoading(true);
     try {
+      setSelectedGenres(tempSelectedGenres);
+      setSelectedInstruments(tempSelectedInstruments);
       const updatedArtist = {
         ...artist,
         ...editArtist,
-        genres: genres.filter(g => selectedGenres.includes(g.name)),
-        instruments: instruments.filter(i => selectedInstruments.includes(i.name)),
+        genres: tempSelectedGenres, // array of genre ObjectIds
+        instruments: tempSelectedInstruments, // array of instrument ObjectIds
       };
       const res = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`, {
         method: 'PUT',
@@ -522,54 +538,155 @@ const ArtistProfilePage = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
                   {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
                   {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
-                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => {
+                    setIsEditing(false);
+                    setTempSelectedGenres([...selectedGenres]);
+                    setTempSelectedInstruments([...selectedInstruments]);
+                  }}>Cancel</button>}
                 </div>
               </>
             )}
             {selectedMenu === 'Insturments' && (
               <>
                 <label className="artist-profile-label">Instruments</label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    className="artist-profile-input"
-                    type="text"
-                    value={selectedInstruments.join(', ')}
-                    readOnly={!isEditing}
-                    onFocus={isEditing ? () => setShowInstrumentDropdown(true) : undefined}
-                    onBlur={isEditing ? () => setTimeout(() => setShowInstrumentDropdown(false), 150) : undefined}
-                  />
-                  {showInstrumentDropdown && isEditing && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '110%',
-                      left: 0,
-                      zIndex: 10,
-                      background: '#fff',
-                      border: '1px solid #eee',
-                      borderRadius: '10px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                      minWidth: '200px',
-                      padding: '0.5rem 0',
-                    }}>
-                      {instruments.map(inst => (
-                        <div
-                          key={inst._id}
-                          style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedInstruments.includes(inst.name) ? '#6c2bd9' : '#333', background: selectedInstruments.includes(inst.name) ? '#ede7fa' : 'transparent' }}
-                          onMouseDown={e => {
-                            e.preventDefault();
-                            if (selectedInstruments.includes(inst.name)) {
-                              setSelectedInstruments(selectedInstruments.filter(i => i !== inst.name));
-                            } else {
-                              setSelectedInstruments([...selectedInstruments, inst.name]);
-                            }
-                            // Close dropdown immediately after selection
-                            setShowInstrumentDropdown(false);
-                          }}
-                        >
-                          {inst.name}
+                <div style={{ width: '100%', position: 'relative' }} ref={instrumentDropdownRef}>
+                  {isEditing ? (
+                    <>
+                      <div
+                        className="artist-profile-input"
+                        style={{
+                          minHeight: '44px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          background: '#faf8ff',
+                          border: '1.5px solid #d1c4e9',
+                          borderRadius: 8,
+                          padding: '0.3rem 0.7rem',
+                          marginBottom: '0.2rem',
+                          position: 'relative',
+                        }}
+                        onClick={() => setShowInstrumentDropdown(v => !v)}
+                        tabIndex={0}
+                      >
+                        {tempSelectedInstruments.length === 0
+                          ? 'Select instruments...'
+                          : instruments.filter(i => tempSelectedInstruments.includes(i._id)).map(i => i.name).join(', ')}
+                      </div>
+                      {showInstrumentDropdown && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '110%',
+                          left: 0,
+                          width: '100%',
+                          background: '#fff',
+                          border: '1.5px solid #d1c4e9',
+                          borderRadius: 8,
+                          boxShadow: '0 4px 16px rgba(108,43,217,0.10)',
+                          zIndex: 10,
+                          maxHeight: 260,
+                          overflowY: 'auto',
+                          padding: '0.5rem 0',
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}>
+                          {instruments.length === 0 && (
+                            <div style={{ padding: '0.7rem', color: '#aaa', textAlign: 'center' }}>No instruments available</div>
+                          )}
+                          {instruments.map(inst => {
+                            const checked = tempSelectedInstruments.includes(inst._id);
+                            return (
+                              <div
+                                key={inst._id}
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  setTempSelectedInstruments(prev =>
+                                    checked
+                                      ? prev.filter(id => id !== inst._id)
+                                      : [...prev, inst._id]
+                                  );
+                                }}
+                                style={{
+                                  padding: '0.5rem 1.2rem',
+                                  cursor: 'pointer',
+                                  background: checked ? '#e7dbfa' : '#fff',
+                                  color: checked ? '#6c2bd9' : '#3f2a6b',
+                                  fontWeight: checked ? 700 : 500,
+                                  borderBottom: '1px solid #f0e9ff',
+                                  transition: 'background 0.15s',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 8,
+                                }}
+                              >
+                                {inst.name}
+                              </div>
+                            );
+                          })}
+                          <div style={{ padding: '0.5rem 1.2rem', borderBottom: '1px solid #f0e9ff', background: '#faf8ff', display: 'flex', alignItems: 'center', gap: 8, position: 'sticky', bottom: 0 }}>
+                            <input
+                              type="text"
+                              placeholder="Add custom instrument..."
+                              style={{ width: '80%', border: 'none', outline: 'none', background: 'transparent' }}
+                              value={instrumentSearch}
+                              onChange={e => setInstrumentSearch(e.target.value)}
+                              onKeyDown={async e => {
+                                if (e.key === 'Enter' && instrumentSearch.trim()) {
+                                  e.preventDefault();
+                                  const value = instrumentSearch.trim();
+                                  try {
+                                    const res = await fetch('https://backend-musical.onrender.com/api/meta/instruments', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ name: value })
+                                    });
+                                    if (!res.ok) throw new Error('Failed to add instrument');
+                                    const newInstrument = await res.json();
+                                    setInstruments(prev => [...prev, newInstrument]);
+                                    setTempSelectedInstruments(prev => [...prev, newInstrument._id]);
+                                    setInstrumentSearch('');
+                                  } catch (err) {
+                                    alert('Failed to add instrument');
+                                  }
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              style={{ background: '#6c2bd9', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', cursor: 'pointer' }}
+                              onClick={async () => {
+                                const value = instrumentSearch.trim();
+                                if (!value) return;
+                                try {
+                                  const res = await fetch('https://backend-musical.onrender.com/api/meta/instruments', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: value })
+                                  });
+                                  if (!res.ok) throw new Error('Failed to add instrument');
+                                  const newInstrument = await res.json();
+                                  setInstruments(prev => [...prev, newInstrument]);
+                                  setTempSelectedInstruments(prev => [...prev, newInstrument._id]);
+                                  setInstrumentSearch('');
+                                } catch (err) {
+                                  alert('Failed to add instrument');
+                                }
+                              }}
+                            >Add</button>
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      )}
+                    </>
+                  ) : (
+                    <input
+                      className="artist-profile-input"
+                      type="text"
+                      value={(() => {
+                        if (!selectedInstruments.length) return '';
+                        return instruments.filter(i => selectedInstruments.includes(i._id)).map(i => i.name).join(', ');
+                      })()}
+                      readOnly
+                    />
                   )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
@@ -582,53 +699,154 @@ const ArtistProfilePage = () => {
             {selectedMenu === 'Genres' && (
               <>
                 <label className="artist-profile-label">Genres</label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    className="artist-profile-input"
-                    type="text"
-                    value={selectedGenres.join(', ')}
-                    readOnly={!isEditing}
-                    onFocus={isEditing ? () => setShowGenreDropdown(true) : undefined}
-                    onBlur={isEditing ? () => setTimeout(() => setShowGenreDropdown(false), 150) : undefined}
-                  />
-                  {showGenreDropdown && isEditing && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '110%',
-                      left: 0,
-                      zIndex: 10,
-                      background: '#fff',
-                      border: '1px solid #eee',
-                      borderRadius: '10px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                      minWidth: '200px',
-                      padding: '0.5rem 0',
-                    }}>
-                      {genres.map(genre => (
-                        <div
-                          key={genre._id}
-                          style={{ padding: '0.5rem 1rem', cursor: 'pointer', color: selectedGenres.includes(genre.name) ? '#6c2bd9' : '#333', background: selectedGenres.includes(genre.name) ? '#ede7fa' : 'transparent' }}
-                          onMouseDown={e => {
-                            e.preventDefault();
-                            if (selectedGenres.includes(genre.name)) {
-                              setSelectedGenres(selectedGenres.filter(g => g !== genre.name));
-                            } else {
-                              setSelectedGenres([...selectedGenres, genre.name]);
-                            }
-                            // Close dropdown immediately after selection
-                            setShowGenreDropdown(false);
-                          }}
-                        >
-                          {genre.name}
+                <div style={{ width: '100%', position: 'relative' }} ref={genreDropdownRef}>
+                  {isEditing ? (
+                    <>
+                      <div
+                        className="artist-profile-input"
+                        style={{
+                          minHeight: '44px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          background: '#faf8ff',
+                          border: '1.5px solid #d1c4e9',
+                          borderRadius: 8,
+                          padding: '0.3rem 0.7rem',
+                          marginBottom: '0.2rem',
+                          position: 'relative',
+                        }}
+                        onClick={() => setShowGenreDropdown(v => !v)}
+                        tabIndex={0}
+                      >
+                        {tempSelectedGenres.length === 0
+                          ? 'Select genres...'
+                          : genres.filter(g => tempSelectedGenres.includes(g._id)).map(g => g.name).join(', ')}
+                      </div>
+                      {showGenreDropdown && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '110%',
+                          left: 0,
+                          width: '100%',
+                          background: '#fff',
+                          border: '1.5px solid #d1c4e9',
+                          borderRadius: 8,
+                          boxShadow: '0 4px 16px rgba(108,43,217,0.10)',
+                          zIndex: 10,
+                          maxHeight: 260,
+                          overflowY: 'auto',
+                          padding: '0.5rem 0',
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}>
+                          {genres.length === 0 && (
+                            <div style={{ padding: '0.7rem', color: '#aaa', textAlign: 'center' }}>No genres available</div>
+                          )}
+                          {genres.map(genre => {
+                            const checked = tempSelectedGenres.includes(genre._id);
+                            return (
+                              <div
+                                key={genre._id}
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  setTempSelectedGenres(prev =>
+                                    checked
+                                      ? prev.filter(id => id !== genre._id)
+                                      : [...prev, genre._id]
+                                  );
+                                }}
+                                style={{
+                                  padding: '0.5rem 1.2rem',
+                                  cursor: 'pointer',
+                                  background: checked ? '#e7dbfa' : '#fff',
+                                  color: checked ? '#6c2bd9' : '#3f2a6b',
+                                  fontWeight: checked ? 700 : 500,
+                                  borderBottom: '1px solid #f0e9ff',
+                                  transition: 'background 0.15s',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 8,
+                                }}
+                              >
+                                {genre.name}
+                              </div>
+                            );
+                          })}
+                          <div style={{ padding: '0.5rem 1.2rem', borderBottom: '1px solid #f0e9ff', background: '#faf8ff', display: 'flex', alignItems: 'center', gap: 8, position: 'sticky', bottom: 0 }}>
+                            <input
+                              type="text"
+                              placeholder="Add custom genre..."
+                              style={{ width: '80%', border: 'none', outline: 'none', background: 'transparent' }}
+                              value={genreSearch}
+                              onChange={e => setGenreSearch(e.target.value)}
+                              onKeyDown={async e => {
+                                if (e.key === 'Enter' && genreSearch.trim()) {
+                                  e.preventDefault();
+                                  const value = genreSearch.trim();
+                                  try {
+                                    const res = await fetch('https://backend-musical.onrender.com/api/meta/genres', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ name: value })
+                                    });
+                                    if (!res.ok) throw new Error('Failed to add genre');
+                                    const newGenre = await res.json();
+                                    setGenres(prev => [...prev, newGenre]);
+                                    setTempSelectedGenres(prev => [...prev, newGenre._id]);
+                                    setGenreSearch('');
+                                  } catch (err) {
+                                    alert('Failed to add genre');
+                                  }
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              style={{ background: '#6c2bd9', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', cursor: 'pointer' }}
+                              onClick={async () => {
+                                const value = genreSearch.trim();
+                                if (!value) return;
+                                try {
+                                  const res = await fetch('https://backend-musical.onrender.com/api/meta/genres', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name: value })
+                                  });
+                                  if (!res.ok) throw new Error('Failed to add genre');
+                                  const newGenre = await res.json();
+                                  setGenres(prev => [...prev, newGenre]);
+                                  setTempSelectedGenres(prev => [...prev, newGenre._id]);
+                                  setGenreSearch('');
+                                } catch (err) {
+                                  alert('Failed to add genre');
+                                }
+                              }}
+                            >Add</button>
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      )}
+                    </>
+                  ) : (
+                    <input
+                      className="artist-profile-input"
+                      type="text"
+                      value={(() => {
+                        if (!selectedGenres.length) return '';
+                        return genres.filter(g => selectedGenres.includes(g._id)).map(g => g.name).join(', ');
+                      })()}
+                      readOnly
+                    />
                   )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
                   {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
                   {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
-                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>}
+                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => {
+                    setIsEditing(false);
+                    setTempSelectedGenres(selectedGenres);
+                    setTempSelectedInstruments(selectedInstruments);
+                  }}>Cancel</button>}
                 </div>
               </>
             )}
