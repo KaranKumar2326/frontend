@@ -167,12 +167,19 @@ const FeaturedArtists = () => {
             </ScrollButton>
             
             <HorizontalScrollContainer ref={scrollContainerRef}>
-              {artists.map(artist => (
-                <Box key={artist._id} sx={{ scrollSnapAlign: 'center', flex: '0 0 auto', maxWidth: { xs: '90%', sm: '80%', md: '25%' } }}>
-                  <ArtistCard artist={artist} />
-                </Box>
-              ))}
-            </HorizontalScrollContainer>
+  {artists.map(artist => (
+    <Box 
+      key={artist._id} 
+      sx={{ 
+        scrollSnapAlign: 'center', 
+        flex: '0 0 auto',
+        width: { xs: '280px', sm: '300px', md: '320px' } // Fixed width for all cards
+      }}
+    >
+      <ArtistCard artist={artist} />
+    </Box>
+  ))}
+</HorizontalScrollContainer>
             
             <ScrollButton 
               onClick={scrollRight} 

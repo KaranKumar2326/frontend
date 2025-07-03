@@ -7,14 +7,13 @@ import {
   Typography,
   Box,
   Button,
-  Chip
+  Chip,
+  useTheme
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import "./ArtistCard.css"; // Custom CSS styles
-import myImage from "../../public/defaultpic.png"
+import myImage from "../../public/defaultpic.png";
 
-// Helper to convert Google Drive links to direct image links and proxy through backend
 const getImageSrc = (url) => {
   if (!url) return null;
   let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
@@ -25,12 +24,12 @@ const getImageSrc = (url) => {
   if (match && match[1]) {
     directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
   }
-  // Always proxy through backend for CORS
   return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
-export default function ArtistCard({ artist, priority = 0, hidePrice = false }) {
+const ArtistCard = ({ artist, priority = 0, hidePrice = false }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const renderStars = (rating = 0) => {
     const stars = [];
@@ -38,17 +37,16 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
     const hasHalfStar = rating % 1 >= 0.3;
 
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`star-${i}`} className="star-icon" size={18} fill="#FFD700" />);
+      stars.push(<Star key={`star-${i}`} size={18} fill="#FFD700" />);
     }
 
     if (hasHalfStar) {
-      stars.push(<StarHalf key="half-star" className="star-icon" size={18} fill="#FFD700" />);
+      stars.push(<StarHalf key="half-star" size={18} fill="#FFD700" />);
     }
 
-    // Add empty stars for remaining
     const remainingStars = 5 - stars.length;
     for (let i = 0; i < remainingStars; i++) {
-      stars.push(<Star key={`empty-${i}`} className="star-icon" size={18} color="#e0e0e0" />);
+      stars.push(<Star key={`empty-${i}`} size={18} color="#e0e0e0" />);
     }
 
     return stars;
@@ -59,34 +57,40 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: priority * 0.1 }}
-      whileHover={{ y: -5, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
+      whileHover={{ y: -5 }}
+      style={{ height: "100%" }}
     >
-      <Card className="artist-card" sx={{ 
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-        transition: 'all 0.3s ease',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        '&:hover': {
-          boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
-        }
-      }}>
-        <div className="artist-card__image-wrapper" style={{ position: 'relative' }}>
+      <Card 
+        sx={{ 
+          borderRadius: '12px',
+          boxShadow: theme.shadows[2],
+          transition: 'all 0.3s ease',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '480px',
+          '&:hover': {
+            boxShadow: theme.shadows[6],
+            transform: 'translateY(-2px)'
+          }
+        }}
+      >
+        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
             height="240"
-            image={
-              getImageSrc(artist.imageUrl) || myImage
-            }
+            image={getImageSrc(artist.imageUrl) || myImage}
             alt={artist.stageName}
             onError={e => { e.target.onerror = null; e.target.src = myImage; }}
-            className="artist-card__image"
             sx={{
               borderTopLeftRadius: '12px',
               borderTopRightRadius: '12px',
               objectFit: 'cover',
-              width: '100%'
+              width: '100%',
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.03)'
+              }
             }}
           />
           <Box sx={{
@@ -97,62 +101,64 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             height: '40%',
             background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)'
           }} />
-        </div>
+        </Box>
 
-        <CardContent className="artist-card__content" sx={{ 
+        <CardContent sx={{ 
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          padding: '16px'
+          p: 3,
+          '&:last-child': { pb: 3 }
         }}>
-          <Box className="artist-card__header" sx={{
+          <Box sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            marginBottom: '8px'
+            mb: 1.5
           }}>
-            <Typography variant="h6" className="artist-card__name" sx={{
-              fontWeight: 600,
-              fontSize: '1.1rem',
-              color: '#333',
-              lineHeight: 1.3
-            }}>
+            <Typography 
+              variant="h6" 
+              sx={{
+                fontWeight: 600,
+                fontSize: '1.1rem',
+                lineHeight: 1.3,
+                color: theme.palette.text.primary
+              }}
+            >
               {artist.stageName}
             </Typography>
-            <div className="artist-card__rating-badge artist-card__header-rating" style={{
+            <Box sx={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: 'rgba(255, 215, 0, 0.1)',
-              padding: '4px 8px',
+              bgcolor: 'rgba(255, 215, 0, 0.1)',
+              px: 1,
+              py: 0.5,
               borderRadius: '20px'
             }}>
               {renderStars(Number(artist.rating))}
-              <span className="rating-number" style={{
-                marginLeft: '4px',
+              <Typography variant="body2" sx={{ 
+                ml: 0.5, 
                 fontWeight: 600,
-                color: '#333',
-                fontSize: '0.9rem'
-              }}>{artist.rating}</span>
-            </div>
+                color: theme.palette.text.primary
+              }}>
+                {artist.rating}
+              </Typography>
+            </Box>
           </Box>
 
-          <Typography variant="body2" className="artist-card__location" sx={{
-            color: '#666',
+          <Typography variant="body2" sx={{
+            color: theme.palette.text.secondary,
             fontSize: '0.85rem',
-            marginBottom: '12px',
+            mb: 2,
             display: 'flex',
             alignItems: 'center',
             gap: '4px'
           }}>
-            {/* Show instrument names from populated collection, fallback to ObjectId if not populated */}
             {Array.isArray(artist.instruments)
-              ? (artist.instruments.map(i => (i && i.name ? i.name : ''))
-                  .filter(Boolean).length > 0
-                ? artist.instruments.map(i => (i && i.name ? i.name : ''))
-                    .filter(Boolean)
-                    .join(', ')
-                : (artist.instruments.length > 0 ? 'N/A' : 'No instruments listed.'))
-              : 'No instruments listed.'}
+              ? artist.instruments.filter(i => i?.name).length > 0
+                ? artist.instruments.map(i => i?.name).filter(Boolean).join(', ')
+                : artist.instruments.length > 0 ? 'N/A' : 'No instruments listed'
+              : 'No instruments listed'}
             {artist.location && (
               <>
                 <span style={{ color: '#ddd', margin: '0 4px' }}>•</span>
@@ -160,102 +166,94 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               </>
             )}
           </Typography>
-          <Box className="artist-card__badges" sx={{
+
+          <Box sx={{
             display: 'flex',
             flexWrap: 'wrap',
             gap: '6px',
-            marginBottom: '12px'
+            mb: 2
           }}>
-            {/* Show genre names from populated collection, fallback to ObjectId if not populated */}
-            {Array.isArray(artist.genres)
-              ? (artist.genres.filter(g => g && g.name).length > 0
-                ? artist.genres.filter(g => g && g.name).slice(0, 3).map((genre, idx) => (
-                    <Chip
-                      key={genre.id || genre._id || idx}
-                      label={genre.name}
-                      size="small"
-                      variant="outlined"
-                      className="artist-card__badge"
-                      sx={{
-                        borderRadius: '6px',
-                        borderColor: '#e0e0e0',
-                        backgroundColor: 'rgba(0,0,0,0.03)',
-                        color: '#555',
-                        fontSize: '0.75rem',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0,0,0,0.05)'
-                        }
-                      }}
-                    />
-                  ))
-                  .concat(
-                    (artist.genres.filter(g => g && g.name).length > 3)
-                      ? [<Chip
-                          key="more-genres"
-                          label={`+${artist.genres.filter(g => g && g.name).length - 3}`}
-                          size="small"
-                          variant="outlined"
-                          sx={{
-                            borderRadius: '6px',
-                            borderColor: '#e0e0e0',
-                            backgroundColor: 'rgba(0,0,0,0.03)',
-                            color: '#555',
-                            fontSize: '0.75rem'
-                          }}
-                        />]
-                      : []
-                  )
-                : (artist.genres.length > 0 ? <span style={{color:'#888',fontSize:'0.8em'}}>N/A</span> : <span style={{color:'#888',fontSize:'0.8em'}}>No genres</span>))
-              : <span style={{color:'#888',fontSize:'0.8em'}}>No genres</span>}
+            {Array.isArray(artist.genres) && artist.genres.filter(g => g?.name).slice(0, 3).map((genre, idx) => (
+              <Chip
+                key={genre.id || genre._id || idx}
+                label={genre.name}
+                size="small"
+                variant="outlined"
+                sx={{
+                  borderRadius: '6px',
+                  borderColor: theme.palette.divider,
+                  bgcolor: theme.palette.action.hover,
+                  color: theme.palette.text.secondary,
+                  fontSize: '0.75rem'
+                }}
+              />
+            ))}
+            {Array.isArray(artist.genres) && artist.genres.filter(g => g?.name).length > 3 && (
+              <Chip
+                label={`+${artist.genres.filter(g => g?.name).length - 3}`}
+                size="small"
+                variant="outlined"
+                sx={{
+                  borderRadius: '6px',
+                  borderColor: theme.palette.divider,
+                  bgcolor: theme.palette.action.hover,
+                  color: theme.palette.text.secondary,
+                  fontSize: '0.75rem'
+                }}
+              />
+            )}
           </Box>
 
-          <Typography variant="body2" className="artist-card__bio" sx={{
-            color: '#555',
+          <Typography variant="body2" sx={{
+            color: theme.palette.text.secondary,
             fontSize: '0.9rem',
             lineHeight: 1.5,
-            marginBottom: '16px',
+            mb: 2,
             display: '-webkit-box',
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 4,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            flexGrow: 1
+            flexGrow: 1,
+            minHeight: '72px'
           }}>
             {artist.description || "No description available"}
           </Typography>
 
-          <Box className="artist-card__footer" sx={{ 
+          <Box sx={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginTop: 'auto'
+            mt: 'auto'
           }}>
             {!hidePrice && (
-              <Typography className="artist-card__price" sx={{
+              <Typography sx={{
                 fontWeight: 600,
-                color: '#333',
+                color: theme.palette.text.primary,
                 fontSize: '1rem'
               }}>
                 {artist.pricing && artist.pricingUnit ? (
                   `₹${artist.pricing}/${artist.pricingUnit}`
                 ) : (
-                  <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.9rem' }}>Not listed</span>
+                  <span style={{ color: theme.palette.text.disabled, fontStyle: 'italic' }}>
+                    Not listed
+                  </span>
                 )}
               </Typography>
             )}
             <Button
               variant="contained"
               size="small"
-              className="artist-card__button"
               onClick={() => navigate(`/public-artist/${artist._id || artist.id}`)}
               sx={{
                 borderRadius: '8px',
                 textTransform: 'none',
                 fontWeight: 500,
-                padding: '6px 16px',
-                backgroundColor: '#3f51b5',
+                px: 2,
+                py: 1,
+                bgcolor: '#6c2bd9',
                 '&:hover': {
-                  backgroundColor: '#303f9f'
+                  bgcolor: '#5a24b8'
                 }
               }}
             >
@@ -266,4 +264,6 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
       </Card>
     </motion.div>
   );
-}
+};
+
+export default ArtistCard;
