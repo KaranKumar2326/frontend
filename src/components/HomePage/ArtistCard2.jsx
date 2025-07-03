@@ -216,6 +216,12 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
                     .join(', ')
                 : (artist.instruments.length > 0 ? 'N/A' : 'No instruments listed.'))
               : 'No instruments listed.'}
+            {artist.location && (
+              <>
+                <span style={{ color: '#ddd', margin: '0 4px' }}>•</span>
+                {artist.location}
+              </>
+            )}
           </Typography>
 
           <Typography variant="body2" sx={{
