@@ -440,7 +440,7 @@ const NewLogin = () => {
             {/* Sign Up Form */}
             <div className="form-container sign-up">
               {formStep === 'signup' && (
-                <form onSubmit={handleSignupSubmit}>
+                <form onSubmit={handleSignupSubmit} style={{ height: isArtist ? 'calc(100% - 90px)' : 'calc(100% - 8px)' }}>
                   <h1>Create Account</h1>
                   <small style={{
                     display: 'block',
@@ -455,8 +455,35 @@ const NewLogin = () => {
                     as
                   </small>
                   <div className="role-select">
-                    <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
-                    <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
+                    <button
+                      type="button"
+                      className={isArtist ? 'selected' : ''}
+                      onClick={() => handleRoleSelect('Artist')}
+                      style={{
+                        borderRadius: '40px',
+                        padding: '8px 28px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        marginRight: '10px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.06)'
+                      }}
+                    >
+                      Artist
+                    </button>
+                    <button
+                      type="button"
+                      className={!isArtist ? 'selected' : ''}
+                      onClick={() => handleRoleSelect('User')}
+                      style={{
+                        borderRadius: '40px',
+                        padding: '8px 28px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.06)'
+                      }}
+                    >
+                      User
+                    </button>
                   </div>
                   <input type="text" name="name" placeholder="Full Name (as per ID)" value={signupData.name} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
                   {isArtist && (
@@ -507,7 +534,13 @@ const NewLogin = () => {
                     </span>
                   </div>
                   <input type="password" name="confirmPassword" placeholder="Confirm Password" value={signupData.confirmPassword} onChange={handleSignupChange} required style={{ width: '100%', boxSizing: 'border-box', display: 'block' }} />
-                  <button type="submit">Sign Up</button>
+                  <button type="submit" style={{
+                    borderRadius: '40px',
+                    padding: '12px 36px',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.08)'
+                  }}>Sign Up</button>
                   <span>Already have an account? <span className="link" onClick={handleSignInClick}>Sign In</span></span>
                 </form>
               )}
@@ -530,8 +563,35 @@ const NewLogin = () => {
                     as
                   </small>
                   <div className="role-select">
-                    <button type="button" className={isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('Artist')}>Artist</button>
-                    <button type="button" className={!isArtist ? 'selected' : ''} onClick={() => handleRoleSelect('User')}>User</button>
+                    <button
+                      type="button"
+                      className={isArtist ? 'selected' : ''}
+                      onClick={() => handleRoleSelect('Artist')}
+                      style={{
+                        borderRadius: '40px',
+                        padding: '8px 28px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        marginRight: '10px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.06)'
+                      }}
+                    >
+                      Artist
+                    </button>
+                    <button
+                      type="button"
+                      className={!isArtist ? 'selected' : ''}
+                      onClick={() => handleRoleSelect('User')}
+                      style={{
+                        borderRadius: '40px',
+                        padding: '8px 28px',
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.06)'
+                      }}
+                    >
+                      User
+                    </button>
                   </div>
                   <div style={{ width: '100%' }}>
                     <input type="text" name="emailOrPhone" placeholder="Email or Phone" value={loginData.emailOrPhone} onChange={handleLoginChange} required style={{ width: '100%', boxSizing: 'border-box' }} />
@@ -579,7 +639,18 @@ const NewLogin = () => {
                     </span>
                   </div>
                   <span className="link" onClick={() => setFormStep('forgot')}>Forgot Password?</span>
-                  <button type="submit">Sign In</button>
+                  <button
+                    type="submit"
+                    style={{
+                      borderRadius: '40px',
+                      padding: '12px 36px',
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.08)'
+                    }}
+                  >
+                    Sign In
+                  </button>
                   <span>Don't have an account? <span className="link" onClick={handleSignUpClick}>Sign Up</span></span>
                 </form>
               )}

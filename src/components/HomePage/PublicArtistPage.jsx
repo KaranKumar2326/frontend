@@ -429,9 +429,30 @@ export default function PublicArtistPage() {
               </div>
             </Box>
             {/* Book Now button (right, absolute) */}
-            <button 
-              className="public-artist-book-btn" 
-              style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 2 }}
+            <button
+              className="public-artist-book-btn"
+              style={{
+                position: 'absolute',
+                top: '2rem',
+                right: '2rem',
+                zIndex: 2,
+                background: '#6c2bd9',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '40px',
+                padding: '12px 32px', // increased padding
+                fontSize: '1.08rem', // increased font size
+                fontWeight: 700,
+                boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+                cursor: 'pointer',
+                transition: 'background 0.2s, box-shadow 0.2s',
+                outline: 'none',
+                minWidth: '160px', // increased min width
+                letterSpacing: '0.5px',
+                marginBottom: '8px',
+                marginTop: '8px',
+                display: 'inline-block',
+              }}
               onClick={handleBookNow}
             >
               Book Now

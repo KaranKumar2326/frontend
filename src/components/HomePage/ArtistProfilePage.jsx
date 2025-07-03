@@ -536,13 +536,88 @@ const ArtistProfilePage = () => {
                   <input className="artist-profile-input" type="text" placeholder="e.g. Mumbai, Delhi, Online, etc." value={isEditing ? editArtist?.preferredLocation : artist.preferredLocation} readOnly={!isEditing} onChange={e => handleInputChange('preferredLocation', e.target.value)} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
-                  {!isEditing && <button className="artist-profile-edit-btn" onClick={handleEdit}>Edit</button>}
-                  {isEditing && <button className="artist-profile-save-btn" onClick={handleSave}>Save</button>}
-                  {isEditing && <button className="artist-profile-cancel-btn" onClick={() => {
-                    setIsEditing(false);
-                    setTempSelectedGenres([...selectedGenres]);
-                    setTempSelectedInstruments([...selectedInstruments]);
-                  }}>Cancel</button>}
+                  {!isEditing && (
+                    <button
+                      className="artist-profile-edit-btn"
+                      style={{
+                        background: '#6c2bd9',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '40px',
+                        padding: '12px 32px',
+                        fontSize: '1.08rem',
+                        fontWeight: 700,
+                        boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s, box-shadow 0.2s',
+                        outline: 'none',
+                        minWidth: '152px',
+                        letterSpacing: '0.5px',
+                        marginBottom: '8px',
+                        marginTop: '8px',
+                        display: 'inline-block',
+                      }}
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {isEditing && (
+                    <button
+                      className="artist-profile-save-btn"
+                      style={{
+                        background: '#6c2bd9',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '40px',
+                        padding: '12px 32px',
+                        fontSize: '1.08rem',
+                        fontWeight: 700,
+                        boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s, box-shadow 0.2s',
+                        outline: 'none',
+                        minWidth: '152px',
+                        letterSpacing: '0.5px',
+                        marginBottom: '8px',
+                        marginTop: '8px',
+                        display: 'inline-block',
+                      }}
+                      onClick={handleSave}
+                    >
+                      Save
+                    </button>
+                  )}
+                  {isEditing && (
+                    <button
+                      className="artist-profile-cancel-btn"
+                      style={{
+                        background: '#fff',
+                        color: '#6c2bd9',
+                        border: '2px solid #6c2bd9',
+                        borderRadius: '40px',
+                        padding: '12px 32px',
+                        fontSize: '1.08rem',
+                        fontWeight: 700,
+                        boxShadow: '0 4px 12px rgba(108,43,217,0.08)',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s, box-shadow 0.2s',
+                        outline: 'none',
+                        minWidth: '152px',
+                        letterSpacing: '0.5px',
+                        marginBottom: '8px',
+                        marginTop: '8px',
+                        display: 'inline-block',
+                      }}
+                      onClick={() => {
+                        setIsEditing(false);
+                        setTempSelectedGenres([...selectedGenres]);
+                        setTempSelectedInstruments([...selectedInstruments]);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  )}
                 </div>
               </>
             )}

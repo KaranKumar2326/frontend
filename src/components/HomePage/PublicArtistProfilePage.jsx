@@ -168,7 +168,28 @@ export default function PublicArtistProfilePage() {
               </Box>
               {/* Edit Profile Button - right */}
               <Box style={{ marginLeft: 32, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                <button className="artist-profile-book-btn" onClick={() => navigate(`/ArtistProfilePage/${_id}`)}>
+                <button
+                  className="artist-profile-book-btn"
+                  style={{
+                    background: '#6c2bd9',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '40px',
+                    padding: '12px 32px', // match Book Now button size
+                    fontSize: '1.08rem',
+                    fontWeight: 700,
+                    boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s, box-shadow 0.2s',
+                    outline: 'none',
+                    minWidth: '160px',
+                    letterSpacing: '0.5px',
+                    marginBottom: '8px',
+                    marginTop: '8px',
+                    display: 'inline-block',
+                  }}
+                  onClick={() => navigate(`/ArtistProfilePage/${_id}`)}
+                >
                   Edit Profile
                 </button>
                 {/* Social Media Links */}

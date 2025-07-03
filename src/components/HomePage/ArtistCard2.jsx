@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/system';
+import myImage from "../../public/defaultpic.png"; // Default image for artists without a photo
 
 // Styled components
 const ArtistCardContainer = styled(Card)(({ theme }) => ({
@@ -117,13 +118,11 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
           <ArtistPhoto
             component="img"
             image={
-              getImageSrc(artist.imageUrl) ||
-              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-            }
+              getImageSrc(artist.imageUrl) ||myImage   }
             alt={artist.stageName}
             onError={e => { 
               e.target.onerror = null; 
-              e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; 
+              e.target.src = myImage; 
             }}
           />
           <Box sx={{
@@ -261,11 +260,14 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               size="small"
               onClick={() => navigate(`/public-artist/${artist._id || artist.id}`)}
               sx={{
-                borderRadius: '8px',
+                borderRadius: '40px', // full semicircle on both sides
                 textTransform: 'none',
                 fontWeight: 500,
-                padding: '8px 16px',
+                padding: '6px 18px',
+                minWidth: '100px',
+                fontSize: '0.85rem',
                 backgroundColor: '#6c2bd9',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                 '&:hover': {
                   backgroundColor: '#5a1fc7'
                 }

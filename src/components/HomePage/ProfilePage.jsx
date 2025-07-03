@@ -30,33 +30,50 @@ const editBtnStyle = {
   background: '#6c2bd9', 
   color: '#fff', 
   border: 'none', 
-  borderRadius: 8, 
-  padding: '0.7rem 1.5rem', 
-  fontWeight: 600, 
-  fontSize: '1rem', 
-  cursor: 'pointer' 
+  borderRadius: '40px', 
+  padding: '12px 32px', 
+  fontWeight: 700, 
+  fontSize: '1.08rem', 
+  cursor: 'pointer', 
+  boxShadow: '0 4px 12px rgba(108,43,217,0.12)', 
+  minWidth: '152px', 
+  letterSpacing: '0.5px', 
+  marginBottom: '8px', 
+  marginTop: '8px', 
+  display: 'inline-block',
 };
 
 const saveBtnStyle = { 
-  background: '#fff', 
-  color: '#6c2bd9', 
-  border: '2px solid #6c2bd9', 
-  borderRadius: 8, 
-  padding: '0.7rem 1.5rem', 
-  fontWeight: 600, 
-  fontSize: '1rem', 
-  cursor: 'pointer' 
+  background: '#6c2bd9',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '40px',
+  padding: '12px 32px',
+  fontWeight: 700,
+  fontSize: '1.08rem',
+  cursor: 'pointer',
+  boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+  minWidth: '152px',
+  letterSpacing: '0.5px',
+  marginBottom: '8px',
+  marginTop: '8px',
+  display: 'inline-block',
 };
 
 const cancelBtnStyle = { 
   background: '#fff', 
   color: '#d92b2b', 
   border: '2px solid #d92b2b', 
-  borderRadius: 8, 
-  padding: '0.7rem 1.5rem', 
-  fontWeight: 600, 
-  fontSize: '1rem', 
-  cursor: 'pointer' 
+  borderRadius: '40px', 
+  padding: '12px 32px', 
+  fontWeight: 700, 
+  fontSize: '1.08rem', 
+  cursor: 'pointer', 
+  minWidth: '152px', 
+  letterSpacing: '0.5px', 
+  marginBottom: '8px', 
+  marginTop: '8px', 
+  display: 'inline-block',
 };
 
 // Security questions
@@ -826,7 +843,12 @@ const ProfilePage = ({ onProfileUpdate }) => {
           ))}
           {securityError && <div style={{ color: 'red' }}>{securityError}</div>}
           {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
-          <button type="submit" style={{ ...saveBtnStyle, marginTop: 16 }}>Save Security Questions</button>
+          <button
+            type="submit"
+            style={{ ...saveBtnStyle, marginTop: 16 }}
+          >
+            Save Security Questions
+          </button>
         </form>
       </div>
       
