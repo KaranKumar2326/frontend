@@ -25,7 +25,20 @@ export default function CallToAction() {
           </p>
           <div className="cta-buttons">
             <Link href="/artists">
-              <button className="cta-button primary-btn">
+              <button
+                className="cta-button primary-btn semicircle-btn"
+                style={{
+                  fontWeight: 'bold',
+                  padding: '20px 60px',
+                  fontSize: '1rem',
+                  borderRadius: '40px', // full semicircle on both sides
+                  backgroundColor: '#6c2bd9',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                }}
+              >
                 Browse Musicians
               </button>
             </Link>

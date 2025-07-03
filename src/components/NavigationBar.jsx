@@ -129,7 +129,8 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     setIsMobileMenuOpen(false);
   };
 
-  const isArtistProfilePage = location.pathname.startsWith('/artist-profile/');
+  const isArtistProfilePage = location.pathname.toLowerCase().includes('artistprofilepage') || location.pathname.startsWith('/artist-profile/');
+  const isPublicArtistProfilePage = location.pathname.startsWith('/publicartistprofilepage');
   const isLoginOrSignup = location.pathname === '/login' || location.pathname === '/signup';
 
   const getImageSrc = (url) => {
@@ -318,8 +319,14 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                 />
                 {openProfile && (
                   <div className="profile-dropdown">
-                    <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
-                      {showHomeInDropdown ? 'Home' : 'My Profile'}
+                    <div className="dropdown-item" onClick={
+                      (isArtistProfilePage || isPublicArtistProfilePage)
+                        ? handleHomeNavigation
+                        : (showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation)
+                    }>
+                      {(isArtistProfilePage || isPublicArtistProfilePage)
+                        ? 'Home'
+                        : (showHomeInDropdown ? 'Home' : 'My Profile')}
                     </div>
                     <div className="dropdown-item">Settings</div>
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
@@ -345,9 +352,25 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
          !isArtistProfilePage && !isLoggedIn && (
           <>
             <a className="nav-link" href="#featured-artists" onClick={HandleArtistClick}>Artists</a>
-            <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
+            <button
+              className="nav-button primary semicircle-btn"
+              style={{
+                borderRadius: '40px', // full semicircle on both sides
+              }}
+              onClick={() => handleNavigation('/all-artists')}
+            >
+              Hire an Artist
+            </button>
             {hideProfile && (
-              <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+              <button
+                className="nav-button secondary semicircle-btn"
+                style={{
+                  borderRadius: '40px', // full semicircle on both sides
+                }}
+                onClick={() => handleNavigation('/signup')}
+              >
+                Sign Up
+              </button>
             )}
           </>
         )}
@@ -362,11 +385,16 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                   className="profile-pic"
                   alt="Profile"
                 />
-
                 {openProfile && (
                   <div className="profile-dropdown">
-                    <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
-                      {showHomeInDropdown ? 'Home' : 'My Profile'}
+                    <div className="dropdown-item" onClick={
+                      (isArtistProfilePage || isPublicArtistProfilePage)
+                        ? handleHomeNavigation
+                        : (showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation)
+                    }>
+                      {(isArtistProfilePage || isPublicArtistProfilePage)
+                        ? 'Home'
+                        : (showHomeInDropdown ? 'Home' : 'My Profile')}
                     </div>
                     <div className="dropdown-item">Settings</div>
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
@@ -379,7 +407,15 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
 
         {/* Show Sign Up button for desktop if not logged in and not on login/signup/home */}
         {!isLoginOrSignup && !hideProfile && !isMobileMenuOpen && !isLoggedIn && (
-          <button className="nav-button secondary desktop-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+          <button
+            className="nav-button secondary desktop-signup semicircle-btn"
+            style={{
+              borderRadius: '40px', // full semicircle on both sides
+            }}
+            onClick={() => handleNavigation('/signup')}
+          >
+            Sign Up
+          </button>
         )}
       </div>
     </div>

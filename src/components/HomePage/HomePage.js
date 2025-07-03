@@ -100,14 +100,36 @@ const HomePage = () => {
                 </div>
                 <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
                   <button 
-                    className="P" 
-                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                    className="P semicircle-btn" 
+                    style={{
+                      fontWeight:'bold', 
+                      padding: '20px 60px', // increased width to match the other button visually
+                      fontSize: '1rem', 
+                      borderRadius: '40px', // full semicircle on both sides
+                      backgroundColor: '#6c2bd9', 
+                      color: 'white', 
+                      cursor: 'pointer', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }}
                     onClick={handleHireArtistClick}
                   >
                     Hire an Artist
                   </button>
-                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color :'#6c2bd9' , border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                  onClick={JoinAsArtist}>
+                  <button 
+                    className="Y semicircle-btn" 
+                    style={{
+                      fontWeight:'bold', 
+                      padding: '20px 40px', 
+                      fontSize: '1rem', 
+                      borderRadius: '40px', // full semicircle on both sides
+                      backgroundColor: '#f0e11a',
+                      color :'#6c2bd9',
+                      border: '3px solid #f0e11a',
+                      cursor: 'pointer', 
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onClick={JoinAsArtist}
+                  >
                     Join as an Artist
                   </button>
                 </div>
