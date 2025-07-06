@@ -13,10 +13,11 @@ const Footer = () => (
             <span className="footer-brand-name">Musical Meet</span>
           </div>
           <p className="footer-description">
-            Connecting musical talent with event planners and individuals seeking exceptional live performances.
+            <span className="footer-desc-desktop">Connecting musical talent with event planners and individuals seeking exceptional live performances.</span>
+            <span className="footer-desc-mobile">Connecting through music</span>
           </p>
         </div>
-
+        <div className='st'>
         {/* Quick Links */}
         <div className="footer-section">
           <h3 className="footer-heading">Quick Links</h3>
@@ -35,6 +36,7 @@ const Footer = () => (
             <li><a href="/faq" className="footer-link">FAQ for Artists</a></li>
             <li><a href="/#testimonials" className="footer-link">Testimonials</a></li>
           </ul>
+        </div>
         </div>
 
         {/* Contact */}
