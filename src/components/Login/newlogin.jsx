@@ -413,22 +413,7 @@ const NewLogin = () => {
       <div className='newlogin-wrapper'>
         {/* Top left brand text */}
         <div
-          style={{
-            position: 'absolute',
-            top: 24,
-            left: 32,
-            zIndex: 1100,
-            fontFamily: 'Playfair Display, serif',
-            fontWeight: 700,
-            fontSize: '2.8rem',
-            color: '#6c2bd9',
-            letterSpacing: '1px',
-            userSelect: 'none',
-            cursor: 'pointer',
-            pointerEvents: 'auto',
-            transition: 'background 0.2s',//bg
-            display: 'inline-block',//bg
-          }}
+          className="musical-meet-brand"
           onClick={() => navigate('/')}
           title="Go to Home"
         >
