@@ -1,3 +1,102 @@
+/* Reduce font size for 'create account as' and 'sign in as' on all screens */
+.newlogin-wrapper .container small {
+  font-size: 0.93rem !important;
+}
+@media (max-width: 600px) {
+  .newlogin-wrapper .container small {
+    font-size: 0.82rem !important;
+  }
+}
+@media (max-width: 600px) {
+  .newlogin-wrapper .container button,
+  .newlogin-wrapper .role-select button {
+    font-size: 13px !important;
+    padding: 7px 16px !important;
+    border-radius: 6px !important;
+    min-width: 80px !important;
+    margin-bottom: 6px !important;
+  }
+  .newlogin-wrapper .container button {
+    margin-top: 8px !important;
+    padding: 9px 18px !important;
+    font-size: 14px !important;
+    border-radius: 7px !important;
+  }
+  .newlogin-wrapper .role-select button {
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+    margin-right: 6px !important;
+    margin-bottom: 0 !important;
+  }
+}
+/* Hide toggle panel (purple design) and show only sign-in/up form on mobile */
+@media (max-width: 600px) {
+  .newlogin-wrapper .toggle-container,
+  .newlogin-wrapper .toggle {
+    display: none !important;
+  }
+  .newlogin-wrapper .container {
+    width: 88vw !important;
+    max-width: 320px !important;
+    min-width: 0 !important;
+    border-radius: 18px !important;
+    box-shadow: 0 4px 16px 0 rgba(108, 43, 217, 0.10) !important;
+    margin: 6vh auto 0 auto !important;
+    min-height: unset !important;
+    padding: 0 0 18px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .newlogin-wrapper .form-container.sign-in,
+  .newlogin-wrapper .form-container.sign-up {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    position: relative !important;
+    z-index: 2;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .newlogin-wrapper .container.active .sign-in {
+    transform: none !important;
+  }
+  .newlogin-wrapper .container.active .sign-up {
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: 2 !important;
+    animation: none !important;
+  }
+}
+/* Brand text top left, responsive for mobile */
+.musical-meet-brand {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  z-index: 1100;
+  font-family: 'Playfair Display' !important;
+  font-weight: 700;
+  font-size: 2.8rem;
+  color: #6c2bd9;
+  letter-spacing: 1px;
+  user-select: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.2s, font-size 0.2s;
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .musical-meet-brand {
+    top: 4px;
+    left: 12px;
+    font-size: 1.6rem;
+  }
+}
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 

@@ -24,6 +24,7 @@ const getImageSrc = (url) => {
   if (match && match[1]) {
     directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
   }
+  // Always proxy through backend for CORS
   return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
@@ -247,12 +248,15 @@ const ArtistCard = ({ artist, priority = 0, hidePrice = false }) => {
               size="small"
               onClick={() => navigate(`/public-artist/${artist._id || artist.id}`)}
               sx={{
-                borderRadius: '8px',
+                borderRadius: '40px', // full semicircle on both sides
                 textTransform: 'none',
                 fontWeight: 500,
-                px: 2,
-                py: 1,
+                px: 2.5,
+                py: 0.7,
                 bgcolor: '#6c2bd9',
+                minWidth: '100px',
+                fontSize: '0.85rem',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                 '&:hover': {
                   bgcolor: '#5a24b8'
                 }

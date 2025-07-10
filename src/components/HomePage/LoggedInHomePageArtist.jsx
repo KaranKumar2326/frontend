@@ -165,18 +165,54 @@ function LoggedInHomePageArtist() {
             </motion.p>
             <div className="hero-buttons">
               <motion.button
-                className="btn-primary"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleHireArtistClick}
+                style={{
+                  background: '#6c2bd9',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '40px',
+                  padding: '14px 38px',
+                  fontSize: '1.15rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
+                  marginRight: '18px',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s, box-shadow 0.2s',
+                  outline: 'none',
+                  minWidth: '210px',
+                  letterSpacing: '0.5px',
+                  marginBottom: '8px',
+                  marginTop: '8px',
+                  display: 'inline-block',
+                }}
               >
                 Host a Jamming Session
               </motion.button>
               <motion.button
-                className="btn-secondary"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCollaboration}
+                style={{
+                  background: '#f0e11a',
+                  color: '#6c2bd9',
+                  border: 'none',
+                  borderRadius: '40px',
+                  padding: '14px 38px',
+                  fontSize: '1.15rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 12px rgba(108,43,217,0.10)',
+                  marginRight: '0',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s, box-shadow 0.2s',
+                  outline: 'none',
+                  minWidth: '210px',
+                  letterSpacing: '0.5px',
+                  marginBottom: '8px',
+                  marginTop: '8px',
+                  display: 'inline-block',
+                }}
               >
                 Collaborate with Artists
               </motion.button>
