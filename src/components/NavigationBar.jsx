@@ -111,6 +111,17 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     navigate('/login');
   };
 
+  const handleuserrequest = () => {
+    if (userRole === 'artist') {
+      navigate('/eventdashboard');
+    }
+    else{
+      navigate('/userrequests');
+    }
+    
+
+  };
+
   const HandleArtistClick = (e) => {
     e.preventDefault();
     const section = document.getElementById('featured-artists');
@@ -321,6 +332,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                     <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
                       {showHomeInDropdown ? 'Home' : 'My Profile'}
                     </div>
+                    <div className='dropdown-item' onClick={handleuserrequest}>My Event Requests</div>
                     <div className="dropdown-item">Settings</div>
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
                   </div>
@@ -331,9 +343,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         )}
 
         {/* Show Sign Up button if not logged in and not on login/signup/home */}
-        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && !isLoggedIn && (
-          <button className="nav-button secondary mobile-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
-        )}
+       
 
         <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
         <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
@@ -345,6 +355,9 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
          !isArtistProfilePage && !isLoggedIn && (
           <>
             <a className="nav-link" href="#featured-artists" onClick={HandleArtistClick}>Artists</a>
+             {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && !isLoggedIn && (
+          <button className="nav-button secondary mobile-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+        )}
             <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
             {hideProfile && (
               <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
@@ -368,6 +381,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                     <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
                       {showHomeInDropdown ? 'Home' : 'My Profile'}
                     </div>
+                    <div className='dropdown-item' onClick={handleuserrequest}>My Event Requests</div>
                     <div className="dropdown-item">Settings</div>
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
                   </div>

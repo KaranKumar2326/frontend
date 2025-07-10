@@ -233,7 +233,8 @@ const ArtistCard = ({ artist, priority = 0, hidePrice = false }) => {
                 fontSize: '1rem'
               }}>
                 {artist.pricing && artist.pricingUnit ? (
-                  `₹${artist.pricing}/${artist.pricingUnit}`
+                  // `₹${artist.pricing}/${artist.pricingUnit}`
+                  `₹${artist.pricing}/Session`
                 ) : (
                   <span style={{ color: theme.palette.text.disabled, fontStyle: 'italic' }}>
                     Not listed

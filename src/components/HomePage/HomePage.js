@@ -86,8 +86,23 @@ const HomePage = () => {
       <NavigationBar hideProfile /> {/* Adding the NavigationBar component with hideProfile prop */}
       <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', margin: '0 auto' , padding:'0px'}}>
         {/* <div className='hero-container' style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}> */}
-          <div className="background-image">
-          </div>
+          <video 
+    autoPlay 
+    loop 
+    muted 
+    style={{
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      zIndex: 0,
+      top: 0,
+      left: 0
+    }}
+  >
+    <source src="https://dm0qx8t0i9gc9.cloudfront.net/watermarks/video/EeN01lAOxijss6byx/drummer-playing-of-drums-during-a-concert-on-special-event_ragk29dq__d__9009c331ec6ed07cef8c950639de7d51__P360.mp4" />
+    Your browser does not support the video tag.
+  </video>
             <header className="hero-section" style={{ zIndex: 1, height:'100vh', padding: '20px', boxSizing: 'border-box', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
               <div className='content'>
                 <div>
@@ -98,19 +113,68 @@ const HomePage = () => {
                   Join us in celebrating the joy of music and connecting with artists from around the world.
                   </p>
                 </div>
-                <div className="button-container" style={{ display: 'flex', gap: '10px', justifyContent: 'left' }}>
-                  <button 
-                    className="P" 
-                    style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#6c2bd9', color: 'white', border: '3px',borderColor:'#f0e11a', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                    onClick={handleHireArtistClick}
-                  >
-                    Hire an Artist
-                  </button>
-                  <button className="Y" style={{fontWeight:'bold', padding: '20px 40px', fontSize: '1rem', borderRadius: '5px', backgroundColor: '#f0e11a',color :'#6c2bd9' , border: 'none', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                  onClick={JoinAsArtist}>
-                    Join as an Artist
-                  </button>
-                </div>
+                <div 
+  className="button-container" 
+  style={{ 
+    display: 'flex', 
+    gap: '10px', 
+    justifyContent: 'left',
+    flexWrap: 'wrap' // Allows buttons to wrap on small screens
+  }}
+>
+  <button
+    className="P"
+    style={{
+      fontWeight: 'bold',
+      padding: 'clamp(12px, 2vw, 20px) clamp(20px, 4vw, 40px)', // Responsive padding
+      fontSize: 'clamp(0.9rem, 2vw, 1rem)', // Responsive font size
+      borderRadius: '40px',
+      backgroundColor: '#6c2bd9',
+      color: 'white',
+      border: 'none',
+      cursor: 'pointer',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      minWidth: 'min(160px, 100%)', // Adapts to container width on small screens
+      letterSpacing: '0.5px',
+      marginBottom: '8px',
+      marginTop: '8px',
+      display: 'inline-block',
+      whiteSpace: 'nowrap', // Prevents text from wrapping
+      transition: 'transform 0.2s, box-shadow 0.2s', // Add hover effect
+    }}
+    onClick={handleHireArtistClick}
+    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+  >
+    Hire an Artist
+  </button>
+  <button
+    className="Y"
+    style={{
+      fontWeight: 'bold',
+      padding: 'clamp(12px, 2vw, 20px) clamp(20px, 4vw, 40px)', // Responsive padding
+      fontSize: 'clamp(0.9rem, 2vw, 1rem)', // Responsive font size
+      borderRadius: '40px',
+      backgroundColor: '#f0e11a',
+      color: '#6c2bd9',
+      border: 'none',
+      cursor: 'pointer',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      minWidth: 'min(160px, 100%)', // Adapts to container width on small screens
+      letterSpacing: '0.5px',
+      marginBottom: '8px',
+      marginTop: '8px',
+      display: 'inline-block',
+      whiteSpace: 'nowrap', // Prevents text from wrapping
+      transition: 'transform 0.2s, box-shadow 0.2s', // Add hover effect
+    }}
+    onClick={JoinAsArtist}
+    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+  >
+    Jamming sessions near you
+  </button>
+</div>
               </div>
             </header>
         {/* </div> */}

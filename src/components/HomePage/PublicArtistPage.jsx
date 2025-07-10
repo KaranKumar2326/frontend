@@ -114,137 +114,260 @@ const BookingFormPopup = ({ open, onClose, artist, onSubmit }) => {
     onSubmit(bookingData);
   };
 
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth className="booking-form">
-      <DialogTitle>
-        <Typography variant="h5" component="div">
-          Book {artist?.stageName}
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
-          {artist?.pricing && `₹${artist.pricing} per ${artist.pricingUnit}`}
-        </Typography>
-      </DialogTitle>
-      <form onSubmit={handleSubmit}>
-        <DialogContent dividers>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Event Type</InputLabel>
-            <Select
-              name="eventType"
-              value={formData.eventType}
-              onChange={handleChange}
-              label="Event Type"
-              required
-            >
-              {eventTypes.map(type => (
-                <MenuItem key={type} value={type}>{type}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <TextField
-            fullWidth
-            margin="normal"
-            name="description"
-            label="Event Description"
-            value={formData.description}
+ return (
+  <Dialog 
+    open={open} 
+    onClose={onClose} 
+    maxWidth="sm" 
+    fullWidth 
+    sx={{
+      '& .MuiPaper-root': {
+        borderRadius: '12px',
+        background: 'linear-gradient(145deg, #f8f9fa, #ffffff)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+      }
+    }}
+  >
+    <DialogTitle sx={{
+      background: 'linear-gradient(45deg, #6a11cb 0%, #2575fc 100%)',
+      color: 'white',
+      padding: '20px 24px',
+      borderTopLeftRadius: '8px',
+      borderTopRightRadius: '8px'
+    }}>
+      <Typography variant="h5" component="div" sx={{ fontWeight: 700 }}>
+        Book {artist?.stageName}
+      </Typography>
+      <Typography variant="subtitle1" sx={{ color: 'rgba(255,255,255,0.8)', mt: 0.5 }}>
+        {artist?.pricing && `₹${artist.pricing} per ${artist.pricingUnit}`}
+      </Typography>
+    </DialogTitle>
+    <form onSubmit={handleSubmit}>
+      <DialogContent dividers sx={{ padding: '24px', backgroundColor: '#f8f9fa' }}>
+        <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
+          <InputLabel sx={{ color: '#495057', fontWeight: 500 }}>Event Type</InputLabel>
+          <Select
+            name="eventType"
+            value={formData.eventType}
             onChange={handleChange}
-            multiline
-            rows={4}
+            label="Event Type"
             required
-          />
-
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-              <DatePicker
-                label="Event Date"
-                value={formData.date}
-                onChange={handleDateChange}
-                renderInput={(params) => <TextField {...params} fullWidth required />}
-                minDate={new Date()}
-              />
-              <TimePicker
-                label="Start Time"
-                value={formData.time}
-                onChange={handleTimeChange}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-              />
-            </Box>
-          </LocalizationProvider>
-
-          <TextField
-            fullWidth
-            margin="normal"
-            name="location"
-            label="Event Location"
-            value={formData.location}
-            onChange={handleChange}
-            required
-          />
-
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Expected Crowd Size</InputLabel>
-            <Select
-              name="crowdSize"
-              value={formData.crowdSize}
-              onChange={handleChange}
-              label="Expected Crowd Size"
-              required
-            >
-              {crowdSizes.map(size => (
-                <MenuItem key={size} value={size}>{size}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Crowd Type</InputLabel>
-            <Select
-              name="crowdType"
-              value={formData.crowdType}
-              onChange={handleChange}
-              label="Crowd Type"
-              required
-            >
-              {crowdTypes.map(type => (
-                <MenuItem key={type} value={type}>{type}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <TextField
-            fullWidth
-            margin="normal"
-            name="amount"
-            label="Your amount"
-            type="number"
-            value={formData.amount}
-            onChange={handleChange}
-            InputProps={{
-              startAdornment: <Typography>$</Typography>,
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#dee2e6',
+                borderRadius: '8px'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#6a11cb'
+              }
             }}
-            required
-          />
+          >
+            {eventTypes.map(type => (
+              <MenuItem key={type} value={type} sx={{ color: '#495057' }}>{type}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-          <TextField
-            fullWidth
-            margin="normal"
-            name="specialRequirements"
-            label="Special Requirements"
-            value={formData.specialRequirements}
+        <TextField
+          fullWidth
+          margin="normal"
+          name="description"
+          label="Event Description"
+          value={formData.description}
+          onChange={handleChange}
+          multiline
+          rows={4}
+          required
+          sx={{ 
+            mb: 3,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': {
+                borderColor: '#6a11cb'
+              }
+            }
+          }}
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 2, 
+            mt: 2,
+            mb: 3,
+            '& .MuiTextField-root': {
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                '&:hover fieldset': {
+                  borderColor: '#6a11cb'
+                }
+              }
+            }
+          }}>
+            <DatePicker
+              label="Event Date"
+              value={formData.date}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} fullWidth required />}
+              minDate={new Date()}
+            />
+            <TimePicker
+              label="Start Time"
+              value={formData.time}
+              onChange={handleTimeChange}
+              renderInput={(params) => <TextField {...params} fullWidth />}
+            />
+          </Box>
+        </LocalizationProvider>
+
+        <TextField
+          fullWidth
+          margin="normal"
+          name="location"
+          label="Event Location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+          sx={{ 
+            mb: 3,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': {
+                borderColor: '#6a11cb'
+              }
+            }
+          }}
+        />
+
+        <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
+          <InputLabel sx={{ color: '#495057', fontWeight: 500 }}>Expected Crowd Size</InputLabel>
+          <Select
+            name="crowdSize"
+            value={formData.crowdSize}
             onChange={handleChange}
-            multiline
-            rows={2}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained" color="primary">
-            Submit Request
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
-  );
+            label="Expected Crowd Size"
+            required
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#dee2e6',
+                borderRadius: '8px'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#6a11cb'
+              }
+            }}
+          >
+            {crowdSizes.map(size => (
+              <MenuItem key={size} value={size} sx={{ color: '#495057' }}>{size}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
+          <InputLabel sx={{ color: '#495057', fontWeight: 500 }}>Crowd Type</InputLabel>
+          <Select
+            name="crowdType"
+            value={formData.crowdType}
+            onChange={handleChange}
+            label="Crowd Type"
+            required
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#dee2e6',
+                borderRadius: '8px'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#6a11cb'
+              }
+            }}
+          >
+            {crowdTypes.map(type => (
+              <MenuItem key={type} value={type} sx={{ color: '#495057' }}>{type}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          fullWidth
+          margin="normal"
+          name="amount"
+          label="Your amount"
+          type="number"
+          value={formData.amount}
+          onChange={handleChange}
+          InputProps={{
+            startAdornment: <Typography sx={{ color: '#495057', mr: 1 }}>₹ </Typography>,
+          }}
+          required
+          sx={{ 
+            mb: 3,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': {
+                borderColor: '#6a11cb'
+              }
+            }
+          }}
+        />
+
+        <TextField
+          fullWidth
+          margin="normal"
+          name="specialRequirements"
+          label="Special Requirements"
+          value={formData.specialRequirements}
+          onChange={handleChange}
+          multiline
+          rows={2}
+          sx={{ 
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': {
+                borderColor: '#6a11cb'
+              }
+            }
+          }}
+        />
+      </DialogContent>
+      <DialogActions sx={{ 
+        padding: '16px 24px', 
+        backgroundColor: '#f8f9fa',
+        borderBottomLeftRadius: '8px',
+        borderBottomRightRadius: '8px'
+      }}>
+        <Button 
+          onClick={onClose} 
+          sx={{
+            color: '#6c757d',
+            fontWeight: 600,
+            '&:hover': {
+              backgroundColor: 'rgba(108,117,125,0.1)'
+            }
+          }}
+        >
+          Cancel
+        </Button>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          sx={{
+            background: 'linear-gradient(45deg, #6a11cb 0%, #2575fc 100%)',
+            borderRadius: '8px',
+            padding: '8px 24px',
+            fontWeight: 600,
+            boxShadow: '0 4px 14px rgba(106,17,203,0.3)',
+            '&:hover': {
+              background: 'linear-gradient(45deg, #5a0cb1 0%, #1a65e8 100%)',
+              boxShadow: '0 6px 20px rgba(106,17,203,0.4)'
+            }
+          }}
+        >
+          Submit Request
+        </Button>
+      </DialogActions>
+    </form>
+  </Dialog>
+);
 };
 
 export default function PublicArtistPage() {
@@ -388,160 +511,263 @@ export default function PublicArtistPage() {
   if (!artist) return <Alert severity="error">Artist not found</Alert>;
 
   return (
-    <>
-      <NavigationBar />
-      <Box className="public-artist-bg">
-        {/* Banner Image */}
-        <Box className="public-artist-banner">
-          <img
-            src={getImageSrc(artist.coverImage) || myBg}
-            alt={artist.stageName}
-            className="public-artist-banner-img"
-            onError={e => { e.target.onerror = null; e.target.src =myBg; }}
-          />
-        </Box>
+  <>
+    <NavigationBar />
+    <Box className="public-artist-bg">
+      {/* Banner Image */}
+      <Box className="public-artist-banner">
+        <img
+          src={getImageSrc(artist.coverImage) || myBg}
+          alt={artist.stageName}
+          className="public-artist-banner-img"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = myBg;
+          }}
+        />
+      </Box>
 
-        {/* Main Content Row: Profile Info Card + Other Artists */}
-        <Box className="public-artist-main-row">
-          <Box className="public-artist-info-card" style={{ position: 'relative', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
-            {/* Profile Pic + Rating (left) */}
-            <Box className="public-artist-pic" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 200 }}>
-              <img
-                src={getImageSrc(artist.imageUrl) || myImage}
-                alt={artist.stageName}
-                className="public-artist-pic-img"
-                onError={e => { e.target.onerror = null; e.target.src = myImage; }}
-              />
-              <div className="public-artist-rating-row" style={{ marginTop: '1rem' }}>
-                {renderStars(Number(artist.rating))}
-                <span className="public-artist-rating">{artist.rating}</span>
-              </div>
-            </Box>
-            {/* Name (center, shifted right/up) and Price below */}
-            <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', position: 'relative', left: 260, top: -10 }}>
-              <div className="public-artist-name">{artist.stageName}</div>
-              <div style={{ fontFamily: 'Montserrat, Inter, Arial, sans-serif', fontWeight: 600, color: '#6c2bd9', fontSize: '1.1rem', marginTop: 4 }}>
-                {artist.pricing && artist.pricingUnit ? (
-                  `₹${artist.pricing} / ${artist.pricingUnit}`
-                ) : (
-                  <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
-                )}
-              </div>
-            </Box>
-            {/* Book Now button (right, absolute) */}
-            <button 
-              className="public-artist-book-btn" 
-              style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 2 }}
-              onClick={handleBookNow}
-            >
-              Book Now
-            </button>
-            {/* Social Media Links below Book Now */}
-            {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
-              <div style={{ position: 'absolute', top: '5.5rem', right: '2rem', zIndex: 1, display: 'flex', flexDirection: 'row', gap: 18, justifyContent: 'flex-end' }}>
-                {artist.socialMediaLinks.map((link, idx) => {
-                  const platformIcons = {
-                    Instagram: insta,
-                    Spotify: spotify,
-                    'Apple Music': apple,
-                    SoundCloud: SoundCloud,
-                    YouTube: youtube,
-                  };
-                  const iconSrc = platformIcons[link.platform]; // No fallback to linkIcon
-                  return (
-                    <a
-                      key={idx}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 44,
-                        height: 44,
-                        borderRadius: '50%',
-                        background: '#fff',
-                        boxShadow: '0 2px 8px #e0e0e0',
-                        padding: 6,
-                        border: '2px solid #eee',
-                        transition: 'box-shadow 0.2s, border 0.2s',
-                        margin: 0
-                      }}
-                      title={link.platform}
-                    >
-                      {iconSrc && <img src={iconSrc} alt={link.platform} style={{ width: 28, height: 28, objectFit: 'contain', borderRadius: '50%' }} />}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
+      {/* Main Content Row: Profile Info Card + Other Artists */}
+      <Box className="public-artist-main-row">
+        <Box
+          className="public-artist-info-card"
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' }, // Stack on small screens, row on medium and up
+            alignItems: { xs: 'center', md: 'flex-start' }, // Center items on small, flex-start on medium and up
+            justifyContent: 'flex-start',
+            padding: { xs: '1rem', md: '2rem' }, // Adjust padding for smaller screens
+            gap: { xs: '1rem', md: 'unset' }, // Add gap when stacked
+          }}
+        >
+          {/* Profile Pic + Rating (left) */}
+          <Box
+            className="public-artist-pic"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              minWidth: 200,
+              marginBottom: { xs: '1rem', md: 'unset' }, // Add margin bottom when stacked
+            }}
+          >
+            <img
+              src={getImageSrc(artist.imageUrl) || myImage}
+              alt={artist.stageName}
+              className="public-artist-pic-img"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = myImage;
+              }}
+            />
+            <div className="public-artist-rating-row" style={{ marginTop: '1rem' }}>
+              {renderStars(Number(artist.rating))}
+              <span className="public-artist-rating">{artist.rating}</span>
+            </div>
           </Box>
-        </Box>
-
-        {/* Tabs */}
-        <Box className="public-artist-tabs-row">
-          {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
-            <Box
-              key={tab}
-              className={`public-artist-tab${selectedTab === idx ? ' selected' : ''}`}
-              onClick={() => setSelectedTab(idx)}
+          {/* Name (center, shifted right/up) and Price below */}
+          <br/>
+          <br/>
+          <br/>
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: { xs: 'center', md: 'flex-start' }, // Center on small, flex-start on medium and up
+              position: 'relative',
+              left: { xs: 0, md: 260 }, // Remove left shift on small screens
+              top: { xs: 0, md: -10 }, // Remove top shift on small screens
+              textAlign: { xs: 'center', md: 'left' }, // Center text on small screens
+            }}
+          >
+            <div className="public-artist-name">{artist.stageName}</div>
+            <div
+              style={{
+                fontFamily: 'Montserrat, Inter, Arial, sans-serif',
+                fontWeight: 600,
+                color: '#6c2bd9',
+                fontSize: '1.1rem',
+                marginTop: 4,
+              }}
             >
-              <span className={`public-artist-tab-label${selectedTab === idx ? '' : ' unselected'}`}>{tab}</span>
-            </Box>
-          ))}
-        </Box>
-
-        {/* Tab Content */}
-        <Box className="public-artist-tab-content">
-          {selectedTab === 0 && (
-            <div className="public-artist-tab-body">{artist.description || 'No description available.'}</div>
-          )}
-          {selectedTab === 1 && (
-            <div className="public-artist-tab-body">{artist.instruments?.map(i => i.name).join(', ') || 'No instruments listed.'}</div>
-          )}
-          {selectedTab === 2 && (
-            <div className="public-artist-tab-body">
-              {artist.pricing && artist.pricingUnit
-                ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
-                : 'No booking options listed.'}
-              <br />
-              {artist.email && <span>Email: {artist.email}</span>}
-              <br />
-              {artist.phone && <span>Phone: {artist.phone}</span>}
+              {artist.pricing && artist.pricingUnit ? (
+                `₹${artist.pricing} / Session`
+              ) : (
+                <span style={{ color: '#888', fontStyle: 'italic' }}>Not listed</span>
+              )}
+            </div>
+          </Box>
+          {/* Book Now button (right, absolute) */}
+          <button
+            className="public-artist-book-btn"
+            style={{
+              position: { xs: 'static', md: 'absolute' }, // Static on small, absolute on medium and up
+              top: { xs: 'unset', md: '2rem' },
+              right: { xs: 'unset', md: '2rem' },
+              zIndex: 2,
+              marginTop: { xs: '1rem', md: 'unset' }, // Add margin top when static
+              width: { xs: '100%', md: 'auto' }, // Full width on small screens
+            }}
+            onClick={handleBookNow}
+          >
+            Book Now
+          </button>
+          {/* Social Media Links below Book Now */}
+          {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
+            <div
+              style={{
+                position: { xs: 'static', md: 'absolute' }, // Static on small, absolute on medium and up
+                top: { xs: 'unset', md: '5.5rem' },
+                right: { xs: 'unset', md: '2rem' },
+                zIndex: 1,
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 18,
+                justifyContent: { xs: 'center', md: 'flex-end' }, // Center on small, flex-end on medium and up
+                marginTop: { xs: '1rem', md: 'unset' }, // Add margin top when static
+                width: { xs: '100%', md: 'auto' }, // Full width on small screens
+                flexWrap: 'wrap', // Allow items to wrap
+              }}
+            >
+              {artist.socialMediaLinks.map((link, idx) => {
+                const platformIcons = {
+                  Instagram: insta,
+                  Spotify: spotify,
+                  'Apple Music': apple,
+                  SoundCloud: SoundCloud,
+                  YouTube: youtube,
+                };
+                const iconSrc = platformIcons[link.platform]; // No fallback to linkIcon
+                return (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 44,
+                      height: 44,
+                      borderRadius: '50%',
+                      background: '#fff',
+                      boxShadow: '0 2px 8px #e0e0e0',
+                      padding: 6,
+                      border: '2px solid #eee',
+                      transition: 'box-shadow 0.2s, border 0.2s',
+                      margin: 0,
+                    }}
+                    title={link.platform}
+                  >
+                    {iconSrc && (
+                      <img
+                        src={iconSrc}
+                        alt={link.platform}
+                        style={{ width: 28, height: 28, objectFit: 'contain', borderRadius: '50%' }}
+                      />
+                    )}
+                  </a>
+                );
+              })}
             </div>
           )}
         </Box>
-
-        {/* Booking Form Popup */}
-        <BookingFormPopup
-          open={bookingOpen}
-          onClose={() => setBookingOpen(false)}
-          artist={artist}
-          onSubmit={handleBookingSubmit}
-        />
-
-        {/* Snackbar for notifications */}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          message={snackbar.message}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          sx={{
-            '& .MuiSnackbarContent-root': {
-              backgroundColor: snackbar.severity === 'success' ? '#4caf50' : '#f44336'
-            }
-          }}
-        />
-        {/* Image Slider Section */}
-        <div className="image-slider-section">
-          <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
-          <ImageSlider media={galleryMedia} />
-        </div>
-
-        <Footer />
       </Box>
-    </>
-  );
+
+      {/* Tabs */}
+      <Box
+        className="public-artist-tabs-row"
+        sx={{
+          flexDirection: { xs: 'column', sm: 'row' }, // Stack tabs on extra small, row on small and up
+          padding: { xs: '0 1rem', md: '0 2rem' }, // Adjust padding
+          gap: { xs: '0.5rem', sm: 'unset' }, // Add gap when stacked
+        }}
+      >
+        {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
+          <Box
+            key={tab}
+            className={`public-artist-tab${selectedTab === idx ? ' selected' : ''}`}
+            onClick={() => setSelectedTab(idx)}
+            sx={{
+              width: { xs: '100%', sm: 'auto' }, // Full width on extra small, auto on small and up
+            }}
+          >
+            <span className={`public-artist-tab-label${selectedTab === idx ? '' : ' unselected'}`}>
+              {tab}
+            </span>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Tab Content */}
+      <Box className="public-artist-tab-content" sx={{ padding: { xs: '1rem', md: '2rem' } }}>
+        {selectedTab === 0 && (
+          <div className="public-artist-tab-body">
+            {artist.description || 'No description available.'}
+          </div>
+        )}
+        {selectedTab === 1 && (
+          <div className="public-artist-tab-body">
+            {artist.instruments?.map((i) => i.name).join(', ') || 'No instruments listed.'}
+          </div>
+        )}
+        {selectedTab === 2 && (
+          <div className="public-artist-tab-body">
+            {artist.pricing && artist.pricingUnit
+              ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
+              : 'No booking options listed.'}
+            <br />
+            {artist.email && <span>Email: {artist.email}</span>}
+            <br />
+            {artist.phone && <span>Phone: {artist.phone}</span>}
+          </div>
+        )}
+      </Box>
+
+      {/* Booking Form Popup */}
+      <BookingFormPopup
+        open={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        artist={artist}
+        onSubmit={handleBookingSubmit}
+      />
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{
+          '& .MuiSnackbarContent-root': {
+            backgroundColor: snackbar.severity === 'success' ? '#4caf50' : '#f44336',
+          },
+        }}
+      />
+      {/* Image Slider Section */}
+      <div className="image-slider-section" style={{ padding: { xs: '1rem', md: '2rem' } }}>
+        <h2
+          className="slider-heading"
+          style={{
+            fontWeight: 700,
+            marginBottom: '1.5rem',
+            fontSize: '2.8rem',
+            textAlign: 'center',
+            letterSpacing: '1px',
+          }}
+        >
+          Gallery
+        </h2>
+        <ImageSlider media={galleryMedia} />
+      </div>
+
+      <Footer />
+    </Box>
+  </>
+);
 }
