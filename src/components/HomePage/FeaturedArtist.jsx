@@ -11,9 +11,9 @@ const HorizontalScrollContainer = styled('div')({
   scrollSnapType: 'x mandatory',
   gap: '24px',
   padding: '24px 0',
-  scrollbarWidth: 'none', // For Firefox
+  scrollbarWidth: 'none',
   '&::-webkit-scrollbar': {
-    display: 'none', // For Chrome/Safari
+    display: 'none',
   },
   position: 'relative',
 });
@@ -24,8 +24,17 @@ const ScrollButton = styled(IconButton)(({ theme }) => ({
   transform: 'translateY(-50%)',
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
   zIndex: 1,
+  borderRadius: '50%',
+  width: '48px',
+  height: '48px',
+  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    transform: 'translateY(-50%) scale(1.05)',
+  },
+  transition: 'all 0.2s ease',
+  '&:active': {
+    transform: 'translateY(-50%) scale(0.98)',
   },
 }));
 
@@ -68,6 +77,7 @@ const FeaturedArtists = () => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showArrow, setShowArrow] = useState(false);
+  const [showScrollButtons, setShowScrollButtons] = useState(false);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -97,6 +107,25 @@ const FeaturedArtists = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowScrollButtons(true);
+      // Hide buttons after 3 seconds of inactivity
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => setShowScrollButtons(false), 3000);
+    };
+
+    let scrollTimeout;
+    container.addEventListener('scroll', handleScroll);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
   }, []);
 
   const scrollLeft = () => {
@@ -155,12 +184,25 @@ const FeaturedArtists = () => {
         </Alert>
       )}
 
-      <Box position="relative">
+      <Box 
+        sx={{ 
+          position: 'relative', 
+          width: '100%',
+          '&:hover .scroll-button': {
+            opacity: 1
+          }
+        }}
+      >
         {artists.length > 0 && (
           <>
             <ScrollButton 
               onClick={scrollLeft} 
-              sx={{ left: { xs: 8, md: -48 } }}
+              className="scroll-button"
+              sx={{ 
+                left: { xs: 8, md: -48 },
+                opacity: showScrollButtons ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+              }}
               aria-label="Scroll left"
             >
               <ArrowBackIos />
@@ -168,7 +210,14 @@ const FeaturedArtists = () => {
             
             <HorizontalScrollContainer ref={scrollContainerRef}>
               {artists.map(artist => (
-                <Box key={artist._id} sx={{ scrollSnapAlign: 'center', flex: '0 0 auto', maxWidth: { xs: '90%', sm: '80%', md: '25%' } }}>
+                <Box 
+                  key={artist._id} 
+                  sx={{ 
+                    scrollSnapAlign: 'center', 
+                    flex: '0 0 auto',
+                    width: { xs: '280px', sm: '300px', md: '320px' }
+                  }}
+                >
                   <ArtistCard artist={artist} />
                 </Box>
               ))}
@@ -176,7 +225,12 @@ const FeaturedArtists = () => {
             
             <ScrollButton 
               onClick={scrollRight} 
-              sx={{ right: { xs: 8, md: -48 } }}
+              className="scroll-button"
+              sx={{ 
+                right: { xs: 8, md: -48 },
+                opacity: showScrollButtons ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+              }}
               aria-label="Scroll right"
             >
               <ArrowForwardIos />

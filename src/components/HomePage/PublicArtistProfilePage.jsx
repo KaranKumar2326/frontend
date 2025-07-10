@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   CircularProgress,
-  Alert
+  Alert,
+  Typography,
+  Button
 } from "@mui/material";
 import { Star, StarHalf } from "lucide-react";
 import "./PublicArtistPage.css";
@@ -121,84 +123,283 @@ export default function PublicArtistProfilePage() {
       />
       <Box bgcolor="#f9f9f9" minHeight="100vh" className="artist-profile-bg">
         {/* Banner Image */}
-        <Box className="artist-profile-banner" >
+        <Box 
+          sx={{ 
+            position: 'relative',
+            width: '100%',
+            height: { xs: '200px', sm: '300px', md: '400px' },
+            overflow: 'hidden'
+          }}
+        >
           <img
             src={getImageSrc(artist.coverImage) || myBg}
             alt={artist.stageName}
-            className="artist-profile-banner-img"
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'cover',
+              display: 'block'
+            }}
             onError={e => { e.target.onerror = null; e.target.src = myBg; }}
           />
         </Box>
-        {/* Profile Info Card */}
-        <Box display="flex" justifyContent="center" alignItems="flex-start" mt={0}>
-          <Box className="artist-profile-info-card public-profile-info-card" style={{ position: 'relative', width: '50vw', minWidth: 320 }}>
-            <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-              {/* Profile Pic - left */}
-              <Box className="artist-profile-pic public-profile-pic-top-centered" style={{ marginRight: 32, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <img
-                  src={getImageSrc(artist.imageUrl) || myImage}
-                  alt={artist.imageUrl}
-                  className="artist-profile-pic-img public-profile-pic-img-bordered"
-                  onError={e => { e.target.onerror = null; e.target.src = myImage; }}
-                />
+
+        {/* Profile Section */}
+        <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 3, sm: 4 } }}>
+          <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+            
+            {/* Mobile Layout (xs - sm) */}
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              {/* Profile Picture */}
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    border: '4px solid white',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <img
+                    src={getImageSrc(artist.imageUrl) || myImage}
+                    alt={artist.stageName}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover'
+                    }}
+                    onError={e => { e.target.onerror = null; e.target.src = myImage; }}
+                  />
+                </Box>
               </Box>
-              {/* Name and Info - center */}
-              <Box className="public-profile-info-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Box className="artist-profile-name-data" style={{ textAlign: 'center' }}>
-                  <div className="artist-profile-stage-name">{artist.stageName}</div>
-                  <Box className="artist-profile-rating-row">
-                    {renderStars(Number(artist.rating))}
-                    <span className="artist-profile-rating">{artist.rating}</span>
-                  </Box>
-                  <div className="artist-profile-location">{artist.preferredLocation || "Unknown"}</div>
-                  <div className="artist-profile-experience">Experience: {artist.exp || 'N/A'} years</div>
-                  <div className="artist-profile-genre">
-                    Genre: {Array.isArray(artist.genres)
-                      ? artist.genres.map(g => (g && g.name ? g.name : '')).filter(Boolean).join(', ') || 'N/A'
-                      : 'N/A'}
-                  </div>
-                  <div className="artist-profile-pricing">
+
+              {/* Artist Info */}
+              <Box sx={{ textAlign: 'center', mb: 3 }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.8rem', sm: '2.2rem' } }}>
+                  {artist.stageName}
+                </Typography>
+                
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 2 }}>
+                  {renderStars(Number(artist.rating))}
+                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                    {artist.rating}
+                  </Typography>
+                </Box>
+
+                <Typography variant="body1" sx={{ mb: 1, color: '#666' }}>
+                  📍 {artist.preferredLocation || "Unknown"}
+                </Typography>
+
+                <Typography variant="body2" sx={{ mb: 1, color: '#666' }}>
+                  Experience: {artist.exp || 'N/A'} years
+                </Typography>
+
+                <Typography variant="body2" sx={{ mb: 2, color: '#666' }}>
+                  Genre: {Array.isArray(artist.genres)
+                    ? artist.genres.map(g => (g && g.name ? g.name : '')).filter(Boolean).join(', ') || 'N/A'
+                    : 'N/A'}
+                </Typography>
+
+                <Box sx={{ 
+                  bgcolor: '#8B00FF', 
+                  color: 'white', 
+                  px: 3, 
+                  py: 1.5, 
+                  borderRadius: 2, 
+                  display: 'inline-block',
+                  mb: 3
+                }}>
+                  <Typography variant="h6" sx={{ fontWeight: 400 }}>
                     {artist.pricing && artist.pricingUnit ? (
                       `₹${artist.pricing}/${artist.pricingUnit}`
                     ) : (
-                      <span className="artist-profile-not-listed">Not listed</span>
+                      'Price not listed'
                     )}
-                  </div>
+                  </Typography>
                 </Box>
               </Box>
-              {/* Edit Profile Button - right */}
-              <Box style={{ marginLeft: 32, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                <button
-                  className="artist-profile-book-btn"
-                  style={{
-                    background: '#6c2bd9',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '40px',
-                    padding: '12px 32px', // match Book Now button size
-                    fontSize: '1.08rem',
-                    fontWeight: 700,
-                    boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
-                    cursor: 'pointer',
-                    transition: 'background 0.2s, box-shadow 0.2s',
-                    outline: 'none',
-                    minWidth: '160px',
-                    letterSpacing: '0.5px',
-                    marginBottom: '8px',
-                    marginTop: '8px',
-                    display: 'inline-block',
+
+              {/* Edit Profile Button */}
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: '#8B00FF', // violet
+                    color: 'white',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    fontSize: '1rem', // or '1.1rem' for desktop
+                    textTransform: 'none',
+                    boxShadow: '0 4px 12px rgba(139,0,255,0.3)', // update shadow color to match violet
+                    '&:hover': {
+                      bgcolor: '#5e0099' // darker violet on hover
+                    }
                   }}
                   onClick={() => navigate(`/ArtistProfilePage/${_id}`)}
                 >
                   Edit Profile
-                </button>
+                </Button>
+              </Box>
+
+              {/* Social Media Links */}
+              {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                    Connect with me
+                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+                    {artist.socialMediaLinks.map((link, idx) => {
+                      const platformIcons = {
+                        Instagram: insta,
+                        Spotify: spotify,
+                        'Apple Music': apple,
+                        SoundCloud: SoundCloud,
+                        YouTube: youtube,
+                      };
+                      const iconSrc = platformIcons[link.platform] || '/icons/link.svg';
+                      return (
+                        <Box
+                          key={idx}
+                          component="a"
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 50,
+                            height: 50,
+                            bgcolor: 'white',
+                            borderRadius: '50%',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            border: '2px solid #f0f0f0',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+                            }
+                          }}
+                        >
+                          <img 
+                            src={iconSrc} 
+                            alt={link.platform}
+                            style={{ width: 28, height: 28, objectFit: 'contain' }}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </Box>
+              )}
+            </Box>
+
+            {/* Desktop Layout (md+) */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 6, mb: 4 }}>
+              {/* Profile Picture */}
+              <Box
+                sx={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  border: '4px solid white',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  flexShrink: 0
+                }}
+              >
+                <img
+                  src={getImageSrc(artist.imageUrl) || myImage}
+                  alt={artist.stageName}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover'
+                  }}
+                  onError={e => { e.target.onerror = null; e.target.src = myImage; }}
+                />
+              </Box>
+
+              {/* Artist Info */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
+                  {artist.stageName}
+                </Typography>
+                
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                  {renderStars(Number(artist.rating))}
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {artist.rating}
+                  </Typography>
+                </Box>
+
+                <Typography variant="h6" sx={{ mb: 1, color: '#666' }}>
+                  📍 {artist.preferredLocation || "Unknown"}
+                </Typography>
+
+                <Typography variant="body1" sx={{ mb: 1, color: '#666' }}>
+                  Experience: {artist.exp || 'N/A'} years
+                </Typography>
+
+                <Typography variant="body1" sx={{ mb: 2, color: '#666' }}>
+                  Genre: {Array.isArray(artist.genres)
+                    ? artist.genres.map(g => (g && g.name ? g.name : '')).filter(Boolean).join(', ') || 'N/A'
+                    : 'N/A'}
+                </Typography>
+
+                <Box sx={{ 
+                  bgcolor: '#8B00FF', 
+                  color: 'white', 
+                  px: 3, 
+                  py: 1.5, 
+                  borderRadius: 2, 
+                  display: 'inline-block'
+                }}>
+                  <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                    {artist.pricing && artist.pricingUnit ? (
+                      `₹${artist.pricing}/${artist.pricingUnit}`
+                    ) : (
+                      'Price not listed'
+                    )}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Right Side - Button & Social */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: '#8B00FF',
+                    color: 'white',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    fontSize: '1.1rem',
+                    textTransform: 'none',
+                    boxShadow: '0 4px 12px rgba(0,123,255,0.3)',
+                    '&:hover': {
+                      bgcolor: '#5e0099'
+                    }
+                  }}
+                  onClick={() => navigate(`/ArtistProfilePage/${_id}`)}
+                >
+                  Edit Profile
+                </Button>
+
                 {/* Social Media Links */}
                 {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
-                  <Box mt={2} style={{ width: '100%', textAlign: 'center' }}>
-                    <div style={{ fontWeight: 600, marginBottom: 4 }}>Social Links</div>
-                    <div style={{ display: 'flex', flexDirection: 'row', gap: 20, justifyContent: 'center' }}>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="body1" sx={{ mb: 1, fontWeight: 600 }}>
+                      Connect
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1.5 }}>
                       {artist.socialMediaLinks.map((link, idx) => {
-                        // Map platform to icon URL (SVGs or PNGs in public folder)
                         const platformIcons = {
                           Instagram: insta,
                           Spotify: spotify,
@@ -208,32 +409,38 @@ export default function PublicArtistProfilePage() {
                         };
                         const iconSrc = platformIcons[link.platform] || '/icons/link.svg';
                         return (
-                          <a
+                          <Box
                             key={idx}
+                            component="a"
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{
-                              display: 'inline-flex',
+                            sx={{
+                              display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              width: 54,
-                              height: 54,
+                              width: 50,
+                              height: 50,
+                              bgcolor: 'white',
                               borderRadius: '50%',
-                              background: '#fff',
-                              boxShadow: '0 2px 8px #e0e0e0',
-                              padding: 6,
-                              border: '2px solid #eee',
-                              transition: 'box-shadow 0.2s, border 0.2s',
-                              margin: 0
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                              border: '2px solid #f0f0f0',
+                              transition: 'all 0.2s ease',
+                              '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+                              }
                             }}
-                            title={link.platform}
                           >
-                            <img src={iconSrc} alt={link.platform} style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '50%' }} />
-                          </a>
+                            <img 
+                              src={iconSrc} 
+                              alt={link.platform}
+                              style={{ width: 28, height: 28, objectFit: 'contain' }}
+                            />
+                          </Box>
                         );
                       })}
-                    </div>
+                    </Box>
                   </Box>
                 )}
               </Box>
@@ -241,70 +448,149 @@ export default function PublicArtistProfilePage() {
           </Box>
         </Box>
 
-        {/* Other Artists Section
-        {/* Other Artists - right side */}
-        {/* <Box style={{ marginLeft: 32, minWidth: 200 }}>
-          <OtherArtists currentArtistId={artist._id || artist.id} />
-        </Box>  */}
-
-        {/* Tabs */}
-        <Box display="flex" justifyContent="center" mt={4}>
-          <Box className="artist-profile-tabs-row">
-            {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
-              <Box
-                key={tab}
-                className={`artist-profile-tab${selectedTab === idx ? ' selected' : ''}`}
-                onClick={() => setSelectedTab(idx)}
-              >
-                <span
-                  className={`artist-profile-tab-label${selectedTab === idx ? '' : ' unselected'}`}
-                >
-                  {tab}
-                </span>
+        {/* Tabs Section */}
+        <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, pb: 2 }}>
+          <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              mb: 3
+            }}>
+              <Box sx={{ 
+                display: 'flex',
+                bgcolor: 'white',
+                borderRadius: 3,
+                p: 0.5,
+                boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+                width: { xs: '100%', sm: 'auto' }
+              }}>
+                {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
+                  <Box
+                    key={tab}
+                    onClick={() => setSelectedTab(idx)}
+                    sx={{
+                      px: { xs: 2, sm: 3 },
+                      py: 1.5,
+                      cursor: 'pointer',
+                      borderRadius: 2.5,
+                      flex: { xs: 1, sm: 'none' },
+                      textAlign: 'center',
+                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                      fontWeight: 600,
+                      color: selectedTab === idx ? 'white' : '#666',
+                      bgcolor: selectedTab === idx ? '#8B00FF' : 'transparent',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        bgcolor: selectedTab === idx ? '#8B00FF' : '#f8f9fa'
+                      }
+                    }}
+                  >
+                    {tab}
+                  </Box>
+                ))}
               </Box>
-            ))}
+            </Box>
+
+            {/* Tab Content */}
+            <Box sx={{ 
+              bgcolor: 'white',
+              borderRadius: 3,
+              p: { xs: 3, sm: 4 },
+              boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+              minHeight: '200px'
+            }}>
+              {selectedTab === 0 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                    About Me
+                  </Typography>
+                  <Typography variant="body1" sx={{ lineHeight: 1.7, color: '#666' }}>
+                    {artist.description || 'No description available.'}
+                  </Typography>
+                </Box>
+              )}
+              
+              {selectedTab === 1 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                    My Instruments
+                  </Typography>
+                  <Typography variant="body1" sx={{ lineHeight: 1.7, color: '#666' }}>
+                    {Array.isArray(artist.instruments)
+                      ? artist.instruments.map(i => (i && i.name ? i.name : '')).filter(Boolean).join(', ') || 'No instruments listed.'
+                      : 'No instruments listed.'}
+                  </Typography>
+                </Box>
+              )}
+              
+              {selectedTab === 2 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#333' }}>
+                    Booking Information
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{ 
+                      bgcolor: '#f8f9fa', 
+                      p: 3, 
+                      borderRadius: 2,
+                      border: '1px solid #e9ecef'
+                    }}>
+                      <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                        Pricing:
+                      </Typography>
+                      <Typography variant="body1" sx={{ color: '#666' }}>
+                        {artist.pricing && artist.pricingUnit
+                          ? `₹${artist.pricing} per ${artist.pricingUnit}`
+                          : 'No booking options listed.'}
+                      </Typography>
+                    </Box>
+                    
+                    {(artist.email || artist.phone) && (
+                      <Box sx={{ 
+                        bgcolor: '#f8f9fa', 
+                        p: 3, 
+                        borderRadius: 2,
+                        border: '1px solid #e9ecef'
+                      }}>
+                        <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                          Contact Information:
+                        </Typography>
+                        {artist.email && (
+                          <Typography variant="body1" sx={{ color: '#666', mb: 1 }}>
+                            📧 {artist.email}
+                          </Typography>
+                        )}
+                        {artist.phone && (
+                          <Typography variant="body1" sx={{ color: '#666' }}>
+                            📞 {artist.phone}
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              )}
+            </Box>
           </Box>
         </Box>
 
-        {/* Tab Content */}
-        <Box display="flex" justifyContent="center" mt={2} mb={8}>
-          <Box className="artist-profile-tab-content">
-            {selectedTab === 0 && (
-              <div className="artist-profile-tab-body">
-                {artist.description || 'No description available.'}
-              </div>
-            )}
-            {selectedTab === 1 && (
-              <div className="artist-profile-tab-body">
-                {Array.isArray(artist.instruments)
-                  ? artist.instruments.map(i => (i && i.name ? i.name : '')).filter(Boolean).join(', ') || 'No instruments listed.'
-                  : 'No instruments listed.'}
-              </div>
-            )}
-            {selectedTab === 2 && (
-              <div className="artist-profile-tab-body">
-                {artist.pricing && artist.pricingUnit
-                  ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
-                  : 'No booking options listed.'}
-                <br />
-                {artist.email && (
-                  <span>Email: {artist.email}</span>
-                )}
-                <br />
-                {artist.phone && (
-                  <span>Phone: {artist.phone}</span>
-                )}
-              </div>
-            )}
+        {/* Gallery Section */}
+        <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: 4 }}>
+          <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                textAlign: 'center', 
+                mb: 4, 
+                fontWeight: 700,
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+              }}
+            >
+              Gallery
+            </Typography>
+            <ImageSlider media={galleryMedia} />
           </Box>
         </Box>
-
-        {/* Image Slider Section */}
-        <div className="image-slider-section">
-          <h2 className="slider-heading" style={{ fontWeight: 700, marginBottom: '1.5rem', fontSize: '2.8rem', textAlign: 'center', letterSpacing: '1px' }}>Gallery</h2>
-          <ImageSlider media={galleryMedia} />
-        </div>
-        
       </Box>
       <Footer />
     </>

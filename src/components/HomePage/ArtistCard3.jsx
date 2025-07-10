@@ -12,11 +12,10 @@ import {
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/system';
-import myImage from "../../public/defaultpic.png"; // Default image for artists without a photo
 
 // Styled components
 const ArtistCardContainer = styled(Card)(({ theme }) => ({
-  borderRadius: '16px',
+  borderRadius: '12px',
   overflow: 'hidden',
   boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)',
   transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -33,18 +32,27 @@ const ArtistCardContainer = styled(Card)(({ theme }) => ({
     content: '""',
     position: 'absolute',
     inset: 0,
-    borderRadius: '16px',
+    borderRadius: '12px',
     border: '1px solid rgba(108, 43, 217, 0.1)',
     pointerEvents: 'none'
+  },
+  [theme.breakpoints.down('sm')]: {
+    borderRadius: '6px', // 50% reduction
+    '&::after': {
+      borderRadius: '6px' // 50% reduction
+    }
   }
 }));
 
-const ArtistPhotoContainer = styled('div')({
+const ArtistPhotoContainer = styled('div')(({ theme }) => ({
   position: 'relative',
   paddingTop: '100%',
   overflow: 'hidden',
-  background: '#f8f9fa'
-});
+  background: '#f8f9fa',
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: '50%' // 50% reduction from 100%
+  }
+}));
 
 const ArtistPhoto = styled(CardMedia)({
   position: 'absolute',
@@ -63,12 +71,17 @@ const ArtistGenre = styled(Chip)(({ theme }) => ({
   color: '#6c2bd9',
   fontWeight: 600,
   fontSize: '0.875rem',
-  marginBottom: '1rem',
+  marginBottom: '0.5rem',
   display: 'inline-block',
   background: 'rgba(108, 43, 217, 0.1)',
   padding: '0.25rem 0.75rem',
   borderRadius: '100px',
-  border: 'none'
+  border: 'none',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.4375rem', // 50% reduction
+    marginBottom: '0.25rem', // 50% reduction
+    padding: '0.125rem 0.375rem' // 50% reduction
+  }
 }));
 
 // Helper to convert Google Drive links
@@ -83,7 +96,7 @@ const getImageSrc = (url) => {
   return `https://backend-musical.onrender.com/api/proxy-image?url=${encodeURIComponent(directUrl)}`;
 };
 
-export default function ArtistCard({ artist, priority = 0, hidePrice = false }) {
+export default function ArtistCard3({ artist, priority = 0, hidePrice = false }) {
   const navigate = useNavigate();
 
   const renderStars = (rating = 0) => {
@@ -118,11 +131,13 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
           <ArtistPhoto
             component="img"
             image={
-              getImageSrc(artist.imageUrl) ||myImage   }
+              getImageSrc(artist.imageUrl) ||
+              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+            }
             alt={artist.stageName}
             onError={e => { 
               e.target.onerror = null; 
-              e.target.src = myImage; 
+              e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; 
             }}
           />
           <Box sx={{
@@ -139,21 +154,28 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          padding: '1.75rem',
-          '&:last-child': { paddingBottom: '1.75rem' }
+          padding: '1.05rem',
+          '&:last-child': { paddingBottom: '1.05rem' },
+          '@media (max-width: 600px)': {
+            padding: '0.525rem', // 50% reduction
+            '&:last-child': { paddingBottom: '0.525rem' } // 50% reduction
+          }
         }}>
           <Box sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            marginBottom: '0.5rem'
+            marginBottom: '0.25rem' // 50% reduction from 0.5rem
           }}>
             <Typography variant="h6" sx={{
               fontWeight: 700,
               fontSize: '1.25rem',
               color: '#1e293b',
               letterSpacing: '-0.01em',
-              fontFamily: 'Playfair Display, serif'
+              fontFamily: 'Playfair Display, serif',
+              '@media (max-width: 600px)': {
+                fontSize: '0.625rem' // 50% reduction
+              }
             }}>
               {artist.stageName}
             </Typography>
@@ -161,15 +183,23 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               display: 'flex',
               alignItems: 'center',
               backgroundColor: 'rgba(255, 215, 0, 0.1)',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '20px'
+              padding: '0.125rem 0.25rem', // 50% reduction from 0.25rem 0.5rem
+              borderRadius: '10px', // 50% reduction from 20px
+              '@media (max-width: 600px)': {
+                padding: '0.0625rem 0.125rem', // 50% reduction
+                borderRadius: '5px' // 50% reduction
+              }
             }}>
               {renderStars(Number(artist.rating))}
               <Typography component="span" sx={{
-                marginLeft: '4px',
+                marginLeft: '2px', // 50% reduction from 4px
                 fontWeight: 600,
                 color: '#1e293b',
-                fontSize: '0.9rem'
+                fontSize: '0.9rem',
+                '@media (max-width: 600px)': {
+                  fontSize: '0.45rem', // 50% reduction
+                  marginLeft: '1px' // 50% reduction
+                }
               }}>
                 {artist.rating}
               </Typography>
@@ -179,8 +209,12 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
           <Box sx={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '0.5rem',
-            marginBottom: '1rem'
+            gap: '0.25rem', // 50% reduction from 0.5rem
+            marginBottom: '0.5rem', // 50% reduction from 1rem
+            '@media (max-width: 600px)': {
+              gap: '0.125rem', // 50% reduction
+              marginBottom: '0.25rem' // 50% reduction
+            }
           }}>
             {artist.genres?.slice(0, 3).map((genre) => (
               <ArtistGenre
@@ -201,11 +235,15 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             color: '#64748b',
             fontSize: '0.9375rem',
             lineHeight: 1.6,
-            marginBottom: '0.5rem',
+            marginBottom: '0.25rem', // 50% reduction from 0.5rem
             display: 'block',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            '@media (max-width: 600px)': {
+              fontSize: '0.46875rem', // 50% reduction
+              marginBottom: '0.125rem' // 50% reduction
+            }
           }}>
             {Array.isArray(artist.instruments)
               ? (artist.instruments.map(i => (i && i.name ? i.name : ''))
@@ -217,7 +255,7 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               : 'No instruments listed.'}
             {artist.location && (
               <>
-                <span style={{ color: '#ddd', margin: '0 4px' }}>•</span>
+                <span style={{ color: '#ddd', margin: '0 2px' }}>•</span> {/* 50% reduction from 4px */}
                 {artist.location}
               </>
             )}
@@ -227,11 +265,15 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             color: '#64748b',
             fontSize: '0.9375rem',
             lineHeight: 1.6,
-            marginBottom: '1.5rem',
+            marginBottom: '0.75rem', // 50% reduction from 1.5rem
             display: '-webkit-box',
             WebkitLineClamp: 3,
             WebkitBoxOrient: 'vertical',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            '@media (max-width: 600px)': {
+              fontSize: '0.46875rem', // 50% reduction
+              marginBottom: '0.375rem' // 50% reduction
+            }
           }}>
             {artist.description || "No description available"}
           </Typography>
@@ -240,18 +282,26 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginTop: 'auto'
+            marginTop: 'auto',
+            '@media (max-width: 600px)': {
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '0.25rem' // 50% reduction from 0.5rem
+            }
           }}>
             {!hidePrice && (
               <Typography sx={{
                 fontWeight: 600,
                 color: '#1e293b',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                '@media (max-width: 600px)': {
+                  fontSize: '0.5rem' // 50% reduction
+                }
               }}>
                 {artist.pricing && artist.pricingUnit ? (
                   `₹${artist.pricing}/Session`
                 ) : (
-                  <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.9rem' }}>Not listed</span>
+                  <span style={{ color: '#888', fontStyle: 'italic', fontSize: '0.45rem' }}>Not listed</span> // 50% reduction from 0.9rem
                 )}
               </Typography>
             )}
@@ -260,16 +310,20 @@ export default function ArtistCard({ artist, priority = 0, hidePrice = false }) 
               size="small"
               onClick={() => navigate(`/public-artist/${artist._id || artist.id}`)}
               sx={{
-                borderRadius: '40px', // full semicircle on both sides
+                borderRadius: '4px', // 50% reduction from 8px
                 textTransform: 'none',
                 fontWeight: 500,
-                padding: '6px 18px',
-                minWidth: '100px',
-                fontSize: '0.85rem',
+                padding: '4px 8px', // 50% reduction from 8px 16px
                 backgroundColor: '#6c2bd9',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                fontSize: '0.75rem',
                 '&:hover': {
                   backgroundColor: '#5a1fc7'
+                },
+                '@media (max-width: 600px)': {
+                  padding: '2px 4px', // 50% reduction
+                  fontSize: '0.375rem', // 50% reduction
+                  borderRadius: '2px', // 50% reduction
+                  minWidth: 'auto'
                 }
               }}
             >

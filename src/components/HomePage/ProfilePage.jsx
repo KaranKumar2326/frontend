@@ -30,50 +30,33 @@ const editBtnStyle = {
   background: '#6c2bd9', 
   color: '#fff', 
   border: 'none', 
-  borderRadius: '40px', 
-  padding: '12px 32px', 
-  fontWeight: 700, 
-  fontSize: '1.08rem', 
-  cursor: 'pointer', 
-  boxShadow: '0 4px 12px rgba(108,43,217,0.12)', 
-  minWidth: '152px', 
-  letterSpacing: '0.5px', 
-  marginBottom: '8px', 
-  marginTop: '8px', 
-  display: 'inline-block',
+  borderRadius: 8, 
+  padding: '0.7rem 1.5rem', 
+  fontWeight: 600, 
+  fontSize: '1rem', 
+  cursor: 'pointer' 
 };
 
 const saveBtnStyle = { 
-  background: '#6c2bd9',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '40px',
-  padding: '12px 32px',
-  fontWeight: 700,
-  fontSize: '1.08rem',
-  cursor: 'pointer',
-  boxShadow: '0 4px 12px rgba(108,43,217,0.12)',
-  minWidth: '152px',
-  letterSpacing: '0.5px',
-  marginBottom: '8px',
-  marginTop: '8px',
-  display: 'inline-block',
+  background: '#fff', 
+  color: '#6c2bd9', 
+  border: '2px solid #6c2bd9', 
+  borderRadius: 8, 
+  padding: '0.7rem 1.5rem', 
+  fontWeight: 600, 
+  fontSize: '1rem', 
+  cursor: 'pointer' 
 };
 
 const cancelBtnStyle = { 
   background: '#fff', 
   color: '#d92b2b', 
   border: '2px solid #d92b2b', 
-  borderRadius: '40px', 
-  padding: '12px 32px', 
-  fontWeight: 700, 
-  fontSize: '1.08rem', 
-  cursor: 'pointer', 
-  minWidth: '152px', 
-  letterSpacing: '0.5px', 
-  marginBottom: '8px', 
-  marginTop: '8px', 
-  display: 'inline-block',
+  borderRadius: 8, 
+  padding: '0.7rem 1.5rem', 
+  fontWeight: 600, 
+  fontSize: '1rem', 
+  cursor: 'pointer' 
 };
 
 // Security questions
@@ -426,375 +409,413 @@ const ProfilePage = ({ onProfileUpdate }) => {
   };
 
   return (
-    <>
-      <NavigationBar userProfilePic={user.imageUrl} showHomeInDropdown />
-      <div style={{ 
-        minHeight: '100vh', 
-        background: '#f7f5fc', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'flex-start', 
+  <>
+    <NavigationBar userProfilePic={user.imageUrl} showHomeInDropdown />
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#f7f5fc',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
         padding: '3rem 0',
-        fontFamily: 'Montserrat, Arial, sans-serif'
-      }}>
-        {/* Left Profile Card */}
-        <div style={{ 
-          background: '#6c2bd9', 
-          borderRadius: '24px', 
-          width: 320, 
-          minHeight: 520, 
-          color: '#fff', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center', 
-          padding: '2.5rem 1.5rem 2rem 1.5rem', 
-          marginRight: 40, 
-          marginLeft: 40, 
-          boxShadow: '0 4px 24px rgba(108,43,217,0.10)'
-        }}>
-          {/* Profile Picture Section */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-            {/* Profile image hover wrapper */}
+        fontFamily: 'Montserrat, Arial, sans-serif',
+        flexWrap: 'wrap', // Added for responsiveness
+        gap: '2rem', // Added for spacing between cards
+      }}
+    >
+      {/* Left Profile Card */}
+      <div
+        style={{
+          background: '#6c2bd9',
+          borderRadius: '24px',
+          width: 320,
+          minHeight: 520,
+          color: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '2.5rem 1.5rem 2rem 1.5rem',
+          margin: '0 20px', // Adjusted margin for better responsiveness
+          boxShadow: '0 4px 24px rgba(108,43,217,0.10)',
+          flexShrink: 0, // Prevent shrinking
+        }}
+      >
+        {/* Profile Picture Section */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+          }}
+        >
+          {/* Profile image hover wrapper */}
+          <div
+            style={{ position: 'relative', marginBottom: '1rem' }}
+            className="profile-image-action-wrapper"
+          >
+            <img
+              src={user.imageUrl ? getImageSrc(user.imageUrl) : myImage}
+              alt="Profile"
+              style={{
+                width: '150px',
+                height: '150px',
+                borderRadius: '50%',
+                border: '5px solid #fff',
+                objectFit: 'cover',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                cursor: 'pointer',
+              }}
+              onClick={() => setShowImageButtons((v) => !v)}
+            />
+            {/* Show buttons only on hover */}
             <div
-              style={{ position: 'relative', marginBottom: '1rem' }}
-              className="profile-image-action-wrapper"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: showImageButtons ? '0.7rem' : '0rem',
+                position: 'absolute',
+                left: '100%',
+                top: '50%',
+                transform: showImageButtons
+                  ? 'translateY(-50%) translateX(20px) scale(1)'
+                  : 'translateY(-50%) translateX(-40px) scale(0.2)',
+                opacity: showImageButtons ? 1 : 0,
+                pointerEvents: showImageButtons ? 'auto' : 'none',
+                zIndex: 2,
+                transition:
+                  'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
+                boxShadow: showImageButtons
+                  ? '0 8px 32px 0 rgba(108,43,217,0.18)'
+                  : 'none',
+              }}
             >
-              <img
-                src={user.imageUrl ? getImageSrc(user.imageUrl) : myImage}
-                alt="Profile"
-                style={{
-                  width: '150px',
-                  height: '150px',
-                  borderRadius: '50%',
-                  border: '5px solid #fff',
-                  objectFit: 'cover',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setShowImageButtons(v => !v)}
-              />
-              {/* Show buttons only on hover */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  gap: showImageButtons ? '0.7rem' : '0rem',
-                  position: 'absolute',
-                  left: '100%',
-                  top: '50%',
-                  transform: showImageButtons
-                    ? 'translateY(-50%) translateX(20px) scale(1)'
-                    : 'translateY(-50%) translateX(-40px) scale(0.2)',
-                  opacity: showImageButtons ? 1 : 0,
-                  pointerEvents: showImageButtons ? 'auto' : 'none',
-                  zIndex: 2,
-                  transition: 'opacity 0.3s cubic-bezier(.4,1.6,.6,1), transform 0.4s cubic-bezier(.4,1.6,.6,1), gap 0.3s',
-                  boxShadow: showImageButtons ? '0 8px 32px 0 rgba(108,43,217,0.18)' : 'none',
-                }}
-              >
-                
-                {user.imageUrl && (
-                  <button
-                    type="button"
-                    style={{
-                      ...editBtnStyle,
-                      background: '#fff',
-                      color: '#6c2bd9',
-                      border: '2px solid #6c2bd9',
-                      padding: '0.5rem 1.5rem',
-                      marginBottom: 0,
-                      fontWeight: 700
-                    }}
-                    disabled={imageState.uploading || !user.imageUrl}
-                    onClick={async () => {
-                      if (!user.imageUrl) return;
-                      setImageState({ ...imageState, uploading: true, error: null, success: null });
-                      try {
-                        const token = localStorage.getItem('token');
-                        const res = await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
-                          method: 'DELETE',
-                          headers: { 'Authorization': `Bearer ${token}` },
-                        });
-                        if (!res.ok) throw new Error('Failed to remove image');
-                        setUser(prev => ({ ...prev, imageUrl: '' }));
-                        setForm(prev => ({ ...prev, imageUrl: '' }));
-                        setImageState({ ...imageState, uploading: false, success: 'Profile image removed' });
-                        localStorage.setItem('profileImageUpdated', Date.now());
-                      } catch (err) {
-                        setImageState({ ...imageState, uploading: false, error: err.message || 'Failed to remove image' });
-                      }
-                    }}
-                  >Remove</button>
-                )}
-                {user.imageUrl && (
-                  <button
-                    type="button"
-                    style={{
-                      ...editBtnStyle,
-                      background: '#fff',
-                      color: '#6c2bd9',
-                      border: '2px solid #6c2bd9',
-                      padding: '0.5rem 1.5rem',
-                      marginBottom: 0,
-                      fontWeight: 700
-                    }}
-                    disabled={imageState.uploading}
-                    onClick={() => triggerFileInput()}
-                  >Replace</button>
-                )}
-                {!user.imageUrl && (
-                  <button
-                    type="button"
-                    style={{
-                      ...editBtnStyle,
-                      background: '#fff',
-                      color: '#6c2bd9',
-                      border: '2px solid #6c2bd9',
-                      padding: '0.5rem 1.5rem',
-                      marginBottom: 0,
-                      fontWeight: 700
-                    }}
-                    disabled={imageState.uploading}
-                    onClick={() => triggerFileInput()}
-                  >Upload</button>
-                )}
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={async (e) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  // Always remove old image from Google Drive if replacing
-                  if (user.imageUrl) {
+              {user.imageUrl && (
+                <button
+                  type="button"
+                  style={{
+                    ...editBtnStyle,
+                    background: '#fff',
+                    color: '#6c2bd9',
+                    border: '2px solid #6c2bd9',
+                    padding: '0.5rem 1.5rem',
+                    marginBottom: 0,
+                    fontWeight: 700,
+                  }}
+                  disabled={imageState.uploading || !user.imageUrl}
+                  onClick={async () => {
+                    if (!user.imageUrl) return;
+                    setImageState({ ...imageState, uploading: true, error: null, success: null });
                     try {
                       const token = localStorage.getItem('token');
-                      await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
+                      const res = await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
                         method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` },
+                        headers: { Authorization: `Bearer ${token}` },
                       });
-                    } catch {}
-                  }
-                  await handleImageChange(e);
-                }}
-                accept="image/*"
-                style={{ display: 'none' }}
-                disabled={imageState.uploading}
-              />
-            </div>           
-            {imageState.uploading && (
-              <div style={{ width: '100%', textAlign: 'center' }}>
-                <div style={{ 
-                  height: '4px', 
-                  background: 'rgba(255,255,255,0.2)', 
+                      if (!res.ok) throw new Error('Failed to remove image');
+                      setUser((prev) => ({ ...prev, imageUrl: '' }));
+                      setForm((prev) => ({ ...prev, imageUrl: '' }));
+                      setImageState({ ...imageState, uploading: false, success: 'Profile image removed' });
+                      localStorage.setItem('profileImageUpdated', Date.now());
+                    } catch (err) {
+                      setImageState({ ...imageState, uploading: false, error: err.message || 'Failed to remove image' });
+                    }
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+              {user.imageUrl && (
+                <button
+                  type="button"
+                  style={{
+                    ...editBtnStyle,
+                    background: '#fff',
+                    color: '#6c2bd9',
+                    border: '2px solid #6c2bd9',
+                    padding: '0.5rem 1.5rem',
+                    marginBottom: 0,
+                    fontWeight: 700,
+                  }}
+                  disabled={imageState.uploading}
+                  onClick={() => triggerFileInput()}
+                >
+                  Replace
+                </button>
+              )}
+              {!user.imageUrl && (
+                <button
+                  type="button"
+                  style={{
+                    ...editBtnStyle,
+                    background: '#fff',
+                    color: '#6c2bd9',
+                    border: '2px solid #6c2bd9',
+                    padding: '0.5rem 1.5rem',
+                    marginBottom: 0,
+                    fontWeight: 700,
+                  }}
+                  disabled={imageState.uploading}
+                  onClick={() => triggerFileInput()}
+                >
+                  Upload
+                </button>
+              )}
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                // Always remove old image from Google Drive if replacing
+                if (user.imageUrl) {
+                  try {
+                    const token = localStorage.getItem('token');
+                    await fetch(`${API_BASE_URL}/users/${userId}/remove-image`, {
+                      method: 'DELETE',
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                  } catch {}
+                }
+                await handleImageChange(e);
+              }}
+              accept="image/*"
+              style={{ display: 'none' }}
+              disabled={imageState.uploading}
+            />
+          </div>
+          {imageState.uploading && (
+            <div style={{ width: '100%', textAlign: 'center' }}>
+              <div
+                style={{
+                  height: '4px',
+                  background: 'rgba(255,255,255,0.2)',
                   borderRadius: '2px',
                   marginBottom: '4px',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  style={{
                     width: `${imageState.progress}%`,
                     height: '100%',
                     background: '#fff',
-                    transition: 'width 0.3s ease'
-                  }}></div>
-                </div>
-                <small>Uploading... {Math.round(imageState.progress)}%</small>
+                    transition: 'width 0.3s ease',
+                  }}
+                ></div>
               </div>
-            )}
-            
-            {imageState.error && (
-              <div style={{ color: '#ff6b6b', fontSize: '14px', marginTop: '8px' }}>
-                {imageState.error}
-              </div>
-            )}
-            
-            {imageState.success && (
-              <div style={{ color: '#4caf50', fontSize: '14px', marginTop: '8px' }}>
-                {imageState.success}
-              </div>
-            )}
-          </div>
-          
-          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 6, fontFamily: 'Playfair Display, serif' }}>
-            {user.name}
-          </h2>
-          
-          <div style={{ fontSize: '1.1rem', marginBottom: 18 }}>
-            {user.email}
-          </div>
-          
-          <div style={{ 
-            width: '100%', 
-            background: '#fff', 
-            borderRadius: 12, 
-            color: '#6c2bd9', 
-            padding: '1.1rem 1rem', 
-            marginBottom: 18, 
-            textAlign: 'center', 
-            fontWeight: 600 
-          }}>
-            <div style={{ fontSize: '2.1rem', fontWeight: 700 }}>
-              {user.avgRating} <span style={{ fontSize: '1.1rem', fontWeight: 400 }}>/ 5</span>
+              <small>Uploading... {Math.round(imageState.progress)}%</small>
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 500 }}>Avg. Rating</div>
-          </div>
-          
-          <div style={{ 
-            width: '100%', 
-            background: '#fff', 
-            borderRadius: 12, 
-            color: '#6c2bd9', 
-            padding: '1.1rem 1rem', 
-            marginBottom: 18, 
-            textAlign: 'center', 
-            fontWeight: 600 
-          }}>
-            <div style={{ fontSize: '2.1rem', fontWeight: 700 }}>
-              {user.upcomingBookings}
+          )}
+          {imageState.error && (
+            <div style={{ color: '#ff6b6b', fontSize: '14px', marginTop: '8px' }}>
+              {imageState.error}
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 500 }}>Upcoming Bookings</div>
-          </div>
-          
-          <div style={{ fontSize: '1rem', marginTop: 10, opacity: 0.85 }}>
-            {user.address}
-          </div>
+          )}
+          {imageState.success && (
+            <div style={{ color: '#4caf50', fontSize: '14px', marginTop: '8px' }}>
+              {imageState.success}
+            </div>
+          )}
         </div>
-        
-        {/* Right Editable Form */}
-        <div style={{ 
-          background: '#fff', 
-          borderRadius: '18px', 
-          boxShadow: '0 4px 24px rgba(108,43,217,0.08)', 
-          padding: '2.5rem 2.5rem 2rem 2.5rem', 
-          minWidth: 380, 
-          flex: 1 
-        }}>
-          <h1 style={{
+
+        <h2
+          style={{
+             color : "White",
+            fontWeight: 700,
+            fontSize: '1.5rem',
+            marginBottom: 6,
+            fontFamily: 'Playfair Display, serif',
+          }}
+        >
+          {user.name}
+        </h2>
+
+        <div style={{ fontSize: '1.1rem', marginBottom: 18 }}>{user.email}</div>
+
+        <div
+          style={{
+            width: '100%',
+            background: '#fff',
+            borderRadius: 12,
+            color: '#6c2bd9',
+            padding: '1.1rem 1rem',
+            marginBottom: 18,
+            textAlign: 'center',
+            fontWeight: 600,
+          }}
+        >
+          <div style={{ fontSize: '2.1rem', fontWeight: 700 }}>
+            {user.avgRating}{' '}
+            <span style={{ fontSize: '1.1rem', fontWeight: 400 }}>/ 5</span>
+          </div>
+          <div style={{ fontSize: '1rem', fontWeight: 500 }}>Avg. Rating</div>
+        </div>
+
+        <div
+          style={{
+            width: '100%',
+            background: '#fff',
+            borderRadius: 12,
+            color: '#6c2bd9',
+            padding: '1.1rem 1rem',
+            marginBottom: 18,
+            textAlign: 'center',
+            fontWeight: 600,
+          }}
+        >
+          <div style={{ fontSize: '2.1rem', fontWeight: 700 }}>
+            {user.upcomingBookings}
+          </div>
+          <div style={{ fontSize: '1rem', fontWeight: 500 }}>Upcoming Bookings</div>
+        </div>
+
+        <div style={{ fontSize: '1rem', marginTop: 10, opacity: 0.85 }}>
+          {user.address}
+        </div>
+      </div>
+
+      {/* Right Editable Form */}
+      <div
+        style={{
+          background: '#fff',
+          borderRadius: '18px',
+          boxShadow: '0 4px 24px rgba(108,43,217,0.08)',
+          padding: '2.5rem 2.5rem 2rem 2.5rem',
+          minWidth: 380,
+          flex: 1,
+          margin: '0 20px', // Adjusted margin for better responsiveness
+          maxWidth: 'calc(100% - 40px)', // Ensure it doesn't overflow on small screens
+        }}
+      >
+        <h1
+          style={{
             color: '#6c2bd9',
             fontWeight: 800,
             fontSize: '2.6rem',
             marginBottom: '1.2rem',
             letterSpacing: '0.5px',
             fontFamily: 'Playfair Display, serif',
-            textShadow: '0 2px 8px rgba(108,43,217,0.08)'
-          }}>
-            Welcome, <span style={{ fontFamily: 'Playfair Display, serif' }}>{user.name}</span>
-          </h1>
-          
-          <form 
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: 18 
-            }} 
-            onSubmit={handleUpdateProfile}
-          >
-            <label>
-              Name
-              <input 
-                name="name" 
-                value={form.name} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <label>
-              Email
-              <input 
-                name="email" 
-                value={form.email} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <label>
-              Phone
-              <input 
-                name="phone" 
-                value={form.phone} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <label>
-              Pincode
-              <input 
-                name="pincode" 
-                value={form.pincode} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <label>
-              Genre
-              <input 
-                name="genre" 
-                value={form.genre} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <label>
-              Address
-              <input 
-                name="address" 
-                value={form.address} 
-                onChange={handleChange} 
-                disabled={!edit} 
-                style={inputStyle(edit)} 
-              />
-            </label>
-            
-            <div style={{ display: 'flex', gap: 16, marginTop: 18 }}>
-              {!edit && (
-                <button 
-                  type="button" 
-                  style={editBtnStyle} 
-                  onClick={() => setEdit(true)}
-                >
-                  Edit
-                </button>
-              )}
-              
-              {edit && (
-                <button 
-                  type="submit" 
-                  style={saveBtnStyle}
-                >
-                  Save
-                </button>
-              )}
-              
-              {edit && (
-                <button 
-                  type="button" 
-                  style={cancelBtnStyle} 
-                  onClick={() => { 
-                    setEdit(false); 
-                    setForm(user); 
-                  }}
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </form>
-        </div>
+            textShadow: '0 2px 8px rgba(108,43,217,0.08)',
+          }}
+        >
+          Welcome, <span style={{ fontFamily: 'Playfair Display, serif' }}>{user.name}</span>
+        </h1>
+
+        <form
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18,
+          }}
+          onSubmit={handleUpdateProfile}
+        >
+          <label>
+            Name
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <label>
+            Email
+            <input
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <label>
+            Phone
+            <input
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <label>
+            Pincode
+            <input
+              name="pincode"
+              value={form.pincode}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <label>
+            Genre
+            <input
+              name="genre"
+              value={form.genre}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <label>
+            Address
+            <input
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              disabled={!edit}
+              style={inputStyle(edit)}
+            />
+          </label>
+
+          <div style={{ display: 'flex', gap: 16, marginTop: 18, flexWrap: 'wrap' }}>
+            {!edit && (
+              <button
+                type="button"
+                style={editBtnStyle}
+                onClick={() => setEdit(true)}
+              >
+                Edit
+              </button>
+            )}
+
+            {edit && (
+              <button type="submit" style={saveBtnStyle}>
+                Save
+              </button>
+            )}
+
+            {edit && (
+              <button
+                type="button"
+                style={cancelBtnStyle}
+                onClick={() => {
+                  setEdit(false);
+                  setForm(user);
+                }}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
       </div>
-      
-      {/* Security Questions Section */}
-      <div style={{
+    </div>
+
+    {/* Security Questions Section */}
+    <div
+      style={{
         background: '#f7f5fc',
         border: '1.5px solid #6c2bd9',
         borderRadius: 16,
@@ -804,57 +825,73 @@ const ProfilePage = ({ onProfileUpdate }) => {
         maxWidth: 600,
         marginLeft: 'auto',
         marginRight: 'auto',
-      }}>
-        <h2 style={{ color: '#6c2bd9', fontWeight: 700, marginBottom: 18 }}>Security Questions</h2>
-        <p>Select and answer any 5 of the following questions. These will be used for account recovery.</p>
-        <form onSubmit={e => { e.preventDefault(); handleSaveSecurityQuestions(); }}>
-          {securitySlots.map((slot, idx) => (
-            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-              <select
-                className="profile-input"
-                value={slot.questionIdx}
-                onChange={e => handleSecuritySlotChange(idx, 'questionIdx', e.target.value)}
-                required
-                style={{ width: '60%' }}
-              >
-                <option value="">Select a question</option>
-                {SECURITY_QUESTIONS.map((q, qIdx) => (
-                  <option
-                    key={qIdx}
-                    value={qIdx}
-                    disabled={securitySlots.some((s, sIdx) => sIdx !== idx && s.questionIdx === String(qIdx))}
-                  >
-                    {q}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="profile-input"
-                type="text"
-                placeholder="Your answer"
-                value={slot.answer}
-                onChange={e => handleSecuritySlotChange(idx, 'answer', e.target.value)}
-                maxLength={100}
-                required={!!slot.questionIdx}
-                disabled={!slot.questionIdx}
-                style={{ width: '40%' }}
-              />
-            </div>
-          ))}
-          {securityError && <div style={{ color: 'red' }}>{securityError}</div>}
-          {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
-          <button
-            type="submit"
-            style={{ ...saveBtnStyle, marginTop: 16 }}
+        boxSizing: 'border-box', // Ensure padding is included in width
+        width: 'calc(100% - 40px)', // Adjusted width for responsiveness
+      }}
+    >
+      <h2 style={{ color: '#6c2bd9', fontWeight: 700, marginBottom: 18 }}>
+        Security Questions
+      </h2>
+      <p>Select and answer any 5 of the following questions. These will be used for account recovery.</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSaveSecurityQuestions();
+        }}
+      >
+        {securitySlots.map((slot, idx) => (
+          <div
+            key={idx}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '0.5rem',
+              flexWrap: 'wrap', // Added for responsiveness
+            }}
           >
-            Save Security Questions
-          </button>
-        </form>
-      </div>
-      
-      <Footer />
-    </>
-  );
+            <select
+              className="profile-input"
+              value={slot.questionIdx}
+              onChange={(e) => handleSecuritySlotChange(idx, 'questionIdx', e.target.value)}
+              required
+              style={{ width: 'calc(60% - 0.5rem)', minWidth: '150px', flexGrow: 1 }} 
+            >
+              <option value="">Select a question</option>
+              {SECURITY_QUESTIONS.map((q, qIdx) => (
+                <option
+                  key={qIdx}
+                  value={qIdx}
+                  disabled={securitySlots.some((s, sIdx) => sIdx !== idx && s.questionIdx === String(qIdx))}
+                >
+                  {q}
+                </option>
+              ))}
+            </select>
+            <input
+              className="profile-input"
+              type="text"
+              placeholder="Your answer"
+              value={slot.answer}
+              onChange={(e) => handleSecuritySlotChange(idx, 'answer', e.target.value)}
+              maxLength={100}
+              required={!!slot.questionIdx}
+              disabled={!slot.questionIdx}
+              style={{ width: 'calc(40% - 0.5rem)', minWidth: '150px', flexGrow: 1 }} 
+            />
+          </div>
+        ))}
+        {securityError && <div style={{ color: 'red' }}>{securityError}</div>}
+        {securitySuccess && <div style={{ color: 'green' }}>{securitySuccess}</div>}
+        <button type="submit" style={{ ...saveBtnStyle, marginTop: 16 }}>
+          Save Security Questions
+        </button>
+      </form>
+    </div>
+
+    <Footer />
+  </>
+);
 };
 
 ProfilePage.propTypes = {
