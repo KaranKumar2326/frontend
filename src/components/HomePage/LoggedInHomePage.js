@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import WelcomePopup from '../WelcomePopup';
+import { isUserProfileIncomplete } from './userProfileUtils';
+import { getUserProfileCompletionChecklist } from './userProfileCompletionUtils';
 import { useNavigate } from 'react-router-dom';
 import './LoggedInHomePage.css';
 import './Footer.css';
@@ -17,6 +20,55 @@ import 'react-toastify/dist/ReactToastify.css';  // Import styles for toast noti
 
 
 const LoggedInHomePage = () => {
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  // Prevent scrolling when popup is open
+  useEffect(() => {
+    if (showWelcomePopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showWelcomePopup]);
+
+  // Store checklist for WelcomePopup
+  const [userChecklist, setUserChecklist] = useState([]);
+  // Fetch user profile and show popup if incomplete, only if not already shown in this session
+  useEffect(() => {
+    const id = localStorage.getItem('user_id');
+    const popupSession = sessionStorage.getItem('userProfilePopupShown');
+    if (id && !popupSession) {
+      fetch(`https://backend-musical.onrender.com/api/users/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) return null;
+          return res.json();
+        })
+        .then(data => {
+          if (data.imageUrl && data.imageUrl.includes('randomuser.me/api/portraits/')) {
+            data.imageUrl = '';
+          }
+          setUserProfile(data);
+          // Always clear the popup session key so popup can show every time if incomplete
+          sessionStorage.removeItem('userProfilePopupShown');
+          if (data && isUserProfileIncomplete(data)) {
+            setUserChecklist(getUserProfileCompletionChecklist(data));
+            setTimeout(() => {
+              setShowWelcomePopup(true);
+            }, 3000);
+          } else {
+            setShowWelcomePopup(false);
+            setUserChecklist([]);
+          }
+        });
+    }
+  }, []);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState({ name: '', email: '' });
@@ -138,6 +190,14 @@ const LoggedInHomePage = () => {
   return (
     <>
       <NavigationBar />
+      <WelcomePopup
+        open={showWelcomePopup}
+        onClose={() => setShowWelcomePopup(false)}
+        instructionMsg="Let your music journey begin! Complete your user profile so artists and event organizers can find and connect with you."
+        artistId={null}
+        isUser={true}
+        incompleteFields={userChecklist}
+      />
       <div className="page-container">
        <div className="page-container fancy-background" style={{ display: 'flex', flexDirection: 'column', alignItems: 'cen', justifyContent: 'center', height: '100vh', margin: '0 auto', padding: '0px', position: 'relative', overflow: 'hidden' }}>
   {/* Video Background */}

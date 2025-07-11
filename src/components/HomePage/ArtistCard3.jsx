@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/system';
+import myImage from '../../public/defaultpic.png';
 
 // Styled components
 const ArtistCardContainer = styled(Card)(({ theme }) => ({
@@ -131,13 +132,12 @@ export default function ArtistCard3({ artist, priority = 0, hidePrice = false })
           <ArtistPhoto
             component="img"
             image={
-              getImageSrc(artist.imageUrl) ||
-              "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              getImageSrc(artist.imageUrl) || myImage
             }
             alt={artist.stageName}
             onError={e => { 
               e.target.onerror = null; 
-              e.target.src = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"; 
+              e.target.src = myImage; 
             }}
           />
           <Box sx={{

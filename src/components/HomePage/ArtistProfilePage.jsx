@@ -520,6 +520,14 @@ const ArtistProfilePage = () => {
                   <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.name : artist.name} readOnly={!isEditing} onChange={e => handleInputChange('name', e.target.value)} />
                 </div>
                 <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Email</label>
+                  <input className="artist-profile-input" type="email" value={isEditing ? editArtist?.email : artist.email} readOnly={!isEditing} onChange={e => handleInputChange('email', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
+                  <label className="artist-profile-label">Phone Number</label>
+                  <input className="artist-profile-input" type="tel" value={isEditing ? editArtist?.phone : artist.phone} readOnly={!isEditing} onChange={e => handleInputChange('phone', e.target.value)} />
+                </div>
+                <div className="artist-profile-form-group">
                   <label className="artist-profile-label">Stage Name</label>
                   <input className="artist-profile-input" type="text" value={isEditing ? editArtist?.stageName : artist.stageName} readOnly={!isEditing} onChange={e => handleInputChange('stageName', e.target.value)} />
                 </div>

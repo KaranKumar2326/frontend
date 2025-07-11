@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+
 import myImage from '../public/defaultpic.png';
 import './NavigationBar.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getProfileCompletionPercentage } from './HomePage/profileCompletionUtils';
 
 const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown = false, onlyBrand = false, style }) => {
   const navigate = useNavigate();
@@ -169,6 +171,14 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
     return myImage;
   };
 
+  // Profile completion percentage
+  let profileCompletion = null;
+  if (userRole === 'artist' && artist) {
+    profileCompletion = getProfileCompletionPercentage(artist, 'artist');
+  } else if (userRole === 'user' && user) {
+    profileCompletion = getProfileCompletionPercentage(user, 'user');
+  }
+
   const handleProfileNavigation = async () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const role = userRole || localStorage.getItem('role');
@@ -321,19 +331,40 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && isLoggedIn && (
           <div className="profile-section mobile-profile">
             {(userProfilePic || (!hideProfile && location.pathname !== '/signup' && location.pathname !== '/home')) && (
-              <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
-                <img 
-                  src={getProfilePicSrc()} 
-                  className="profile-pic" 
-                  alt="Profile" 
+              <div className="profile-pic-container" style={{position:'relative', display:'inline-block'}} onClick={() => setOpenProfile(!openProfile)}>
+                <img
+                  src={getProfilePicSrc()}
+                  className="profile-pic"
+                  alt="Profile"
+                  style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%' }}
                 />
+                {profileCompletion !== null && profileCompletion < 100 && (
+                  <span style={{
+                    display: 'block',
+                    fontFamily: 'Playfair Display, serif',
+                    fontWeight: 700,
+                    fontSize: '0.98em',
+                    color: '#6c2bd9',
+                    textAlign: 'center',
+                    marginTop: '2px',
+                    background: 'none',
+                    border: 'none',
+                    boxShadow: 'none',
+                    padding: 0,
+                    maxWidth: '90vw',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}>
+                    {profileCompletion}%
+                  </span>
+                )}
                 {openProfile && (
                   <div className="profile-dropdown">
                     <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
                       {showHomeInDropdown ? 'Home' : 'My Profile'}
                     </div>
                     <div className='dropdown-item' onClick={handleuserrequest}>My Event Requests</div>
-                    <div className="dropdown-item">Settings</div>
+                    {/* <div className="dropdown-item">Settings</div> */}
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
                   </div>
                 )}
@@ -343,9 +374,14 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
         )}
 
         {/* Show Sign Up button if not logged in and not on login/signup/home */}
-       
+        {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && !isLoggedIn && (
+          <button className="nav-button secondary mobile-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
+        )}
 
-        <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
+        {/* Hide Home link on homepage */}
+        {location.pathname !== '/' && location.pathname !== '/home' && (
+          <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
+        )}
         <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
         <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>How it Works</a>
         
@@ -355,10 +391,15 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
          !isArtistProfilePage && !isLoggedIn && (
           <>
             <a className="nav-link" href="#featured-artists" onClick={HandleArtistClick}>Artists</a>
-             {!isLoginOrSignup && !hideProfile && isMobileMenuOpen && !isLoggedIn && (
-          <button className="nav-button secondary mobile-signup" onClick={() => handleNavigation('/signup')}>Sign Up</button>
-        )}
-            <button className="nav-button primary" onClick={() => handleNavigation('/all-artists')}>Hire an Artist</button>
+            {/* <button
+              className="nav-button primary semicircle-btn"
+              style={{
+                borderRadius: '40px', // full semicircle on both sides
+              }}
+              onClick={() => handleNavigation('/all-artists')}
+            >
+              Hire an Artist
+            </button> */}
             {hideProfile && (
               <button className="nav-button secondary" onClick={() => handleNavigation('/signup')}>Sign Up</button>
             )}
@@ -375,14 +416,49 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
                   className="profile-pic"
                   alt="Profile"
                 />
-
+                {profileCompletion !== null && profileCompletion < 100 && (
+                  <div style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}>
+                    <span style={{
+                      display: 'inline-block',
+                      fontFamily: 'Playfair Display, serif',
+                      fontWeight: 700,
+                      fontSize: '0.98em',
+                      color: '#6c2bd9',
+                      textAlign: 'center',
+                      marginTop: '0',
+                      marginBottom: '0',
+                      background: 'none',
+                      border: 'none',
+                      boxShadow: 'none',
+                      padding: 0,
+                      position: 'absolute',
+                      left: '50%',
+                      top: '70%',
+                      transform: 'translate(-50%, 0%)',
+                      width: 'max-content',
+                      zIndex: 2,
+                      maxWidth: '90vw',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {profileCompletion}% Complete
+                    </span>
+                  </div>
+                )}
                 {openProfile && (
                   <div className="profile-dropdown">
                     <div className="dropdown-item" onClick={showHomeInDropdown ? handleHomeNavigation : handleProfileNavigation}>
                       {showHomeInDropdown ? 'Home' : 'My Profile'}
                     </div>
                     <div className='dropdown-item' onClick={handleuserrequest}>My Event Requests</div>
-                    <div className="dropdown-item">Settings</div>
+                    {/* <div className="dropdown-item">Settings</div> */}
                     <div className="dropdown-item" onClick={handleLogout}>Logout</div>
                   </div>
                 )}

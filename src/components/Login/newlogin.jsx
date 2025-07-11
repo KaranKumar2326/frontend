@@ -135,6 +135,9 @@ const NewLogin = () => {
         } else if (result.role && result.role.toLowerCase() === 'user') {
           localStorage.setItem('role', 'user');
           localStorage.removeItem('artist_id');
+          // Set user_id for user logins (for WelcomePopup logic)
+          const userId = result.userId || result._id || '';
+          localStorage.setItem('user_id', userId);
           navigate('/loggedInHome', {
             state: {
               userDetails: {
@@ -176,8 +179,22 @@ const NewLogin = () => {
       toast.error('Phone number must be exactly 10 digits');
       return;
     }
-    if (signupData.password.length < 8) {
+    // Password validation
+    const password = signupData.password;
+    if (password.length < 8) {
       toast.error('Password must be at least 8 characters long');
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      toast.error('Password must contain at least one uppercase letter');
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      toast.error('Password must contain at least one number');
+      return;
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>\[\]\\/;'`~_-]/.test(password)) {
+      toast.error('Password must contain at least one special symbol');
       return;
     }
     if (signupData.password !== signupData.confirmPassword) {
