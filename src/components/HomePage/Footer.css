@@ -19,12 +19,28 @@
   margin-right: 60px;
 }
 
+.contact-link {
+  color: inherit; /* Maintains the same color as your original text */
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.contact-link:hover {
+  color: #3a86ff; /* Change to your preferred hover color */
+  text-decoration: underline;
+  background-color: rgba(58, 134, 255, 0.1); /* Subtle background on hover */
+  transform: translateX(2px); /* Slight movement effect */
+}
+
+/* For better mobile touch targets */
 @media (max-width: 768px) {
-  .st {
-    padding-left: 20px;
-    margin-right: 20px;
+  .contact-link {
+    padding: 4px 8px;
   }
 }
+
 /* Main Footer Grid */
 .footer-grid {
   display: grid;

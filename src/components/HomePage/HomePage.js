@@ -172,7 +172,7 @@ const HomePage = () => {
     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
   >
-    Jamming sessions near you
+    Join as an Artist
   </button>
 </div>
               </div>

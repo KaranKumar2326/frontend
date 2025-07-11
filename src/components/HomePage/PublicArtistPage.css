@@ -17,6 +17,29 @@
   filter: brightness(0.7);
 }
 
+
+/* Add these to your PublicArtistPage.css */
+.public-artist-tab-body {
+  line-height: 1.6;
+  color: #333;
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .public-artist-tab-content {
+    padding: 1rem !important;
+  }
+  
+  .review-card {
+    padding: 1rem !important;
+  }
+}
+
 .artist-profile-info-card {
   background: #fff;
   border-radius: 20px;

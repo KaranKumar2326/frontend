@@ -2,8 +2,15 @@ import { Link } from "wouter";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import "./CallToAction.css";
+import { useNavigate } from 'react-router-dom';
 
 export default function CallToAction() {
+   const navigate = useNavigate();
+  
+    const handleNavigation = (path) => {
+      navigate(path);
+    };
+
   return (
     <section className="call-to-action-section">
       <div className="call-to-action-bg">
@@ -24,21 +31,8 @@ export default function CallToAction() {
             From intimate gatherings to grand celebrations, find the perfect musical talent to create magical moments.
           </p>
           <div className="cta-buttons">
-            <Link href="/artists">
-              <button
-                className="cta-button primary-btn semicircle-btn"
-                style={{
-                  fontWeight: 'bold',
-                  padding: '20px 60px',
-                  fontSize: '1rem',
-                  borderRadius: '40px', // full semicircle on both sides
-                  backgroundColor: '#6c2bd9',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                }}
-              >
+            <Link onClick={()=>handleNavigation('/all-artists')}>
+              <button className="cta-button primary-btn">
                 Browse Musicians
               </button>
             </Link>

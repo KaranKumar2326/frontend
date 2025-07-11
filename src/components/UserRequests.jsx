@@ -123,7 +123,7 @@ const UserRequests = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post('http://localhost:3001/api/ratings/artist', {
+      await axios.post('https://backend-musical.onrender.com/api/ratings/artist', {
         artistId: selectedEvent.artist._id,
         rating,
         review: reviewText

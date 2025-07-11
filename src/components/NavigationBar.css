@@ -297,12 +297,6 @@
     font-size: 1.25rem;
   }
   
-  .navbar-links {
-    top: 60px;
-    height: calc(100vh - 60px);
-    padding: 0.75rem;
-  }
-  
   .profile-pic {
     width: 45px;
     height: 45px;
