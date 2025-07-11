@@ -127,14 +127,14 @@ const LocationMap = ({ location, address }) => {
         <div className="flex gap-2">
           <button
             onClick={getDirections}
-            className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium flex items-center justify-center"
+            className="flex-1  text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium flex items-center justify-center"
           >
             <Navigation className="w-4 h-4 mr-2" />
             Get Directions
           </button>
           <button
             onClick={openInMaps}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center"
+            className="px-4 py-2 border border-gray-300 text-white-700 rounded-lg  text-sm font-medium flex items-center justify-center"
           >
             <ExternalLink className="w-4 h-4 mr-1" />
             View

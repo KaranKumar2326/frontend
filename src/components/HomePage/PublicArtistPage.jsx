@@ -384,6 +384,15 @@ export default function PublicArtistPage() {
     severity: 'success'
   });
 
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 0,
+    limit: 5
+  });
+
   const handleBookNow = () => {
     const isLoggedIn = localStorage.getItem('token');
     if (!isLoggedIn) {
@@ -439,25 +448,57 @@ export default function PublicArtistPage() {
   };
 
   useEffect(() => {
-    const fetchArtist = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
-        const result = await response.json();
-        if (response.ok && result) {
-          setArtist(result);
-        } else {
-          setError(result.message || "Artist not found");
+      const fetchArtist = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`https://backend-musical.onrender.com/api/artists/${_id}`);
+          const result = await response.json();
+          if (response.ok && result) {
+            setArtist(result);
+            // Fetch reviews after artist data is loaded
+            fetchArtistReviews(result._id);
+          } else {
+            setError(result.message || "Artist not found");
+          }
+        } catch (err) {
+          setError("Artist not found");
         }
-      } catch (err) {
-        setError("Artist not found");
-      }
-      setLoading(false);
-    };
-    fetchArtist();
-  }, [_id]);
+        setLoading(false);
+      };
 
+      const fetchArtistReviews = async (artistId) => {
+        setReviewsLoading(true);
+        try {
+          const response = await fetch(
+            `https://backend-musical.onrender.com/api/ratings/artist/${artistId}/reviews?page=${pagination.currentPage}&limit=${pagination.limit}`
+          );
+          const result = await response.json();
+          if (response.ok) {
+            setReviews(result.data || []);
+            setPagination(prev => ({
+              ...prev,
+              totalPages: result.pagination?.totalPages || 0
+            }));
+          } else {
+            setReviewsError(result.message || "Failed to load reviews");
+          }
+        } catch (err) {
+          setReviewsError("Failed to load reviews");
+        }
+        setReviewsLoading(false);
+      };
+
+      fetchArtist();
+    }, [_id, pagination.currentPage, pagination.limit]);
+
+
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({
+      ...prev,
+      currentPage: newPage
+    }));
+  };
   const getImageSrc = (url) => {
     if (!url) return null;
     let match = url.match(/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
@@ -679,54 +720,160 @@ export default function PublicArtistPage() {
       </Box>
 
       {/* Tabs */}
-      <Box
-        className="public-artist-tabs-row"
-        sx={{
-          flexDirection: { xs: 'column', sm: 'row' }, // Stack tabs on extra small, row on small and up
-          padding: { xs: '0 1rem', md: '0 2rem' }, // Adjust padding
-          gap: { xs: '0.5rem', sm: 'unset' }, // Add gap when stacked
-        }}
-      >
-        {['About', 'Instruments', 'Booking Options'].map((tab, idx) => (
-          <Box
-            key={tab}
-            className={`public-artist-tab${selectedTab === idx ? ' selected' : ''}`}
-            onClick={() => setSelectedTab(idx)}
-            sx={{
-              width: { xs: '100%', sm: 'auto' }, // Full width on extra small, auto on small and up
-            }}
-          >
-            <span className={`public-artist-tab-label${selectedTab === idx ? '' : ' unselected'}`}>
-              {tab}
-            </span>
-          </Box>
-        ))}
-      </Box>
+     {/* Tabs */}
+<Box
+  className="public-artist-tabs-row"
+  sx={{
+    flexDirection: { xs: 'column', sm: 'row' }, // Stack tabs on extra small, row on small and up
+    padding: { xs: '0 1rem', md: '0 2rem' }, // Adjust padding
+    gap: { xs: '0.5rem', sm: 'unset' }, // Add gap when stacked
+  }}
+>
+  {['About', 'Instruments', 'Reviews'].map((tab, idx) => (
+    <Box
+      key={tab}
+      className={`public-artist-tab${selectedTab === idx ? ' selected' : ''}`}
+      onClick={() => setSelectedTab(idx)}
+      sx={{
+        width: { xs: '100%', sm: 'auto' }, // Full width on extra small, auto on small and up
+      }}
+    >
+      <span className={`public-artist-tab-label${selectedTab === idx ? '' : ' unselected'}`}>
+        {tab}
+      </span>
+    </Box>
+  ))}
+</Box>
 
-      {/* Tab Content */}
-      <Box className="public-artist-tab-content" sx={{ padding: { xs: '1rem', md: '2rem' } }}>
-        {selectedTab === 0 && (
-          <div className="public-artist-tab-body">
-            {artist.description || 'No description available.'}
-          </div>
-        )}
-        {selectedTab === 1 && (
-          <div className="public-artist-tab-body">
-            {artist.instruments?.map((i) => i.name).join(', ') || 'No instruments listed.'}
-          </div>
-        )}
-        {selectedTab === 2 && (
-          <div className="public-artist-tab-body">
-            {artist.pricing && artist.pricingUnit
-              ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
-              : 'No booking options listed.'}
-            <br />
-            {artist.email && <span>Email: {artist.email}</span>}
-            <br />
-            {artist.phone && <span>Phone: {artist.phone}</span>}
-          </div>
-        )}
-      </Box>
+{/* Tab Content */}
+<Box className="public-artist-tab-content" sx={{ padding: { xs: '1rem', md: '2rem' } }}>
+  {selectedTab === 0 && (
+    <div className="public-artist-tab-body">
+      {artist.description || 'No description available.'}
+    </div>
+  )}
+  {selectedTab === 1 && (
+    <div className="public-artist-tab-body">
+      {artist.instruments?.map((i) => i.name).join(', ') || 'No instruments listed.'}
+    </div>
+  )}
+  {/* {selectedTab === 2 && (
+    <div className="public-artist-tab-body">
+      {artist.pricing && artist.pricingUnit
+        ? `Booking Price: ₹${artist.pricing} per ${artist.pricingUnit}`
+        : 'No booking options listed.'}
+      <br />
+      {artist.email && <span>Email: {artist.email}</span>}
+      <br />
+      {artist.phone && <span>Phone: {artist.phone}</span>}
+    </div>
+  )} */}
+  {selectedTab === 2 && (
+    <div className="public-artist-tab-body">
+      {reviewsLoading ? (
+        <Box display="flex" justifyContent="center" py={4}>
+          <CircularProgress />
+        </Box>
+      ) : reviewsError ? (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {reviewsError}
+        </Alert>
+      ) : reviews.length === 0 ? (
+        <Typography variant="body1" color="textSecondary">
+          No reviews yet. Be the first to review this artist!
+        </Typography>
+      ) : (
+        <>
+          <Box className="reviews-container">
+            {reviews.map((review, index) => (
+              <Box 
+                key={index} 
+                className="review-card"
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  borderRadius: '8px',
+                  backgroundColor: 'background.paper',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <Box display="flex" alignItems="center" mb={1}>
+                  {renderStars(review.rating)}
+                  <Typography variant="subtitle2" sx={{ ml: 1, fontWeight: 600 }}>
+                    {review.rating.toFixed(1)}/5
+                  </Typography>
+                </Box>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  {review.review}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {new Date(review.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
+          {pagination.totalPages > 1 && (
+            <Box 
+              display="flex" 
+              justifyContent="center" 
+              alignItems="center"
+              mt={3}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: { xs: 1, sm: 2 }
+              }}
+            >
+              <Button
+                disabled={pagination.currentPage === 1}
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                variant="outlined"
+                size="small"
+                sx={{
+                  minWidth: '100px',
+                  order: { xs: 1, sm: 0 }
+                }}
+              >
+                Previous
+              </Button>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  mx: { sm: 2 },
+                  textAlign: 'center',
+                  order: { xs: 0, sm: 1 }
+                }}
+              >
+                Page {pagination.currentPage} of {pagination.totalPages}
+              </Typography>
+              <Button
+                disabled={pagination.currentPage === pagination.totalPages}
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                variant="outlined"
+                size="small"
+                sx={{
+                  minWidth: '100px',
+                  order: { xs: 2, sm: 2 }
+                }}
+              >
+                Next
+              </Button>
+            </Box>
+          )}
+        </>
+      )}
+    </div>
+  )}
+</Box>
 
       {/* Booking Form Popup */}
       <BookingFormPopup

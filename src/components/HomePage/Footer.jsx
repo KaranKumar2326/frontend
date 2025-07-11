@@ -43,11 +43,11 @@ const Footer = () => (
           <ul className="footer-contact">
             <li>
               <Phone className="contact-icon" />
-              <span>7779887407</span>
+              <a href="tel:7779887407" className="contact-link">7779887407</a>
             </li>
             <li>
               <Mail className="contact-icon" />
-              <span>musicalmeet07@gmail.com</span>
+              <a href="mailto:musicalmeet07@gmail.com" className="contact-link">musicalmeet07@gmail.com</a>
             </li>
           </ul>
         </div>
