@@ -59,6 +59,10 @@ const Login = () => {
         localStorage.setItem('email', result.email);
         localStorage.setItem('name', result.name);
         localStorage.setItem('isLoggedIn', 'true');
+        // Set user_id for user popup/profile logic
+        if (result.role && result.role.toLowerCase() === 'user') {
+          localStorage.setItem('user_id', result.userId || result._id || '');
+        }
   
         if (result.role && result.role.toLowerCase() === 'artist') {
           localStorage.setItem('role', 'artist');

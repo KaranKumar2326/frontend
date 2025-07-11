@@ -73,6 +73,7 @@ const SECURITY_QUESTIONS = [
   'What city were you born in?'
 ];
 
+
 const ProfilePage = ({ onProfileUpdate }) => {
   // State for showing image action buttons on hover
   const [showImageButtons, setShowImageButtons] = useState(false);
@@ -97,12 +98,52 @@ const ProfilePage = ({ onProfileUpdate }) => {
   ]);
   const [securityError, setSecurityError] = useState(null);
   const [securitySuccess, setSecuritySuccess] = useState(null);
+  const [genres, setGenres] = useState([]); // List of all genres from DB
+  const [selectedGenres, setSelectedGenres] = useState([]); // Array of selected genre ObjectIds
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
+  const [genreSearch, setGenreSearch] = useState('');
+  const genreDropdownRef = useRef(null);
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!edit || !showGenreDropdown) return;
+    const handleClick = (event) => {
+      if (genreDropdownRef.current && !genreDropdownRef.current.contains(event.target)) {
+        setShowGenreDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [edit, showGenreDropdown]);
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
   const navigate = useNavigate();
-  
   // Get the userId from URL or localStorage
   const userId = urlUserId || localStorage.getItem('userId');
+  // Fetch genres from backend on mount
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/meta/genres`);
+        if (res.ok) {
+          const data = await res.json();
+          setGenres(data);
+        } else {
+          setGenres([]);
+        }
+      } catch {
+        setGenres([]);
+      }
+    };
+    fetchGenres();
+  }, []);
+
+  // When user data loads, set selectedGenres from user.genres
+  useEffect(() => {
+    if (user && Array.isArray(user.genres)) {
+      // user.genres may be array of objects or array of ids
+      setSelectedGenres(user.genres.map(g => (typeof g === 'string' ? g : g._id)));
+    }
+  }, [user]);
 
   // Memoized function to get auth headers
   const getAuthHeaders = useCallback(() => {
@@ -146,6 +187,23 @@ const ProfilePage = ({ onProfileUpdate }) => {
       }
       setUser(userData);
       setForm(userData);
+      // Set securitySlots from userData.securityQuestions
+      if (userData.securityQuestions && Array.isArray(userData.securityQuestions)) {
+        const slots = [];
+        for (let i = 0; i < 5; i++) {
+          if (userData.securityQuestions[i]) {
+            slots.push({
+              questionIdx: userData.securityQuestions[i].questionIdx !== undefined && userData.securityQuestions[i].questionIdx !== null
+                ? String(userData.securityQuestions[i].questionIdx)
+                : '',
+              answer: userData.securityQuestions[i].answer,
+            });
+          } else {
+            slots.push({ questionIdx: '', answer: '' });
+          }
+        }
+        setSecuritySlots(slots);
+      }
     } catch (err) {
       console.error('Error fetching user data:', err);
       setError(err.message || 'Failed to load profile');
@@ -167,28 +225,8 @@ const ProfilePage = ({ onProfileUpdate }) => {
     return () => controller.abort();
   }, [fetchUserData]);
 
-  // Fetch user's existing security questions
-  useEffect(() => {
-    if (!userId) return;
-    fetch(`${API_BASE_URL}/users/${userId}`)
-      .then(res => res.json())
-      .then(user => {
-        if (user.securityQuestions && Array.isArray(user.securityQuestions)) {
-          const slots = [];
-          for (let i = 0; i < 5; i++) {
-            if (user.securityQuestions[i]) {
-              slots.push({
-                questionIdx: user.securityQuestions[i].questionIdx,
-                answer: user.securityQuestions[i].answer,
-              });
-            } else {
-              slots.push({ questionIdx: '', answer: '' });
-            }
-          }
-          setSecuritySlots(slots);
-        }
-      });
-  }, [userId]);
+  // (Removed duplicate security questions fetch. Now handled in fetchUserData.)
+
 
   // Handle form changes
   const handleChange = e => {
@@ -196,38 +234,49 @@ const ProfilePage = ({ onProfileUpdate }) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // Handle genre selection (multi-select)
+  const handleGenreChange = (genreId) => {
+    setSelectedGenres(prev =>
+      prev.includes(genreId)
+        ? prev.filter(id => id !== genreId)
+        : [...prev, genreId]
+    );
+    setShowGenreDropdown(true);
+  };
+
+  // Remove genre chip
+  const handleRemoveGenre = (genreId) => {
+    setSelectedGenres(prev => prev.filter(id => id !== genreId));
+  };
+
   // Update profile
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    
     if (!userId) {
       toast.error('User not found. Please log in again.');
       navigate('/login');
       return;
     }
-
     try {
+      // Merge genres into form
+      const updatedForm = { ...form, genres: selectedGenres };
       const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         credentials: 'include',
-        body: JSON.stringify(form)
+        body: JSON.stringify(updatedForm)
       });
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Failed to update profile');
       }
-
       const updatedUser = await response.json();
       setUser(updatedUser);
       setForm(updatedUser);
       setEdit(false);
-      
       if (onProfileUpdate) {
         onProfileUpdate(updatedUser);
       }
-      
       toast.success('Profile updated successfully');
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -379,13 +428,13 @@ const ProfilePage = ({ onProfileUpdate }) => {
   const handleSaveSecurityQuestions = async () => {
     setSecurityError(null);
     setSecuritySuccess(null);
-    // Validate: 5 unique questions, all answered
-    const selected = securitySlots.filter(s => s.questionIdx !== '' && s.answer.trim() !== '');
-    if (selected.length !== 5) {
+    // Always send exactly 5 security questions, all with valid questionIdx and answer
+    const valid = securitySlots.every(s => s.questionIdx !== '' && s.answer.trim() !== '');
+    if (!valid) {
       setSecurityError('Please select and answer exactly 5 questions.');
       return;
     }
-    const questionSet = new Set(selected.map(s => s.questionIdx));
+    const questionSet = new Set(securitySlots.map(s => s.questionIdx));
     if (questionSet.size !== 5) {
       setSecurityError('Please select 5 different questions.');
       return;
@@ -395,12 +444,28 @@ const ProfilePage = ({ onProfileUpdate }) => {
         method: 'PUT',
         headers: getAuthHeaders(),
         body: JSON.stringify({
-          securityQuestions: securitySlots
-            .filter(s => s.questionIdx !== '' && s.answer.trim() !== '')
-            .map(s => ({ questionIdx: s.questionIdx, answer: s.answer })),
+          securityQuestions: securitySlots.map(s => ({ questionIdx: Number(s.questionIdx), answer: s.answer })),
         }),
       });
       if (!res.ok) throw new Error('Failed to save security questions.');
+      const data = await res.json();
+      // Update securitySlots with latest answers from backend
+      if (data.user && Array.isArray(data.user.securityQuestions)) {
+        const slots = [];
+        for (let i = 0; i < 5; i++) {
+          if (data.user.securityQuestions[i]) {
+            slots.push({
+              questionIdx: data.user.securityQuestions[i].questionIdx !== undefined && data.user.securityQuestions[i].questionIdx !== null
+                ? String(data.user.securityQuestions[i].questionIdx)
+                : '',
+              answer: data.user.securityQuestions[i].answer,
+            });
+          } else {
+            slots.push({ questionIdx: '', answer: '' });
+          }
+        }
+        setSecuritySlots(slots);
+      }
       setSecuritySuccess('Security questions saved!');
       setTimeout(() => setSecuritySuccess(null), 2000);
     } catch (err) {
@@ -699,123 +764,260 @@ const ProfilePage = ({ onProfileUpdate }) => {
             marginBottom: '1.2rem',
             letterSpacing: '0.5px',
             fontFamily: 'Playfair Display, serif',
-            textShadow: '0 2px 8px rgba(108,43,217,0.08)',
-          }}
-        >
-          Welcome, <span style={{ fontFamily: 'Playfair Display, serif' }}>{user.name}</span>
-        </h1>
-
-        <form
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 18,
-          }}
-          onSubmit={handleUpdateProfile}
-        >
-          <label>
-            Name
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <label>
-            Email
-            <input
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <label>
-            Phone
-            <input
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <label>
-            Pincode
-            <input
-              name="pincode"
-              value={form.pincode}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <label>
-            Genre
-            <input
-              name="genre"
-              value={form.genre}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <label>
-            Address
-            <input
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              disabled={!edit}
-              style={inputStyle(edit)}
-            />
-          </label>
-
-          <div style={{ display: 'flex', gap: 16, marginTop: 18, flexWrap: 'wrap' }}>
-            {!edit && (
-              <button
-                type="button"
-                style={editBtnStyle}
-                onClick={() => setEdit(true)}
-              >
-                Edit
-              </button>
-            )}
-
-            {edit && (
-              <button type="submit" style={saveBtnStyle}>
-                Save
-              </button>
-            )}
-
-            {edit && (
-              <button
-                type="button"
-                style={cancelBtnStyle}
-                onClick={() => {
-                  setEdit(false);
-                  setForm(user);
+            textShadow: '0 2px 8px rgba(108,43,217,0.08)'
+          }}>
+            Welcome, <span style={{ fontFamily: 'Playfair Display, serif' }}>{user.name}</span>
+          </h1>
+          
+          <form 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 18 
+            }} 
+            onSubmit={handleUpdateProfile}
+          >
+            <label>
+              Name
+              <input 
+                name="name" 
+                value={form.name} 
+                onChange={handleChange} 
+                disabled={!edit} 
+                style={inputStyle(edit)} 
+              />
+            </label>
+            
+            <label>
+              Email
+              <input 
+                name="email" 
+                value={form.email} 
+                onChange={handleChange} 
+                disabled={!edit} 
+                style={inputStyle(edit)} 
+              />
+            </label>
+            
+            <label>
+              Phone
+              <input 
+                name="phone" 
+                value={form.phone} 
+                onChange={handleChange} 
+                disabled={!edit} 
+                style={inputStyle(edit)} 
+              />
+            </label>
+            
+            <label>
+              Pincode
+              <input 
+                name="pincode" 
+                value={form.pincode} 
+                onChange={handleChange} 
+                disabled={!edit} 
+                style={inputStyle(edit)} 
+              />
+            </label>
+            
+            <label>
+              Genres
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  marginTop: 2
                 }}
+                ref={genreDropdownRef}
               >
-                Cancel
-              </button>
-            )}
-          </div>
-        </form>
+                <div
+                  style={{
+                    border: edit ? '1.5px solid #6c2bd9' : '1.5px solid #eee',
+                    borderRadius: '6px',
+                    background: edit ? '#f7f5fc' : '#f9f9f9',
+                    minHeight: '44px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 10px',
+                    cursor: edit ? 'pointer' : 'default',
+                    opacity: edit ? 1 : 0.7,
+                  }}
+                  onClick={() => edit && setShowGenreDropdown(v => !v)}
+                >
+                  {selectedGenres.length === 0 && (
+                    <span style={{ color: '#aaa', fontSize: '1rem' }}>
+                      {edit ? 'Select genres...' : 'No genres selected'}
+                    </span>
+                  )}
+                  {selectedGenres.map(id => {
+                    const genre = genres.find(g => g._id === id);
+                    if (!genre) return null;
+                    return (
+                      <span
+                        key={id}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          background: '#6c2bd9',
+                          color: '#fff',
+                          borderRadius: '16px',
+                          padding: '2px 10px 2px 10px',
+                          fontWeight: 600,
+                          fontSize: '0.98rem',
+                          margin: '2px 2px',
+                          cursor: edit ? 'pointer' : 'default',
+                        }}
+                      >
+                        {genre.name}
+                        {edit && (
+                          <span
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleRemoveGenre(id);
+                            }}
+                            style={{
+                              marginLeft: 6,
+                              fontWeight: 900,
+                              fontSize: '1.1em',
+                              cursor: 'pointer',
+                              color: '#fff',
+                              paddingLeft: 2
+                            }}
+                          >×</span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
+                {/* Dropdown */}
+                {edit && showGenreDropdown && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '110%',
+                      left: 0,
+                      width: '100%',
+                      background: '#fff',
+                      border: '1.5px solid #6c2bd9',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 16px rgba(108,43,217,0.10)',
+                      zIndex: 10,
+                      maxHeight: 220,
+                      overflowY: 'auto',
+                      padding: '8px 0',
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search genres..."
+                      value={genreSearch}
+                      onChange={e => setGenreSearch(e.target.value)}
+                      style={{
+                        width: '92%',
+                        margin: '0 4%',
+                        marginBottom: 6,
+                        padding: '6px 10px',
+                        borderRadius: 6,
+                        border: '1px solid #eee',
+                        fontSize: '1rem',
+                        outline: 'none',
+                        background: '#f7f5fc',
+                      }}
+                      autoFocus
+                    />
+                    {genres
+                      .filter(g => g.name.toLowerCase().includes(genreSearch.toLowerCase()))
+                      .map(genre => (
+                        <div
+                          key={genre._id}
+                          style={{
+                            padding: '7px 18px',
+                            cursor: 'pointer',
+                            background: selectedGenres.includes(genre._id)
+                              ? 'rgba(108,43,217,0.08)'
+                              : '#fff',
+                            color: '#6c2bd9',
+                            fontWeight: selectedGenres.includes(genre._id) ? 700 : 500,
+                            fontSize: '1.05rem',
+                            borderBottom: '1px solid #f0f0f0',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleGenreChange(genre._id);
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedGenres.includes(genre._id)}
+                            readOnly
+                            style={{ marginRight: 10 }}
+                          />
+                          {genre.name}
+                        </div>
+                      ))}
+                    {genres.filter(g => g.name.toLowerCase().includes(genreSearch.toLowerCase())).length === 0 && (
+                      <div style={{ color: '#aaa', padding: '8px 18px' }}>No genres found</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </label>
+            
+            <label>
+              Address
+              <input 
+                name="address" 
+                value={form.address} 
+                onChange={handleChange} 
+                disabled={!edit} 
+                style={inputStyle(edit)} 
+              />
+            </label>
+            
+            <div style={{ display: 'flex', gap: 16, marginTop: 18 }}>
+              {!edit && (
+                <button 
+                  type="button" 
+                  style={editBtnStyle} 
+                  onClick={() => setEdit(true)}
+                >
+                  Edit
+                </button>
+              )}
+              
+              {edit && (
+                <button 
+                  type="submit" 
+                  style={saveBtnStyle}
+                >
+                  Save
+                </button>
+              )}
+              
+              {edit && (
+                <button 
+                  type="button" 
+                  style={cancelBtnStyle} 
+                  onClick={() => { 
+                    setEdit(false); 
+                    setForm(user); 
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-
-    {/* Security Questions Section */}
-    <div
-      style={{
+      
+      {/* Security Questions Section */}
+      <div style={{
         background: '#f7f5fc',
         border: '1.5px solid #6c2bd9',
         borderRadius: 16,

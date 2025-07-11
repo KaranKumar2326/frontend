@@ -642,7 +642,7 @@ export default function PublicArtistPage() {
             </div>
           </Box>
           {/* Book Now button (right, absolute) */}
-          <button
+          {/* <button
             className="public-artist-book-btn"
             style={{
               position: { xs: 'static', md: 'absolute' }, // Static on small, absolute on medium and up
@@ -655,7 +655,7 @@ export default function PublicArtistPage() {
             onClick={handleBookNow}
           >
             Book Now
-          </button>
+          </button> */}
           {/* Social Media Links below Book Now */}
           {artist.socialMediaLinks && artist.socialMediaLinks.length > 0 && (
             <div

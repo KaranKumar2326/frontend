@@ -12,9 +12,13 @@ import { artistImageUrls } from '../data/mockData';
 import FeaturedArtists from './FeaturedArtist';
 import ImageSlider from './ImageSlider';
 import NavigationBar from '../NavigationBar';
+
 import AllArtistsList from './AllArtistsList';
+import WelcomePopup from '../WelcomePopup';
+import { isArtistProfileIncomplete } from './artistProfileUtils';
 
 function LoggedInHomePageArtist() {
+  
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -23,7 +27,19 @@ function LoggedInHomePageArtist() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryMedia, setGalleryMedia] = useState([]);
   const [artistId, setArtistId] = useState('');
-
+  const [artistProfile, setArtistProfile] = useState(null);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  // Prevent scrolling when popup is open
+  useEffect(() => {
+    if (showWelcomePopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showWelcomePopup]);
   // Check for artist login on mount
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -69,6 +85,29 @@ function LoggedInHomePageArtist() {
           navigate('/login');
           return;
         }
+        // Fetch this artist's profile
+        if (id) {
+          const artistRes = await fetch(`https://backend-musical.onrender.com/api/artists/${id}`);
+          if (artistRes.ok) {
+            const artistData = await artistRes.json();
+            setArtistProfile(artistData);
+            // Only show popup if not already shown in this session
+            // DEBUG: Log profile completeness and popup state
+            console.log('Fetched artist profile:', artistData);
+            console.log('isArtistProfileIncomplete:', isArtistProfileIncomplete(artistData));
+            if (isArtistProfileIncomplete(artistData)) {
+              setTimeout(() => {
+                setShowWelcomePopup(true);
+                sessionStorage.setItem('artistProfilePopupShown', '1');
+                console.log('Welcome popup should be visible!');
+              }, 3000); // 3 second delay
+            } else {
+              setShowWelcomePopup(false);
+              sessionStorage.removeItem('artistProfilePopupShown');
+              console.log('Profile complete, popup hidden.');
+            }
+          }
+        }
         // Fetch all artists for the gallery
         const allArtistsResponse = await fetch('https://backend-musical.onrender.com/api/artists');
         const allArtistsData = await allArtistsResponse.json();
@@ -113,6 +152,14 @@ function LoggedInHomePageArtist() {
     fetchData();
   }, [navigate]);
 
+
+  // Always reset popup session flag if profile is now complete
+  useEffect(() => {
+    if (artistProfile && !isArtistProfileIncomplete(artistProfile)) {
+      sessionStorage.removeItem('artistProfilePopupShown');
+    }
+  }, [artistProfile]);
+
   if (loading) {
     return <div className="loading-spinner">Loading...</div>;
   }
@@ -139,6 +186,33 @@ function LoggedInHomePageArtist() {
   return (
     <>
       <NavigationBar />
+      <WelcomePopup
+        open={showWelcomePopup}
+        onClose={() => setShowWelcomePopup(false)}
+        instructionMsg="Let your music journey begin! Complete your artist profile so fans and event organizers can find and connect with you."
+        artistId={artistId}
+        incompleteFields={(() => {
+          // List of required fields (should match artistProfileUtils.js)
+          const requiredFields = [
+            'name', 'email', 'phone', 'stageName',
+            'pricing', 'imageUrl',
+            'genres', 'instruments', 'coverImage', 'securityQuestions'
+          ];
+          const profile = artistProfile || {};
+          return requiredFields.map(field => {
+            let value = profile[field];
+            let completed = false;
+            if (field === 'securityQuestions') {
+              completed = Array.isArray(value) && value.length > 0 && value.every(q => q && q.answer && (typeof q.answer !== 'string' || q.answer.trim() !== ''));
+            } else if (Array.isArray(value)) {
+              completed = value.length > 0;
+            } else {
+              completed = !!value && (typeof value !== 'string' || value.trim() !== '');
+            }
+            return { field, completed };
+          });
+        })()}
+      />
       <div className="page-container">
         <div className="background-image">
           </div>
