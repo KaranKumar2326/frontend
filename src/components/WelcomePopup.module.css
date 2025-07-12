@@ -1,6 +1,4 @@
-
 .welcome-popup-responsive {
-  /* Default desktop styles */
   width: 400px;
   min-width: 320px;
   max-width: 90vw;
@@ -13,59 +11,66 @@
   box-sizing: border-box;
   position: fixed;
   margin: 0 auto;
-  height: 700px !important;
-  overflow-y: none;
+  height: 700px;
+  overflow-y: auto;
   max-height: 85vh;
   background: #fff;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
   z-index: 1000;
 }
 
+@media (min-width: 601px) {
+          .welcome-popup-responsive .go-to-profile-btn {
+            padding: 16px 48px !important;
+            font-size: 1.25rem !important;
+          }
+        }
+
+
+/* Mobile Styles */
 @media (max-width: 600px) {
   .welcome-popup-responsive {
-    width: 92vw !important;
-    min-width: 0 !important;
-    max-width: 95vw !important;
-    padding: 0.2rem 0.05rem 0.4rem 0.05rem !important;
-    border-radius: 8px !important;
-    left: 4vw !important;
-    right: 4vw !important;
-    top: 2vw !important;
-    font-size: 0.75rem !important;
-    box-sizing: border-box !important;
-    position: fixed !important;
-    margin: 0 !important;
-    height: 100dvh !important;
-    max-height: 60dvh !important;
-    min-height: 80px !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain !important;
-    transform: none !important;
-    background: #fff !important;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.10) !important;
-    z-index: 1000 !important;
+    width: 92vw;
+    min-width: unset;
+    max-width: 95vw;
+    padding: 0.8rem 0.6rem;
+    border-radius: 12px;
+    left: 50%;
+    top: 5vh;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    height: auto;
+    min-height: 80px;
+    max-height: 85vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #fff;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
   }
+
   .welcome-popup-responsive h2 {
-    font-size: 0.82rem !important;
-    margin-bottom: 0.18rem !important;
-    word-break: break-word !important;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
   }
+
   .welcome-popup-responsive p,
   .welcome-popup-responsive ul,
   .welcome-popup-responsive button {
-    font-size: 0.72rem !important;
-    word-break: break-word !important;
+    font-size: 0.85rem;
+    word-break: break-word;
   }
+
   .welcome-popup-responsive ul {
-    margin-left: 0.05rem !important;
-    margin-right: 0.05rem !important;
-    padding-left: 0.3rem !important;
+    margin: 0.5rem 0;
+    padding-left: 1rem;
   }
+
   .welcome-popup-responsive button {
-    padding: 4px 6px !important;
-    min-width: 50px !important;
-    border-radius: 10px !important;
-    font-size: 0.72rem !important;
-    margin-bottom: 0.15rem !important;
+    padding: 6px 10px;
+    min-width: 60px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
   }
 }

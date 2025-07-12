@@ -482,7 +482,7 @@ const EventPage = () => {
                 </p>
               </div>
               
-              {/* <button
+               <button
                 onClick={handleRegister}
                 disabled={!event.isPaid && (event.currentCapacity || 0) >= event.maxCapacity}
                 className={`w-full py-3 px-6 rounded-xl font-medium text-sm transition-all duration-200 ${
@@ -493,7 +493,7 @@ const EventPage = () => {
                     : 'bg-violet-600 text-white hover:bg-violet-700 shadow-md hover:shadow-lg hover:scale-[1.02]'
                 }`}
               >
-                {/* {isRegistered ? (
+                 {isRegistered ? (
                   <div className="flex items-center justify-center">
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Registered
@@ -501,12 +501,12 @@ const EventPage = () => {
                 ) : (event.currentCapacity || 0) >= event.maxCapacity ? (
                   'Event Full'
                 ) : (
-                  // <div className="flex items-center justify-center">
-                  //   <Ticket className="w-4 h-4 mr-2" />
-                  //   {event.isPaid ? 'Buy Ticket' : 'Join Session'}
-                  // </div>
+                   <div className="flex items-center justify-center">
+                     <Ticket className="w-4 h-4 mr-2" />
+                     {event.isPaid ? 'Buy Ticket' : 'Join Session'}
+                   </div>
                 )} 
-              </button> */}
+              </button>
               
               <div className="mt-5 pt-4 border-t border-gray-100">
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-2">

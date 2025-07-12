@@ -59,7 +59,10 @@ const HowItWorksPage = () => {
     setOpenIndexes(prev => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-return (
+  // Helper to detect mobile view
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 700;
+
+  return (
     <div style={{
       minHeight: '100vh',
       width: '100%',
@@ -84,7 +87,7 @@ return (
         alignItems: 'stretch',
         justifyContent: 'center',
         gap: '0',
-        padding: '0 0 1.2rem 0',
+        padding: '0 0 0 0',
         minHeight: '260px',
         background: 'none',
         boxShadow: '0 8px 40px 0 rgba(108,43,217,0.22)',
@@ -103,7 +106,7 @@ return (
           borderBottomRightRadius: '0',
           overflow: 'hidden',
         }}>
-          <img src="/bg2.jpg" alt="About Us" style={{
+          <img src="/bg1.jpg" alt="About Us" style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
@@ -133,7 +136,7 @@ return (
             color: '#3f2a6b',
             fontSize: '1.18rem',
             fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
-            textAlign: 'center',
+            textAlign: 'left',
             fontWeight: 500,
             lineHeight: 1.6,
             background: 'none',
@@ -141,20 +144,31 @@ return (
             padding: 0,
             boxShadow: 'none',
           }}>
-            <span style={{ fontWeight: 700, color: '#6c2bd9' }}>Built for music lovers, by music lovers.</span><br /><br />
-            Musical Meet connects talented artists, passionate music lovers, and event hosts. Whether you're a performer looking to showcase your skills or a host searching for the perfect live act, our app makes it easy and inspiring to connect, book, and create memorable moments.<br /><br />
-            <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Artists:</span> Share your music, reach new audiences, and get booked for events and sessions.<br />
-            <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Hosts & Fans:</span> Discover and book verified musicians and performers for your events, parties, or gatherings.<br /><br />
-            Join Musical Meet and be part of a community where creativity and connection are at the heart of every note.
+            <span style={{ display: 'block', textAlign: 'center', fontWeight: 700, color: '#6c2bd9' }}>Built for music lovers, by music lovers.</span><br /><br />
+            {isMobile ? (
+              <>
+                Musical Meet connects artists, music lovers, and event hosts. Whether you want to perform or book live music, our app makes it easy to connect and create memorable moments.<br /><br />
+                <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Artists:</span> Share your music and get booked for events.<br />
+                <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Users:</span> Discover and book musicians for your events.<br /><br />
+                Join Musical Meet and be part of a creative community.
+              </>
+            ) : (
+              <>
+                Musical Meet connects talented artists, passionate music lovers, and event hosts. Whether you're a performer looking to showcase your skills or a host searching for the perfect live act, our app makes it easy and inspiring to connect, book, and create memorable moments.<br /><br />
+                <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Artists:</span> Share your music, reach new audiences, and get booked for events and sessions.<br />
+                <span style={{ color: '#6c2bd9', fontWeight: 600 }}>For Users:</span> Discover and book verified musicians and performers for your events, parties, or gatherings.<br /><br />
+                Join Musical Meet and be part of a community where creativity and connection are at the heart of every note.
+              </>
+            )}
           </p>
         </div>
       </div>
       <div className="howitworks-main">
         <div className="howitworks-options-container">
-          <div style={{ width: '100%' }}>
-            <h1 className="howitworks-title">How It Works</h1>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <h1 className="howitworks-title" style={{ marginLeft: 'auto', marginRight: 'auto' }}>How It Works</h1>
           </div>
-          <div className="howitworks-options-row">
+          <div className="howitworks-options-row" style={{ justifyContent: 'center' }}>
             <div
               className={`howitworks-option${selected === 'artist' ? ' selected' : ''}`}
               onClick={() => setSelected('artist')}
@@ -176,7 +190,7 @@ return (
           <div style={{ width: '100%' }}>
             {accordionData[selected].map((item, idx) => (
               <div key={idx} style={{ marginBottom: '1.2rem', boxShadow: '0 1px 4px rgba(108,43,217,0.04)', background: '#f9f7fd', borderRadius: '10px', transition: 'border-radius 0.3s' }}>
-                <div style={{ padding: '0 1.2rem' }}>
+                <div>
                   <button
                     className="sub-heading"
                     style={{
@@ -201,13 +215,14 @@ return (
                     onClick={() => handleAccordionClick(idx)}
                     aria-expanded={!!openIndexes[idx]}
                   >
-                    <span>{item.question}</span>
+                    <span style={{paddingLeft: '0.7rem'}}>{item.question}</span>
                     <span
                       className={`howitworks-arrow${openIndexes[idx] ? ' open' : ''}`}
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         marginLeft: 'auto',
+                        paddingRight: '0.7rem',
                         transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
                         transform: openIndexes[idx] ? 'rotate(180deg)' : 'rotate(0deg)',
                         fontSize: '1.5em',
@@ -221,12 +236,17 @@ return (
                       </svg>
                     </span>
                   </button>
-                  <div
-                    className={`howitworks-answer howitworks-desc-animated${openIndexes[idx] ? ' open' : ''}`}
-                    style={{ padding: '0 0 1.2rem 0', borderRadius: '0 0 10px 10px' }}
-                  >
-                    {openIndexes[idx] && item.answer}
-                  </div>
+                  {openIndexes[idx] && (
+                    <div
+                      className={`howitworks-answer howitworks-desc-animated open`}
+                      style={{
+                        borderRadius: '0 0 10px 10px',
+                        background: 'linear-gradient(135deg, #f3eafd 60%, #c1a3e5ff 100%)'
+                      }}
+                    >
+                      {item.answer}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

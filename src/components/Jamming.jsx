@@ -588,9 +588,9 @@ const JammingPage = () => {
                           {event.isPaid ? event.price : "FREE"}
                         </div>
                         
-                        {/* <button className="text-black hover:text-black font-medium group-hover:translate-x-1 transition-all duration-200">
+                        <button className="text-black hover:text-black font-medium group-hover:translate-x-1 transition-all duration-200">
                           Join Event →
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   </div>

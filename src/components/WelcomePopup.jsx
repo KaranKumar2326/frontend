@@ -37,21 +37,71 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
     (Array.isArray(incompleteFields) && incompleteFields.length > 0)
   );
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 600;
   if (!open && !visible) return null;
   // App's main purple: #6c2bd9, yellow: #f0e11a, font: inherit or 'Poppins', sans-serif
+  const shortInstruction = isUser
+    ? 'Complete your profile to book artists and join sessions.'
+    : 'Complete your artist profile to get discovered!';
+  
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      zIndex: 2000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      pointerEvents: open ? 'auto' : 'none',
-    }}>
+    <>
+      <style>{`
+        @media (max-width: 600px) {
+          .welcome-popup-responsive {
+            margin-top: 0.3rem !important;
+            padding-top: 0.9rem !important;
+            max-height: 500px !important;
+            overflow-y: auto !important;
+            width: 300px !important;
+            max-width: 98vw !important;
+          }
+          .welcome-popup-responsive h2 {
+            font-size: 0.9rem !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .welcome-popup-responsive .profile-checklist {
+            font-size: 0.78rem !important;
+          }
+          .welcome-popup-responsive .profile-checklist-title {
+            font-size: 0.89rem !important;
+          }
+          .welcome-popup-responsive .profile-checklist-badge {
+            padding: 3px 7px !important;
+            font-size: 0.78rem !important;
+            min-width: 46px !important;
+          }
+          .welcome-popup-responsive .profile-checklist-badge span:last-child {
+            font-size: 0.78rem !important;
+          }
+          .welcome-popup-responsive .profile-checklist-badge .profile-checklist-sign {
+            display: none !important;
+          }
+        }
+        .welcome-popup-responsive .instruction-message {
+          font-size: 0.95rem !important;
+          padding: 0.8rem 0.9rem !important;
+        }
+@media (min-width: 601px) {
+  .welcome-popup-responsive .go-to-profile-btn {
+    padding: 16px 48px !important;
+    font-size: 1.25rem !important;
+  }
+}
+      `}</style>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 2000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: open ? 'auto' : 'none',
+      }}>
       {/* Blur effect overlay */}
       <div
         style={{
@@ -91,10 +141,10 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
         </h2>
         {instructionMsg ? (
           <>
-            <p style={{
+            <p className="instruction-message" style={{
               color: '#6c2bd9',
               fontSize: '1.18rem',
-              marginBottom: '1.2rem',
+              marginBottom: '0.3rem',
               fontFamily: 'inherit, Poppins, sans-serif',
               lineHeight: 1.7,
               fontWeight: 500,
@@ -104,32 +154,38 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
               display: 'inline-block',
               boxShadow: '0 2px 8px rgba(108,43,217,0.07)'
             }}>
-              {isUser ? (
+              {isMobile ? (
                 <>
-                  Please complete your profile so you can book artists, join jamming sessions, and connect with the community!<br/>
-                  <span style={{color:'#222', fontWeight:400}}>{instructionMsg}</span>
+                  {shortInstruction}
                 </>
               ) : (
-                <>
-                  Please complete your artist profile so fans and event organizers can discover you!<br/>
-                  <span style={{color:'#222', fontWeight:400}}>{instructionMsg}</span>
-                </>
+                isUser ? (
+                  <>
+                    Please complete your profile so you can book artists, join jamming sessions, and connect with the community!<br/>
+                    <span style={{color:'#222', fontWeight:400}}>{instructionMsg}</span>
+                  </>
+                ) : (
+                  <>
+                    Please complete your artist profile so fans and event organizers can discover you!<br/>
+                    <span style={{color:'#222', fontWeight:400}}>{instructionMsg}</span>
+                  </>
+                )
               )}
             </p>
             {/* Show completion status for each required field (artist or user) */}
             {showChecklist && (
-              <div style={{
-                margin: '1.2rem auto 1.5rem auto',
+              <div className="profile-checklist" style={{
+                margin: '1.2rem auto 0.3rem auto',
                 maxWidth: 600,
                 background: '#f8f6ff',
                 borderRadius: 16,
                 padding: '1.1rem 1.2rem',
                 boxShadow: '0 2px 8px rgba(108,43,217,0.07)',
                 textAlign: 'left',
-                fontSize: '1.08rem',
+                fontSize: '0.97rem',
                 fontFamily: 'inherit, Poppins, sans-serif',
               }}>
-                <div style={{fontWeight:600, color:'#6c2bd9', marginBottom:12, fontSize:'1.13rem'}}>
+                <div className="profile-checklist-title" style={{fontWeight:600, color:'#6c2bd9', marginBottom:12, fontSize:'1.13rem'}}>
                   Profile Completion Checklist:
                 </div>
                 <div style={{
@@ -140,7 +196,7 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
                 }}>
                   {Array.isArray(incompleteFields) && incompleteFields.length > 0 ? (
                     incompleteFields.map(({ field, completed }) => (
-                      <span key={field} style={{
+                      <span key={field} className="profile-checklist-badge" style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         background: completed ? '#eafbe7' : '#fff0f0',
@@ -154,7 +210,7 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
                         boxShadow: completed ? '0 1px 4px #eafbe7' : '0 1px 4px #fff0f0',
                         transition: 'all 0.2s',
                       }}>
-                        <span style={{fontSize:'1.15em', marginRight:7}}>{completed ? '✔️' : '✖️'}</span>
+                        <span className="profile-checklist-sign" style={{fontSize:'1.15em', marginRight:7}}>{completed ? '✔️' : '✖️'}</span>
                         <span>{fieldLabels[field] || field}</span>
                       </span>
                     ))
@@ -206,14 +262,15 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
               navigate(`/publicartistprofilepage/${artistId}`);
               onClose && onClose();
             }}
+            className="go-to-profile-btn"
             style={{
               background: '#6c2bd9',
               color: 'white',
               border: 'none',
               borderRadius: '30px',
-              padding: '12px 36px',
+              padding: '8px 22px',
               fontWeight: 700,
-              fontSize: '1.1rem',
+              fontSize: '0.98rem',
               cursor: 'pointer',
               marginTop: '0.5rem',
               boxShadow: '0 2px 8px rgba(108,43,217,0.12)',
@@ -262,7 +319,8 @@ const WelcomePopup = ({ open, onClose, instructionMsg, artistId, isUser, incompl
         )}
       </div>
     </div>
+    </>
   );
 };
-
+        
 export default WelcomePopup;
