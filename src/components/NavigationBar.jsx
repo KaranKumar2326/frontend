@@ -383,7 +383,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
           <a className="nav-link" href="#" onClick={handleHomeClick}><strong>Home</strong></a>
         )}
         <a className="nav-link" href="#footer" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>Contact</a>
-        <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>How it Works</a>
+        <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/how-it-works'); }}>About Us</a>
         
         {/* Show Artists/Hire/Sign Up only if not login/signup/home/artist profile and not logged in */}
         {!isLoginOrSignup && location.pathname !== '/signup' && 
