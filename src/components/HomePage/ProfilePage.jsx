@@ -522,6 +522,7 @@ const ProfilePage = ({ onProfileUpdate }) => {
           >
             <img
               src={user.imageUrl ? getImageSrc(user.imageUrl) : myImage}
+              crossOrigin="anonymous"
               alt="Profile"
               style={{
                 width: '150px',

@@ -82,6 +82,7 @@ export default function ImageSlider({ media, images }) {
     return (
       <img
         src={item.src}
+        crossOrigin="anonymous"
         alt={`slide-${current + idx}`}
         className={className}
         key={item.key}

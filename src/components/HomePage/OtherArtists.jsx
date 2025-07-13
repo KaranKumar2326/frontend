@@ -30,6 +30,7 @@ export default function OtherArtists({ currentArtistId }) {
         <div className="other-artist-card" key={artist._id || artist.id}>
           <img
             src={artist.coverImage || "/artist.jpg"}
+            crossOrigin="anonymous"
             alt={artist.stageName}
             className="other-artist-pfp"
           />

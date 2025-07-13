@@ -334,6 +334,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
               <div className="profile-pic-container" style={{position:'relative', display:'inline-block'}} onClick={() => setOpenProfile(!openProfile)}>
                 <img
                   src={getProfilePicSrc()}
+                  crossOrigin="anonymous"
                   className="profile-pic"
                   alt="Profile"
                   style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%' }}
@@ -413,6 +414,7 @@ const NavigationBar = ({ hideProfile = false, userProfilePic, showHomeInDropdown
               <div className="profile-pic-container" onClick={() => setOpenProfile(!openProfile)}>
                 <img
                   src={getProfilePicSrc()}
+                  crossOrigin="anonymous"
                   className="profile-pic"
                   alt="Profile"
                 />

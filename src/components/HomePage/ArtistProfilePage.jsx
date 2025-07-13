@@ -970,6 +970,7 @@ const ArtistProfilePage = () => {
                       <div style={{ position: 'relative', display: 'inline-block' }}>
                         <img
                           src={artist.imageUrl ? getImageSrc(artist.imageUrl) : undefined}
+                          crossOrigin="anonymous"
                           alt="Profile"
                           className="artist-profile-img"
                           style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '18px', marginBottom: '0.5rem', background: '#eee', cursor: 'pointer' }}
@@ -1018,6 +1019,7 @@ const ArtistProfilePage = () => {
                       <div style={{ position: 'relative', display: 'inline-block' }}>
                         <img
                           src={artist.coverImage ? getImageSrc(artist.coverImage) : undefined}
+                          crossOrigin="anonymous"
                           alt="Banner"
                           className="artist-profile-img"
                           style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '18px', marginBottom: '0.5rem', background: '#eee', cursor: 'pointer' }}
@@ -1400,6 +1402,7 @@ const GalleryImageUploader = ({ idx, imageUrl, uploading, actionBtnStyle, onRemo
         {imageUrl ? (
           <img
             src={getImageSrc(imageUrl)}
+            crossOrigin="anonymous"
             alt={`Gallery ${idx + 1}`}
             className="artist-profile-img"
             style={{ width: big ? '220px' : '120px', height: big ? '220px' : '120px', objectFit: 'cover', borderRadius: '14px', marginBottom: '0.5rem', background: '#eee', cursor: 'pointer' }}

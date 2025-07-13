@@ -559,6 +559,7 @@ export default function PublicArtistPage() {
       <Box className="public-artist-banner">
         <img
           src={getImageSrc(artist.coverImage) || myBg}
+          crossOrigin="anonymous"
           alt={artist.stageName}
           className="public-artist-banner-img"
           onError={(e) => {
@@ -595,6 +596,7 @@ export default function PublicArtistPage() {
           >
             <img
               src={getImageSrc(artist.imageUrl) || myImage}
+              crossOrigin="anonymous"
               alt={artist.stageName}
               className="public-artist-pic-img"
               onError={(e) => {
@@ -707,6 +709,7 @@ export default function PublicArtistPage() {
                     {iconSrc && (
                       <img
                         src={iconSrc}
+                        crossOrigin="anonymous"
                         alt={link.platform}
                         style={{ width: 28, height: 28, objectFit: 'contain', borderRadius: '50%' }}
                       />

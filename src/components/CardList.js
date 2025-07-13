@@ -48,7 +48,7 @@ const CardList = () => {
             <h3>{card.name}</h3>
             <p>{card.genre}</p>
             <p>{card.place}</p>
-            <img src={artistImage} alt={card.name} style={styles.photo} />
+            <img src={artistImage} crossOrigin="anonymous" alt={card.name} style={styles.photo} />
           </div>
         ))}
       </div>

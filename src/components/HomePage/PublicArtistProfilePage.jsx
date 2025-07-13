@@ -133,6 +133,7 @@ export default function PublicArtistProfilePage() {
         >
           <img
             src={getImageSrc(artist.coverImage) || myBg}
+            crossOrigin="anonymous"
             alt={artist.stageName}
             style={{ 
               width: '100%', 
@@ -164,6 +165,7 @@ export default function PublicArtistProfilePage() {
                 >
                   <img
                     src={getImageSrc(artist.imageUrl) || myImage}
+                    crossOrigin="anonymous"
                     alt={artist.stageName}
                     style={{ 
                       width: '100%', 
@@ -286,7 +288,8 @@ export default function PublicArtistProfilePage() {
                           }}
                         >
                           <img 
-                            src={iconSrc} 
+                            src={iconSrc}
+                            crossOrigin="anonymous"
                             alt={link.platform}
                             style={{ width: 28, height: 28, objectFit: 'contain' }}
                           />
@@ -314,6 +317,7 @@ export default function PublicArtistProfilePage() {
               >
                 <img
                   src={getImageSrc(artist.imageUrl) || myImage}
+                  crossOrigin="anonymous"
                   alt={artist.stageName}
                   style={{ 
                     width: '100%', 
@@ -433,7 +437,8 @@ export default function PublicArtistProfilePage() {
                             }}
                           >
                             <img 
-                              src={iconSrc} 
+                              src={iconSrc}
+                              crossOrigin="anonymous"
                               alt={link.platform}
                               style={{ width: 28, height: 28, objectFit: 'contain' }}
                             />
