@@ -21,6 +21,7 @@ const getImageSrc = (url) => {
     match = url.match(/[?&]id=([\w-]+)/);
   }
   let directUrl = url;
+  console.log(directUrl);
   if (match && match[1]) {
     directUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
   }
@@ -77,10 +78,10 @@ const ArtistCard = ({ artist, priority = 0, hidePrice = false }) => {
         }}
       >
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
-          <CardMedia
+          {/* <CardMedia
             component="img"
             height="240"
-            image={getImageSrc(artist.imageUrl) || myImage}
+            image={getImageSrc(artist.imageUrl) }
             alt={artist.stageName}
             onError={e => { e.target.onerror = null; e.target.src = myImage; }}
             sx={{
@@ -93,7 +94,22 @@ const ArtistCard = ({ artist, priority = 0, hidePrice = false }) => {
                 transform: 'scale(1.03)'
               }
             }}
-          />
+          /> */}
+          <img
+                          src={artist.imageUrl ? getImageSrc(artist.imageUrl) : undefined}
+                          alt="Profile"
+                          crossOrigin='Anonymous'
+                          className="artist-profile-img"
+                          style={{ borderTopLeftRadius: '12px',
+              borderTopRightRadius: '12px',
+              objectFit: 'cover',
+              width: '100%',
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.03)'
+              } }}
+                          
+                        />
           <Box sx={{
             position: 'absolute',
             bottom: 0,
